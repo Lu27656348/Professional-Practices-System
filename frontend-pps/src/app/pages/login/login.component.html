@@ -1,0 +1,15 @@
+<div >
+    <form [formGroup]="loginForm" class="container">
+        <h1>Sistema de Prácticas Profesionales</h1>
+        <img src="../../../assets/Logo_UCAB_2.webp" alt="Logo Ucab">
+        <mat-form-field class="full-width input-margin">
+            <mat-label>Ingrese su correo:</mat-label>
+            <input formControlName = "email" matInput placeholder="example@ucab.edu.ve" value = "">
+        </mat-form-field>
+        <mat-form-field class="full-width input-margin">
+            <mat-label>Ingrese su contraseña:</mat-label>
+            <input formControlName = "password" matInput placeholder="12345678" value = "">
+        </mat-form-field>
+        <button mat-raised-button color = "primary" class="full-width" (click)="login()" type="submit">Ingresar al sistema</button>
+    </form>
+</div>

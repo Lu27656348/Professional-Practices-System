@@ -1,0 +1,112 @@
+<div class="full-width full-height">
+    <mat-toolbar>
+        <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <span>Sistema de Practicas Profesionales</span>
+        <span class="example-spacer"></span>
+        <mat-form-field>
+            <mat-label>Select Role</mat-label>
+            <mat-select [(value)]="roleSelected" (selectionChange)="onSelectionChange()">
+              <mat-option *ngFor="let role of roles" [value]="role.value">
+                {{role.viewValue}}
+              </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <button mat-button>Luis C. Somoza</button>
+        <mat-icon>accessibility_new</mat-icon>
+    </mat-toolbar>
+
+    <mat-drawer-container class="navbar-height" *ngIf="isRoleSelected">
+        <mat-drawer mode="side" opened style="width: 300px;">Drawer content</mat-drawer>
+        <mat-drawer-content style="display: flex; align-items: center; justify-content: center;">
+
+            <mat-card class="example-card" style="margin: 10px 25px; min-height: 400px;">
+                <mat-card-header>
+                  <mat-card-title style="font-size: 1.2em;"> Trabajos de Grado</mat-card-title>
+                  <mat-card-subtitle >Estatus: Propuesta</mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content>
+                  <p>
+                    ¿Qué es un Trabajo de Grado? Es el trabajo teórico o experimental que desarrolla el estudiante sobre un 
+                    tema o problema único, bien delimitado y factible de abordar desde las competencias adquiridas en el nivel 
+                    de formación profesional
+                  </p>
+                </mat-card-content>
+                <mat-card-actions style="display: flex; flex-direction: row-reverse;">
+                    <button mat-button style="position: absolute; bottom: 20px; right: 50px;">
+                      <mat-icon>notification_important</mat-icon>
+                    </button>
+                    <a mat-button style="position: absolute; bottom: 20px;" routerLink="/graduate-work">
+                      <mat-icon>arrow_right_alt</mat-icon>
+                    </a>
+                  </mat-card-actions>
+              </mat-card>
+               
+              <mat-card class="example-card" style="margin: 10px 25px; min-height: 400px;" >
+                <mat-card-header>
+                  <mat-card-title>Pasantia</mat-card-title>
+                  <mat-card-subtitle>Estatus: Completada</mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content>
+                  <p>
+                    La pasantía es un periodo en el que los estudiantes (a los que llamaremos pasantes), al final de sus
+                     años de formación, realizan prácticas profesionales durante un periodo de tiempo determinado en empresas
+                      de distintos sectores
+                  </p>
+                </mat-card-content>
+                <mat-card-actions style="display: flex; flex-direction: row-reverse;">
+                    <button mat-button style="position: absolute; bottom: 20px; right: 50px;">
+                      <mat-icon>notification_important</mat-icon>
+                    </button>
+                    <button mat-button style="position: absolute; bottom: 20px;">
+                      <mat-icon>arrow_right_alt</mat-icon>
+                    </button>
+                  </mat-card-actions>
+              </mat-card>
+
+              <mat-card class="example-card" style="margin: 10px 25px; min-height: 400px;">
+                <mat-card-header>
+                  <mat-card-title style="font-size: 1em;">Servicio Comunitario</mat-card-title>
+                  <mat-card-subtitle>Estatus: 20 horas restantes</mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content>
+                  <p>
+                    El servicio comunitario es un conjunto de servicios donado, o actividad que es hecha por alguien o
+                    por un grupo de personas para beneficio del público o sus instituciones.​
+                  </p>
+                </mat-card-content>
+                <mat-card-actions style="display: flex; flex-direction: row-reverse;">
+                  <button mat-button style="position: absolute; bottom: 20px; right: 50px;">
+                    <mat-icon>notification_important</mat-icon>
+                  </button>
+                  <button mat-button style="position: absolute; bottom: 20px;">
+                    <mat-icon>arrow_right_alt</mat-icon>
+                  </button>
+                </mat-card-actions>
+              </mat-card>
+
+        </mat-drawer-content>
+    </mat-drawer-container>
+      
+    <footer>
+        <div class="footer">
+            <div class="row">
+                UNIVERSIDAD CATÓLICA ANDRÉS BELLO – Extensión Guayana – Avenida Atlántico, Ciudad Guayana 8050. 
+            </div>
+            <div class="row">
+                Bolívar, Venezuela. Teléfono: +58-286-6000111
+            </div>
+            <div class="row">
+                URL: http://www.guayanaweb.ucab.edu.ve/escuela-de-ingenieria-informatica.html
+            </div>
+            <div class="row">
+                UCAB Guayana Copyright © 2023 - All rights reserved || Designed By: Luis C. Somoza
+            </div>
+        </div>
+    </footer>
+</div>
+
+
+
+  

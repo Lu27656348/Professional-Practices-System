@@ -1,0 +1,49 @@
+<div class="full-width full-height">
+    <mat-toolbar>
+        <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <span>Sistema de Practicas Profesionales</span>
+        <span class="example-spacer"></span>
+        <mat-form-field>
+            <mat-label>Select Role</mat-label>
+            <mat-select>
+              <mat-option *ngFor="let role of roles" [value]="role.value">
+                {{role.viewValue}}
+              </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <button mat-button>Luis C. Somoza</button>
+        <mat-icon>accessibility_new</mat-icon>
+    </mat-toolbar>
+
+    <mat-drawer-container class="navbar-height">
+        <mat-drawer mode="side" opened style="width: 300px;">Drawer content</mat-drawer>
+        <mat-drawer-content style="display: flex; align-items: center; justify-content: center;">
+
+           
+
+        </mat-drawer-content>
+    </mat-drawer-container>
+      
+    <footer>
+        <div class="footer-global">
+            <div class="row">
+                UNIVERSIDAD CATÓLICA ANDRÉS BELLO – Extensión Guayana – Avenida Atlántico, Ciudad Guayana 8050. 
+            </div>
+            <div class="row">
+                Bolívar, Venezuela. Teléfono: +58-286-6000111
+            </div>
+            <div class="row">
+                URL: http://www.guayanaweb.ucab.edu.ve/escuela-de-ingenieria-informatica.html
+            </div>
+            <div class="row">
+                UCAB Guayana Copyright © 2023 - All rights reserved || Designed By: Luis C. Somoza
+            </div>
+        </div>
+    </footer>
+</div>
+
+
+
+  

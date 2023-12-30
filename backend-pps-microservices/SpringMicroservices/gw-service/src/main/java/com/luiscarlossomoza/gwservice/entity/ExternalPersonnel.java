@@ -1,7 +1,4 @@
 package com.luiscarlossomoza.gwservice.entity;
 
-public enum Role {
-    Coordinator,
-    Regular
-
+public class ExternalPersonnel {
 }

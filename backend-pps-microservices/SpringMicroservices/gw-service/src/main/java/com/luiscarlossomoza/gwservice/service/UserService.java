@@ -2,6 +2,7 @@ package com.luiscarlossomoza.gwservice.service;
 
 import com.luiscarlossomoza.gwservice.entity.User;
 import com.luiscarlossomoza.gwservice.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,11 +19,12 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    @Transactional
     public User createUser (User user){
         return userRepository.save(user);
     }
 
-    public List<User> getAllUsers(){
+    public Iterable<User> getAllUsers(){
         return userRepository.findAll();
     }
 
@@ -30,6 +32,7 @@ public class UserService {
         return userRepository.findById(id).orElse(null);
     }
 
+    @Transactional
     public User updateUser(String id, User user){
         User existingUser = userRepository.findById(id).orElse(null);
         if(existingUser != null){
@@ -39,7 +42,7 @@ public class UserService {
         }
         return null;
     }
-
+    @Transactional
     public void deleteUserById(String id){
         userRepository.deleteById(id);
     }

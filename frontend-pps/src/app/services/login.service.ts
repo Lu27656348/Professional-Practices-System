@@ -1,18 +1,47 @@
 import { Injectable } from '@angular/core';
 import { LoginRequest} from '../interfaces/LoginRequest'
-import { HttpClient } from '@angular/common/http';
+import { HttpClient,HttpHeaders } from '@angular/common/http';
 import { Observable } from "rxjs";
+
+interface UserData {
+  userDNI: string;
+  mode: string;
+}
 
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class LoginService {
 
+  private loginData: UserData = {
+    userDNI: '',
+    mode: ''
+  };
+
+  private isRoleSelectedService: boolean = false;
   constructor(private http: HttpClient) { }
 
+  getLoginData(){
+    return this.loginData
+  }
+
+  setLoginData(datos: UserData){
+    this.loginData = datos;
+  }
+
   login(credentials: LoginRequest):Observable<any>{
-    return this.http.get("./data.json");
-    console.log(credentials);
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.post(`http://localhost:8081/users/validate`,credentials,{headers});
+  }
+
+  getIsRoleSelected(){
+    return this.isRoleSelectedService;
+  }
+
+  setIsRoleSelected(newValue: boolean){
+    this.isRoleSelectedService = newValue
   }
 }

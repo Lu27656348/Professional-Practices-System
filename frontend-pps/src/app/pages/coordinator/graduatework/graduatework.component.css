@@ -1,0 +1,8 @@
+.navbar-height{
+    height: 565px;
+    border: 1px solid #555;
+}
+
+.example-spacer {
+    flex: 1 1 auto;
+  }

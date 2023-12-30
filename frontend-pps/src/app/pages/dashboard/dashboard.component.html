@@ -1,4 +1,5 @@
 <div class="full-width full-height">
+    <!--
     <mat-toolbar>
         <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
           <mat-icon>menu</mat-icon>
@@ -8,17 +9,18 @@
         <mat-form-field>
             <mat-label>Select Role</mat-label>
             <mat-select [(value)]="roleSelected" (selectionChange)="onSelectionChange()">
-              <mat-option *ngFor="let role of roles" [value]="role.value">
-                {{role.viewValue}}
+              <mat-option *ngFor="let role of roles" [value]="role">
+                {{role}}
               </mat-option>
             </mat-select>
         </mat-form-field>
-        <button mat-button>Luis C. Somoza</button>
-        <mat-icon>accessibility_new</mat-icon>
+        <button mat-button *ngIf="user != null">{{user.userFirstName + ' ' + user.userLastName}}</button>
+        <button mat-button *ngIf="user != null" (click) = "logOut()"><mat-icon>exit_to_app</mat-icon></button>
     </mat-toolbar>
-
+    -->
+    <app-navbar></app-navbar>
     <mat-drawer-container class="navbar-height" *ngIf="isRoleSelected">
-        <mat-drawer mode="side" opened style="width: 300px;">Drawer content</mat-drawer>
+        <mat-drawer mode="side" opened = false style="width: 300px;">Drawer content</mat-drawer>
         <mat-drawer-content style="display: flex; align-items: center; justify-content: center;">
 
             <mat-card class="example-card" style="margin: 10px 25px; min-height: 400px;">
@@ -88,23 +90,7 @@
 
         </mat-drawer-content>
     </mat-drawer-container>
-      
-    <footer>
-        <div class="footer">
-            <div class="row">
-                UNIVERSIDAD CATÓLICA ANDRÉS BELLO – Extensión Guayana – Avenida Atlántico, Ciudad Guayana 8050. 
-            </div>
-            <div class="row">
-                Bolívar, Venezuela. Teléfono: +58-286-6000111
-            </div>
-            <div class="row">
-                URL: http://www.guayanaweb.ucab.edu.ve/escuela-de-ingenieria-informatica.html
-            </div>
-            <div class="row">
-                UCAB Guayana Copyright © 2023 - All rights reserved || Designed By: Luis C. Somoza
-            </div>
-        </div>
-    </footer>
+    <app-footer></app-footer>
 </div>
 
 

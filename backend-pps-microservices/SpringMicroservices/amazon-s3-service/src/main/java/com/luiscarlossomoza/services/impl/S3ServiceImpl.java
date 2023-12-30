@@ -1,11 +1,11 @@
-package com.luiscarlossomoza.amazons3service.services.impl;
+package com.luiscarlossomoza.services.impl;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.*;
-import com.luiscarlossomoza.amazons3service.services.IS3Service;
+import com.luiscarlossomoza.services.IS3Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

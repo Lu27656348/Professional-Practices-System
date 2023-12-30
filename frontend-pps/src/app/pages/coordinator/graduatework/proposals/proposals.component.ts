@@ -1,17 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-
-import { LoginService } from '../../../services/login.service';
-import { UsersService } from '../../../services/users.service';
+import { Component,OnInit } from '@angular/core';
+import { LoginService } from '../../../../services/login.service';
+import { UsersService } from '../../../../services/users.service';
 import { Router } from '@angular/router';
-import { FooterComponent } from '../../../shared/footer/footer.component'
-
 interface PeriodicElement {
   name: string;
   position: number;
   weight: number;
   symbol: string;
 }
-
 const ELEMENT_DATA: PeriodicElement[] = [
   {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
   {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
@@ -24,16 +20,12 @@ const ELEMENT_DATA: PeriodicElement[] = [
   {position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F'},
   {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
 ];
-
 @Component({
-  selector: 'app-graduatework',
-  templateUrl: './graduatework.component.html',
-  styleUrls: ['./graduatework.component.css']
+  selector: 'app-proposals',
+  templateUrl: './proposals.component.html',
+  styleUrls: ['./proposals.component.css']
 })
-
-
-export class GraduateworkComponent implements OnInit{
-
+export class ProposalsComponent implements OnInit{
   roleSelected: any;
   localUser: any;
   data: any = null;
@@ -44,8 +36,6 @@ export class GraduateworkComponent implements OnInit{
 
   displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
   dataSource = ELEMENT_DATA;
-
-  
 
   constructor(private loginService: LoginService,private router: Router,private userService: UsersService){}
 
@@ -75,5 +65,4 @@ export class GraduateworkComponent implements OnInit{
   goBack(){
     this.router.navigateByUrl("/dashboard");
   }
-
 }

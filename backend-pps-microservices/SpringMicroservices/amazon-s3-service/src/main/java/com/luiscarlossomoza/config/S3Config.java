@@ -1,4 +1,4 @@
-package com.luiscarlossomoza.amazons3service.config;
+package com.luiscarlossomoza.config;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;

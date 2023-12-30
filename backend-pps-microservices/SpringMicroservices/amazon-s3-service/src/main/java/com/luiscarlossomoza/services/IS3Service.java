@@ -1,4 +1,4 @@
-package com.luiscarlossomoza.amazons3service.services;
+package com.luiscarlossomoza.services;
 
 import org.springframework.web.multipart.MultipartFile;
 

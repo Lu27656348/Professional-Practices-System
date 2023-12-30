@@ -1,4 +1,4 @@
-package com.luiscarlossomoza.amazons3service;
+package com.luiscarlossomoza;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

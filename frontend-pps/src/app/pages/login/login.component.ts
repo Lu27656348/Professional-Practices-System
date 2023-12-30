@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 
 import { LoginRequest } from '../../interfaces/LoginRequest'
 import { LoginService } from '../../services/login.service'
+import { UsersService } from '../../services/users.service'
 
 
 @Component({
@@ -14,16 +15,16 @@ import { LoginService } from '../../services/login.service'
 export class LoginComponent implements OnInit {
 
   loginForm = this.formBuilder.group({
-    email: ['',[Validators.required,Validators.email,Validators.pattern('^(.+)@(?:est\.ucab\.edu\.ve|gmail\.com|ucab\.edu\.ve)$')]],
+    userDNI: ['',[Validators.required]],
     password: ['',Validators.required]
   })
 
   ngOnInit(): void {}
 
-  constructor(private formBuilder: FormBuilder, private router: Router, private LoginService: LoginService){}
+  constructor(private formBuilder: FormBuilder, private router: Router, private LoginService: LoginService, private UserService: UsersService){}
 
-  get email(){
-    return this.loginForm.controls.email;
+  get userDNI(){
+    return this.loginForm.controls.userDNI;
   }
 
   get password(){
@@ -31,21 +32,49 @@ export class LoginComponent implements OnInit {
   }
 
  login(){
+
     if(this.loginForm.valid){
+      const body = this.loginForm.value
       this.LoginService.login(this.loginForm.value as LoginRequest).subscribe({
         next: (userData) => {
           console.log(userData)
+          if(userData){
+            this.LoginService.setLoginData({
+              userDNI: body.userDNI as string,
+              mode: ''
+            })
+            this.UserService.getUserRoles(body.userDNI as string).subscribe({
+              next: (userData) => {
+
+                let data: any = this.LoginService.getLoginData();
+                const dataRequest = this.LoginService.getLoginData();
+                localStorage.setItem('user', JSON.stringify(data));
+                localStorage.setItem('roles', JSON.stringify(userData[0]));
+                this.router.navigateByUrl("dashboard");
+                this.loginForm.reset();
+              },
+              error: (errorData) => {
+                console.log("errorData")
+                console.log(errorData)
+              },
+              complete: () => {
+                console.log("login completo")
+              }
+            })
+          }else{
+            this.loginForm.markAllAsTouched();
+            alert("Usuario o clave incorrectos");
+          }
         },
         error: (errorData) => {
+          console.log("errorData")
           console.log(errorData)
         },
         complete: () => {
           console.log("login completo")
         }
       })
-      console.log("Llamar al servicio de Login");
-      this.router.navigateByUrl("dashboard");
-      this.loginForm.reset();
+
     }else{
       this.loginForm.markAllAsTouched();
       alert("Error al ingresar los datos");

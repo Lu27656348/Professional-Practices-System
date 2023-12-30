@@ -9,7 +9,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
-@CrossOrigin
 public class UserController {
     private final UserService userService;
 
@@ -24,7 +23,7 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> getAllUsers(){
+    public Iterable<User> getAllUsers(){
         return userService.getAllUsers();
     }
 

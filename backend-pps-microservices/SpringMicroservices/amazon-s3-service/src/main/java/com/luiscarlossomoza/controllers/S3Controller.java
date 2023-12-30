@@ -1,4 +1,4 @@
-package com.luiscarlossomoza.amazons3service.controllers;
+package com.luiscarlossomoza.controllers;
 
 import com.luiscarlossomoza.amazons3service.services.IS3Service;
 import org.springframework.beans.factory.annotation.Autowired;

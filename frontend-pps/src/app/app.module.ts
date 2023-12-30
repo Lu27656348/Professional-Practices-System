@@ -18,9 +18,16 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatSelectModule} from '@angular/material/select'; 
 import {MatCardModule} from '@angular/material/card'; 
 import {MatGridListModule} from '@angular/material/grid-list';
-import { GraduateworkComponent } from './pages/student/graduatework/graduatework.component';
+import {MatListModule} from '@angular/material/list'; 
+import {MatTableModule} from '@angular/material/table'; 
+
+//import { GraduateworkComponent } from './pages/student/graduatework/graduatework.component';
 import { IntershipComponent } from './pages/student/intership/intership.component';
 import { CommunitaryserviceComponent } from './pages/student/communitaryservice/communitaryservice.component'; 
+
+import { GraduateworkComponent } from './pages/coordinator/graduatework/graduatework.component';
+import { ProposalsComponent } from './pages/coordinator/graduatework/proposals/proposals.component'
+
 
 @NgModule({
   declarations: [
@@ -31,7 +38,8 @@ import { CommunitaryserviceComponent } from './pages/student/communitaryservice/
     FooterComponent,
     GraduateworkComponent,
     IntershipComponent,
-    CommunitaryserviceComponent
+    CommunitaryserviceComponent,
+    ProposalsComponent,
   ],
   imports: [
     BrowserModule,
@@ -46,7 +54,9 @@ import { CommunitaryserviceComponent } from './pages/student/communitaryservice/
     MatIconModule,
     MatSelectModule,
     MatCardModule,
-    MatGridListModule
+    MatGridListModule,
+    MatListModule,
+    MatTableModule
   ],
   providers: [],
   bootstrap: [AppComponent]

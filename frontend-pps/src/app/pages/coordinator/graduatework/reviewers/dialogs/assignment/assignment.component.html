@@ -1,0 +1,51 @@
+<h2 mat-dialog-title>Asignacion de Profesor Revisor</h2>
+<mat-dialog-content class="mat-typography">
+
+  <p><strong>Seleccione el Profesor Revisor</strong></p>
+  <mat-divider></mat-divider>
+  <form [formGroup]="reviewerForm">
+    <mat-form-field style="width: 100%;">
+        <mat-label>Profesor Revisor</mat-label>
+        <mat-select [(value)]="reviewerSelected" (selectionChange)="onSelectionChange()">
+            <mat-option *ngFor="let professor of professorsList" [value]="professor.userDNI">
+                {{ professor.userlastname + ', ' + professor.userfirstname }} 
+            </mat-option>
+        </mat-select>
+    </mat-form-field >
+  </form>
+
+  <p><strong>Seleccione el Cómite de Trabajo de Grado</strong></p>
+  <mat-divider></mat-divider>
+  <form>
+    <mat-form-field style="width: 100%;">
+        <mat-label>Comite de Trabajo de Grado</mat-label>
+        <mat-select [(value)]="committeeSelected" (selectionChange)="onSelectionChange()">
+            <mat-option *ngFor="let committee of committeeList" [value]="committee.graduateworkcommittee">
+                {{  
+                    committee.graduateworkcommittee
+                }} 
+            </mat-option>
+        </mat-select>
+    </mat-form-field >
+  </form>
+  <p><strong>Seleccione los Criterios de Evaluación</strong></p>
+  <p></p>
+  <mat-divider></mat-divider>
+  <section [formGroup] = "criteriaForm" style="display: flex; flex-direction: column;">
+    <p></p>
+    <mat-checkbox *ngFor="let item of criteria" [formControlName]="item.criteriaid" (change)="onCheckboxChange(item)">{{item.criteriadescription}}</mat-checkbox>
+    <p></p>
+</section> 
+  
+  <p><strong>Generar vista previa de Planilla de Evaluación de Profesor Revisor</strong></p>
+  <button mat-button (click)="obtenerPlanillaEvaluacion()">Descargar</button>
+  <p></p>
+  <mat-divider></mat-divider>
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-button style="background-color: rgb(245, 171, 21)" [mat-dialog-close]="true" cdkFocusInitial (click)="veredictoPropuesta('reenviar')">Reenviar</button>
+  <button mat-button style="background-color: red;"  [mat-dialog-close]="true" cdkFocusInitial (click)="veredictoPropuesta('rechazar')">Rechazar</button>
+  <button mat-button style="background-color: green;"  [mat-dialog-close]="true" cdkFocusInitial (click)="veredictoPropuesta('aprobar')">Aprobar</button>
+</mat-dialog-actions>

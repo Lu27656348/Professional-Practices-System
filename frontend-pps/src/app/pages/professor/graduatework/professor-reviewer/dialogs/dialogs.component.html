@@ -1,0 +1,35 @@
+<h2 mat-dialog-title>Datos asociados a la propuesta</h2>
+<mat-dialog-content class="mat-typography">
+  <p><strong>Datos del estudiante</strong></p>
+  <mat-divider></mat-divider>
+  <p>{{'Nombre completo: ' + inputdata.user.userLastName + ', ' + inputdata.user.userFirstName }}</p>
+  <p>{{'Cedula de identidad: ' + inputdata.user.userDNI }}</p>
+  <p>{{'Correo UCAB: ' + inputdata.user.userEmailUcab }}</p>
+  <p>{{'Número de teléfono: ' + inputdata.user.userPhone }}</p>
+
+  <p><strong>Datos del Trabajo de Grado</strong></p>
+  <mat-divider></mat-divider>
+  <p>{{'Título: ' + inputdata.graduatework.graduateWorkTitle }}</p>
+  <p>{{'Tipo: ' + inputdata.graduatework.graduateWorkType }}</p>
+  <p>{{'Organización donde se realizará: UCAB' }}</p>
+  <p>{{'Posible tutor academico: Medina, Luz E.'}}</p>
+
+  <h3><strong>Planilla de Evaluacion de Trabajo de Grado</strong></h3>
+  <mat-divider></mat-divider>
+  <p>Para descargar la Planilla de Evaluacion de Trabajo de Grado,haga click en descargar:</p>
+  <button mat-button (click)="obtenerPlanillaEvaluacion()">Descargar</button>
+  <p></p>
+  
+  <h3><strong>Informe de Propuesta de Trabajo de Grado</strong></h3>
+  <mat-divider></mat-divider>
+  <p>Para descargar el Informe de Propuesta de Trabajo de Grado haga, click en descargar:</p>
+  <button mat-button (click)="obtenerInformePropuesta()">Descargar</button>
+  <p></p>
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-button style="background-color: rgb(245, 171, 21)" [mat-dialog-close]="true" cdkFocusInitial (click)="veredictoPropuesta('reenviar')">Reenviar</button>
+  <button mat-button style="background-color: red;"  [mat-dialog-close]="true" cdkFocusInitial (click)="veredictoPropuesta('rechazar')">Rechazar</button>
+  <button mat-button style="background-color: green;"  [mat-dialog-close]="true" cdkFocusInitial (click)="veredictoPropuesta('aprobar')">Aprobar</button>
+</mat-dialog-actions>

@@ -1,0 +1,165 @@
+<app-navbar></app-navbar>
+    <div class = "container" *ngIf="!isProcessActive && hasGraduateWork === false">
+        <button mat-fab color="primary" aria-label="Example icon button with a delete icon" (click)="register()">
+            <mat-icon>library_add</mat-icon>
+        </button>
+        <h2>Realizar Propuesta de Trabajo de Grado</h2>
+    </div>
+    <div *ngIf="isProcessActive && hasGraduateWork === false ">
+        <button mat-raised-button (click)="isLinear = !isLinear" id="toggle-linear">
+            {{!isLinear ? 'Enable linear mode' : 'Disable linear mode'}}
+          </button>
+          <!-- ********************************************************************** -->
+          <mat-stepper [linear]="isLinear" #stepper labelPosition="bottom">
+            <mat-step [stepControl]="firstFormGroup">
+                <form [formGroup]="firstFormGroup" style="height: 50vh; display: flex; flex-direction: column;">
+                  <ng-template matStepLabel>Seleccione modelo de propuesta</ng-template>
+                  <div style="display: flex; align-items: center; justify-content: center;">
+                    <mat-form-field>
+                        <mat-label>Name</mat-label>
+                        <mat-select [(value)]="selectedValue" (selectionChange)="onSelectionChange()">
+                            <mat-option value="Experimental">Experimental</mat-option>
+                            <mat-option value="Instrumental">Instrumental</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                  </div>
+                  <!--
+                  <div style="background-color: aliceblue; display: flex; justify-content: center; gap: 30vh" *ngIf="selectedValue!=''">
+                    <div style="width: 30%;">
+                        <mat-form-field style="width: 100%;">
+                            <mat-label>Titulo de la propuesta</mat-label>
+                            <input matInput placeholder="" required>
+                        </mat-form-field>
+                    </div>
+                  </div>
+                  -->
+                  <div style="display: flex; justify-content: flex-end; margin-top: auto;">
+                    <button mat-button matStepperNext>Next</button>
+                  </div>
+                </form>
+            </mat-step>
+             <!-- ********************************************************************** -->
+              <!-- ********************************************************************** -->
+            <mat-step [stepControl]="secondFormGroup" label="Ingrese datos de la propuesta">
+                <form [formGroup]="secondFormGroup" style = "display: flex; flex-direction: column; height: 70vh">
+
+                  <mat-form-field>
+                    <mat-label>Titulo de la propuesta</mat-label>
+                    <input matInput formControlName="proposalTitle" placeholder="" required>
+                  </mat-form-field>
+
+                  <mat-form-field >
+                    <mat-label>Posible Tutor Academico</mat-label>
+                        <mat-select [(value)]="academicTutor" (selectionChange)="onSelectionChange()">
+                            <mat-option *ngFor="let professor of professorList" [value]="professor.userDNI">
+                                {{ professor.userlastname + ', ' + professor.userfirstname }} 
+                            </mat-option>
+                        </mat-select>
+                  </mat-form-field>
+
+                  <mat-form-field >
+                    <mat-label>Seleccion la empresa asociada:</mat-label>
+                        <mat-select [(value)]="selectedEnterpriseValue" (selectionChange)="onSelectionChange()">
+                            <mat-option *ngFor="let enterprise of enterprisesData" [value]="enterprise.enterpriseid">
+                                {{ enterprise.enterpriseName }} 
+                            </mat-option>
+                        </mat-select>
+                  </mat-form-field>
+
+                  <mat-form-field *ngIf="selectedValue == 'Instrumental'">
+                    <mat-label>Seleccion un Tutor Empresarial:</mat-label>
+                    <mat-select [(value)]="selectedInCompanyTutor" (selectionChange)="onSelectionChange()">
+                        <mat-option *ngFor="let tutor of inTutorList" [value]="tutor.userDNI">
+                            {{ tutor.userlastname + ', ' + tutor.userfirstname }} 
+                        </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <div style="display: flex; justify-content: flex-end; ">
+                    <button mat-button matStepperPrevious>Back</button>
+                    <button mat-button matStepperNext>next</button>
+                  </div>
+                </form>
+            </mat-step>
+             <!-- ********************************************************************** -->
+              <!-- ********************************************************************** -->
+            <mat-step [stepControl]="form" label="Cargue su propuesta">
+                <form [formGroup]="form">
+                  <input type="file" formControlName="file" id = "fileInput" name="fileInput" (change)="onFileSelected($event)">
+                  <div style="display: flex; justify-content: flex-end; margin-top: auto;">
+                    <button mat-button matStepperPrevious>Back</button>
+                    <button mat-button matStepperNext>Next</button>
+                  </div>
+                </form>
+            </mat-step>
+             <!-- ********************************************************************** -->
+              <!-- ********************************************************************** -->
+            <mat-step>
+                
+              <ng-template matStepLabel>Done</ng-template>
+              <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <p>You are now done.</p>
+                <div style="display: flex; align-items: center; justify-content: center;">
+                  <button mat-button matStepperPrevious>Back</button>
+                  <button mat-raised-button color="primary" (click)="createGraduteWorkProposal()">Send Proposal</button>
+                </div>
+              </div>
+            </mat-step>
+          </mat-stepper>
+          
+    </div>
+    <div *ngIf="hasGraduateWork && graduateWorkList[0].graduateworkestatuscode == '10'" style="background-color: antiquewhite; height: 81%; display: flex; align-items: center; justify-content: center;">
+      <h1>Tiene un trabajo de grado pendiente por revision</h1>
+    </div>
+
+    <div *ngIf="hasGraduateWork && graduateWorkList[0].graduateworkestatuscode == '50'" style="height: 81%; display: flex; flex-direction: column;">
+      <mat-card class="example-card">
+        <mat-card-content>
+          <h2 style="display: flex; justify-content: center;">Tiempo restante para entrega</h2>
+      
+          <section class="example-section">
+            <mat-progress-bar
+                class="example-margin"
+                color="primary"
+                mode="determinate"
+                [value]="150 - daysRemaining">
+            </mat-progress-bar>
+          </section>
+        </mat-card-content>
+      </mat-card>
+      <!-- ********************************************************************************************* -->
+      <div style="background-color: aliceblue; height: 100%; display: flex; align-items: center; justify-content: center; gap: 20vw;">
+        <mat-card style="width: 30vw;">
+          <mat-card-header>
+            <mat-card-title>Informe de Trabajo de Grado</mat-card-title>
+            <mat-card-subtitle>Última Actualización: </mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+        
+            <section class="example-section">
+              <h2>Hola</h2>
+            </section>
+          </mat-card-content>
+          <mat-card-actions style="display: flex; justify-content: flex-end; gap: 10px;">
+            <button mat-raised-button>Descargar Archivo</button>
+            <button mat-raised-button>Subir Archivo</button>
+          </mat-card-actions>
+        </mat-card>
+        <mat-card style="width: 30vw;">
+          <mat-card-header>
+            <mat-card-title>Correciones de Tutor</mat-card-title>
+            <mat-card-subtitle>Última Actualización: </mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+        
+            <section class="example-section">
+              <h2>Hola</h2>
+            </section>
+          </mat-card-content>
+          <mat-card-actions style="display: flex; justify-content: flex-end;">
+            <button mat-raised-button>Descargar Archivo</button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+    </div>
+<app-footer></app-footer>

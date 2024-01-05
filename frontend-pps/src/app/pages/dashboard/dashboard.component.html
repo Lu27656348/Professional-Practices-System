@@ -1,23 +1,4 @@
 <div class="full-width full-height">
-    <!--
-    <mat-toolbar>
-        <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
-          <mat-icon>menu</mat-icon>
-        </button>
-        <span>Sistema de Practicas Profesionales</span>
-        <span class="example-spacer"></span>
-        <mat-form-field>
-            <mat-label>Select Role</mat-label>
-            <mat-select [(value)]="roleSelected" (selectionChange)="onSelectionChange()">
-              <mat-option *ngFor="let role of roles" [value]="role">
-                {{role}}
-              </mat-option>
-            </mat-select>
-        </mat-form-field>
-        <button mat-button *ngIf="user != null">{{user.userFirstName + ' ' + user.userLastName}}</button>
-        <button mat-button *ngIf="user != null" (click) = "logOut()"><mat-icon>exit_to_app</mat-icon></button>
-    </mat-toolbar>
-    -->
     <app-navbar></app-navbar>
     <mat-drawer-container class="navbar-height" *ngIf="isRoleSelected">
         <mat-drawer mode="side" opened = false style="width: 300px;">Drawer content</mat-drawer>
@@ -36,12 +17,12 @@
                   </p>
                 </mat-card-content>
                 <mat-card-actions style="display: flex; flex-direction: row-reverse;">
-                    <button mat-button style="position: absolute; bottom: 20px; right: 50px;">
+                    <button mat-button style="position: absolute; bottom: 20px; right: 50px;" >
                       <mat-icon>notification_important</mat-icon>
                     </button>
-                    <a mat-button style="position: absolute; bottom: 20px;" routerLink="/graduate-work">
+                    <button mat-button style="position: absolute; bottom: 20px;" (click) = "navigateToGraduateWork()">
                       <mat-icon>arrow_right_alt</mat-icon>
-                    </a>
+                    </button>
                   </mat-card-actions>
               </mat-card>
                

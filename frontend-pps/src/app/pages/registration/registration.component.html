@@ -1,0 +1,32 @@
+<div style="display: flex; width: 100%; height: 100%; align-items: center; justify-content: center;">
+    <form [formGroup]="registerForm" class="container">
+        <h1><strong>Registrar nuevo usuario</strong></h1>
+        <img src="../../../assets/Logo_UCAB_2.webp" alt="Logo Ucab">
+        <mat-form-field class="full-width input-margin">
+            <mat-label>Ingrese su cédula:</mat-label>
+            <input formControlName = "userDNI" matInput placeholder="V-27656348" value = "">
+        </mat-form-field>
+        <mat-form-field class="full-width input-margin">
+            <mat-label>Ingrese su contraseña:</mat-label>
+            <input formControlName = "password" matInput placeholder="12345678" value = "">
+        </mat-form-field>
+        <mat-form-field class="full-width input-margin">
+            <mat-label>Confirme su contraseña:</mat-label>
+            <input matInput placeholder="12345678" value = "">
+        </mat-form-field>
+        <mat-form-field class="full-width input-margin">
+            <mat-label>Ingrese su nombre completo:</mat-label>
+            <input formControlName = "userfirstname" matInput placeholder="Luis Carlos" value = "">
+        </mat-form-field>
+        <mat-form-field class="full-width input-margin">
+            <mat-label>Ingrese sus apellidos:</mat-label>
+            <input formControlName = "userlastname" matInput placeholder="Somoza Ledezma" value = "">
+        </mat-form-field>
+        <mat-form-field class="full-width input-margin">
+            <mat-label>Ingrese su correo ucab:</mat-label>
+            <input formControlName = "useremailucab" matInput placeholder="lcsomoza.19@est.ucab.edu.ve" value = "">
+        </mat-form-field>
+
+        <button mat-raised-button color = "primary" class="full-width" (click)="register()" type="submit">Registrar Usuario</button>
+    </form>
+</div>

@@ -20,13 +20,32 @@ import {MatCardModule} from '@angular/material/card';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {MatListModule} from '@angular/material/list'; 
 import {MatTableModule} from '@angular/material/table'; 
-
-//import { GraduateworkComponent } from './pages/student/graduatework/graduatework.component';
-import { IntershipComponent } from './pages/student/intership/intership.component';
-import { CommunitaryserviceComponent } from './pages/student/communitaryservice/communitaryservice.component'; 
+import {MatSlideToggleModule} from '@angular/material/slide-toggle'; 
+import {MatProgressBarModule} from '@angular/material/progress-bar'; 
 
 import { GraduateworkComponent } from './pages/coordinator/graduatework/graduatework.component';
-import { ProposalsComponent } from './pages/coordinator/graduatework/proposals/proposals.component'
+import { ProposalsComponent } from './pages/coordinator/graduatework/proposals/proposals.component';
+import { RegistrationComponent } from './pages/registration/registration.component';
+import { StudentGWComponent } from './pages/student/student-gw/student-gw.component'
+
+import {MatDialogModule} from '@angular/material/dialog'; 
+import {MatDividerModule} from '@angular/material/divider'; 
+import {MatCheckboxModule} from '@angular/material/checkbox'; 
+
+import {MatStepperModule} from '@angular/material/stepper';
+import { ValidationComponent } from './pages/coordinator/graduatework/proposals/dialogs/validation/validation.component';
+import { ReviewersComponent } from './pages/coordinator/graduatework/reviewers/reviewers.component';
+import { JuryComponent } from './pages/coordinator/graduatework/jury/jury.component';
+import { DefenseComponent } from './pages/coordinator/graduatework/defense/defense.component';
+import { CompletionComponent } from './pages/coordinator/graduatework/completion/completion.component';
+import { AssignmentComponent } from './pages/coordinator/graduatework/reviewers/dialogs/assignment/assignment.component';
+import { ProfessorGWComponent } from './pages/professor/professor-gw/professor-gw.component';
+import { ProfessorReviewerComponent } from './pages/professor/graduatework/professor-reviewer/professor-reviewer.component';
+import { ProfessorTutorComponent } from './pages/professor/graduatework/professor-tutor/professor-tutor.component';
+import { ProfessorJuryComponent } from './pages/professor/graduatework/professor-jury/professor-jury.component';
+import { DialogsComponent } from './pages/professor/graduatework/professor-reviewer/dialogs/dialogs.component';
+import { CouncilComponent } from './pages/coordinator/graduatework/council/council.component';
+import { DialogCouncilComponent } from './pages/coordinator/graduatework/council/dialog-council/dialog-council.component'; 
 
 
 @NgModule({
@@ -37,9 +56,22 @@ import { ProposalsComponent } from './pages/coordinator/graduatework/proposals/p
     NavbarComponent,
     FooterComponent,
     GraduateworkComponent,
-    IntershipComponent,
-    CommunitaryserviceComponent,
     ProposalsComponent,
+    RegistrationComponent,
+    StudentGWComponent,
+    ValidationComponent,
+    ReviewersComponent,
+    JuryComponent,
+    DefenseComponent,
+    CompletionComponent,
+    AssignmentComponent,
+    ProfessorGWComponent,
+    ProfessorReviewerComponent,
+    ProfessorTutorComponent,
+    ProfessorJuryComponent,
+    DialogsComponent,
+    CouncilComponent,
+    DialogCouncilComponent
   ],
   imports: [
     BrowserModule,
@@ -56,7 +88,13 @@ import { ProposalsComponent } from './pages/coordinator/graduatework/proposals/p
     MatCardModule,
     MatGridListModule,
     MatListModule,
-    MatTableModule
+    MatTableModule,
+    MatSlideToggleModule,
+    MatStepperModule,
+    MatDialogModule,
+    MatDividerModule,
+    MatCheckboxModule,
+    MatProgressBarModule
   ],
   providers: [],
   bootstrap: [AppComponent]

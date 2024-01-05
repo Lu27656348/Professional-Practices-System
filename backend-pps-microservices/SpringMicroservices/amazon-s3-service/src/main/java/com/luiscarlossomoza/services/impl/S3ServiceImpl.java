@@ -5,60 +5,68 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.*;
+import com.amazonaws.util.IOUtils;
+import com.luiscarlossomoza.interfaces.FileNameProjection;
+import com.luiscarlossomoza.interfaces.ValidateFileNameRequest;
 import com.luiscarlossomoza.services.IS3Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class S3ServiceImpl implements IS3Service {
     private final AmazonS3 s3client;
+    private final String FOLDER_NAME = "proposal/";
+    private final String PDF_EXTENSION = ".pdf";
+
+
 
     @Autowired
     public S3ServiceImpl(AmazonS3 s3client){
         this.s3client = s3client;
     }
 
+    public Boolean validateFileName( ValidateFileNameRequest fileNameRequest ){
+        System.out.println(fileNameRequest.getFileName());
+        String regexValidator = "^[A-Z]{1}[a-z]+[A-Z]{1}[a-z]+(\s?[A-Z]{1}[a-z]+[A-Z]{1}[a-z]+)?\s(PTG|TG|Pasantía|SC|Propuesta\sPasantía|Propuesta\sSC)$";
+        Pattern pattern = Pattern.compile(regexValidator);
+        Matcher matcher = pattern.matcher(fileNameRequest.getFileName());
+
+        if (matcher.matches()) {
+            return true;
+        }
+
+        return false;
+    }
 
     public String uploadFile(MultipartFile file) throws IOException {
         try (InputStream is = file.getInputStream()) {
-            // Crear un archivo temporal
-            File fileTemp = File.createTempFile("upload", ".tmp");
-            file.transferTo(fileTemp);
-            s3client.putObject(new PutObjectRequest("bucket-gw-storage",file.getOriginalFilename(),fileTemp));
-            return "Archivo subido correctamente";
+            //Validamos el nombre del archivo
+            System.out.println("Nombre del archivo = " + file.getOriginalFilename().replace(PDF_EXTENSION,""));
+            if(validateFileName(new ValidateFileNameRequest(file.getOriginalFilename().replace(PDF_EXTENSION,"")))){
+                File fileTemp = File.createTempFile("upload", ".tmp");
+                file.transferTo(fileTemp);
+                s3client.putObject(new PutObjectRequest("bucket-gw-storage",FOLDER_NAME + file.getOriginalFilename(),fileTemp));
+                return "Archivo subido correctamente";
+            }else{
+                return "El nombre del archivo no cuenta con el formato correcto";
+            }
+
+
         } catch (IOException e) {
             throw new IOException(e.getMessage());
         }
     }
 
-    public String downloadFile(String fileName) {
-        try{
-            String downloadsPath = System.getProperty("user.home") + "/Downloads";
-            //final AmazonS3 s3 = AmazonS3ClientBuilder.standard().withRegion(Regions.US_EAST_2).build();
-            S3Object o = s3client.getObject("bucket-gw-storage",fileName);
-            S3ObjectInputStream s3is = o.getObjectContent();
-            FileOutputStream fos = new FileOutputStream(new File(downloadsPath,fileName));
-            byte[] read_buf = new byte[1024];
-            int read_len = 0;
-            while ((read_len = s3is.read(read_buf)) > 0) {
-                fos.write(read_buf, 0, read_len);
-            }
-            s3is.close();
-            fos.close();
-            return "Archivo descargado correctamente";
-
-        }catch (AmazonServiceException e){
-            return "Error en conexión con el servicio de Amazon";
-        }catch (FileNotFoundException e){
-            return "El Archivo no existe en el bucket";
-        }catch (IOException e){
-            return "Error en la ejecución del programa";
-        }
+    public void downloadFile(String fileName) {
+        return;
     }
 
     public List<String> listFiles() throws IOException {

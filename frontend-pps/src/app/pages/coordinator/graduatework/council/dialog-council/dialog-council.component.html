@@ -1,0 +1,34 @@
+<h2 mat-dialog-title>Datos asociados a la propuesta</h2>
+<mat-dialog-content class="mat-typography">
+  <p><strong>Datos del estudiante</strong></p>
+  <mat-divider></mat-divider>
+  <p>{{'Nombre completo: ' + inputdata.userData.userLastName + ', ' + inputdata.userData.userFirstName }}</p>
+  <p>{{'Cedula de identidad: ' + inputdata.userData.userDNI }}</p>
+  <p>{{'Correo UCAB: ' +inputdata.userData.userEmailUcab}}</p>
+  <p>{{'Número de teléfono: ' + inputdata.userData.userPhone }}</p>
+
+  <p><strong>Datos del Trabajo de Grado</strong></p>
+  <mat-divider></mat-divider>
+  <p>{{'Título: ' + inputdata.graduateWorkData.graduateWorkTitle }}</p>
+  <p>{{'Tipo: ' + inputdata.graduateWorkData.graduateWorkType }}</p>
+  <p>{{'Organización donde se realizará: UCAB' }}</p>
+  <p>{{'Posible tutor academico: Medina, Luz E.'}}</p>
+
+  <p><strong>Seleccione el Consejo de Escuela</strong></p>
+  <mat-divider></mat-divider>
+  <mat-form-field style="width: 100%;">
+    <mat-label>Select Role</mat-label>
+    <mat-select [(value)]="councilSelected">
+      <mat-option *ngFor="let council of councilList" [value]="council.schoolcouncil">
+        {{council.schoolcouncil}}
+      </mat-option>
+    </mat-select>
+</mat-form-field>
+
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-button style="background-color: red;"  [mat-dialog-close]="true" cdkFocusInitial (click)="veredictoPropuesta('rechazar')">Rechazar</button>
+  <button mat-button style="background-color: green;"  [mat-dialog-close]="true" cdkFocusInitial (click)="veredictoPropuesta('aprobar')">Aprobar</button>
+</mat-dialog-actions>

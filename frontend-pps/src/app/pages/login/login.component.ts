@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from "@angular/forms";
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 import { LoginRequest } from '../../interfaces/LoginRequest'
 import { LoginService } from '../../services/login.service'
 import { UsersService } from '../../services/users.service'
+import { RegisterService } from '../../services/register.service'
 
 
 @Component({
@@ -14,6 +16,9 @@ import { UsersService } from '../../services/users.service'
 })
 export class LoginComponent implements OnInit {
 
+  dataBs: any;
+  dataService$: Subscription = new Subscription();
+
   loginForm = this.formBuilder.group({
     userDNI: ['',[Validators.required]],
     password: ['',Validators.required]
@@ -21,7 +26,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  constructor(private formBuilder: FormBuilder, private router: Router, private LoginService: LoginService, private UserService: UsersService){}
+  constructor(private formBuilder: FormBuilder, private router: Router, private LoginService: LoginService, private UserService: UsersService, private registerService: RegisterService){}
 
   get userDNI(){
     return this.loginForm.controls.userDNI;
@@ -79,5 +84,12 @@ export class LoginComponent implements OnInit {
       this.loginForm.markAllAsTouched();
       alert("Error al ingresar los datos");
     }
+  }
+
+  register(){
+
+    console.log("Registrando")
+    this.router.navigateByUrl("register");
+    
   }
 }

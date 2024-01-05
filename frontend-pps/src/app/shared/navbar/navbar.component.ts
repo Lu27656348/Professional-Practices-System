@@ -77,6 +77,7 @@ export class NavbarComponent implements OnInit{
   onSelectionChange(){
     this.loginService.setIsRoleSelected(true);
     this.dataService.setData(true);
+    this.dataService.setRole(this.roleSelected);
     this.userService.setMode(this.roleSelected);
     console.log(this.roleSelected);
   }

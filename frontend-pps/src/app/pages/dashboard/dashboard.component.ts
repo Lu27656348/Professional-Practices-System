@@ -17,30 +17,53 @@ interface Role {
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
+
   showFiller = false;
   baseUrl: string = "http://localhost:4200";
   isRoleSelected: boolean = false;
+
+  roleSelected: string = '';
 
   dataBs: any;
   dataService$: Subscription = new Subscription();
   
   constructor(private loginService: LoginService,private router: Router,private userService: UsersService,private dataService: NavbarService){
+    
     this.dataService.getData().subscribe({
       next: (data: any) => {
         this.isRoleSelected = data;
-        console.log(this.dataBs)
       },
       error: (error: any) => {
-        this.dataBs = '';
         console.log("error")
       }
-    })
-  }
 
-  ngOnInit(){
+      });
+
+      this.dataService.getRole().subscribe({
+        next: (data: any) => {
+          console.log(data);
+          this.roleSelected = data;
+        },
+        error: (error: any) => {
+          console.log("error")
+        }
+      });
+
+      if (this.roleSelected == '' ){
+        console.log("No se ha selecccionado un rol")
+      }else{
+        console.log("Se selecciono el rol ")
+      }
+
+    };
+
+    ngOnInit(){
   
+    }
 
-  }
-
-
+    navigateToGraduateWork(){
+      console.log(this.roleSelected)
+      this.router.navigateByUrl(`graduate-work/${this.roleSelected.toLowerCase()}`);
+    }
+    
 }

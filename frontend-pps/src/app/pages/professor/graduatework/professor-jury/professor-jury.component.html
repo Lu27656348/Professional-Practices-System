@@ -1,0 +1,72 @@
+<app-navbar></app-navbar>
+    <mat-drawer-container class="navbar-height" style="height: 80%;">
+        <mat-drawer mode="side" opened style="width: 300px;">
+            <mat-list role="list">
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/professorReviewer">Revisor</button></mat-list-item>
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/tutor">Tutor</button></mat-list-item>
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/jury">Jurado</button></mat-list-item>    
+            </mat-list>
+        </mat-drawer>
+        <mat-drawer-content style="display: flex; flex-direction: column;">
+          <div class="demo-button-container">
+            <button mat-raised-button class="demo-button">
+              Agregar una propuesta
+            </button>
+          </div>
+        
+            <table mat-table [dataSource]="reviewerData" class="mat-elevation-z8">
+    
+                <!--- Note that these columns can be defined in any order.
+                      The actual rendered columns are set as a property on the row definition" -->
+              
+                <!-- Position Column -->
+                <ng-container matColumnDef="graduateWorkId">
+                  <th mat-header-cell *matHeaderCellDef> TG-ID </th>
+                  <td mat-cell *matCellDef="let element"> {{element.graduateWorkId}} </td>
+                </ng-container>
+              
+                <!-- Name Column -->
+                <ng-container matColumnDef="graduateWorkTitle">
+                  <th mat-header-cell *matHeaderCellDef> Title </th>
+                  <td mat-cell *matCellDef="let element"> {{element.graduateWorkTitle}} </td>
+                </ng-container>
+              
+                <!-- Weight Column -->
+                <ng-container matColumnDef="studentDNI">
+                  <th mat-header-cell *matHeaderCellDef> Author/Authors </th>
+                  <td mat-cell *matCellDef="let element"> {{element.studentDNI}} </td>
+                </ng-container>
+              
+                <!-- Symbol Column -->
+                <ng-container matColumnDef="symbol">
+                  <th mat-header-cell *matHeaderCellDef> Actions </th>
+                  <td mat-cell *matCellDef="let element">
+                    <button mat-raised-button style="background-color: #e6b51d;">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-raised-button color="warn">
+                      <mat-icon >delete_sweep</mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+    
+                <ng-container matColumnDef="check">
+                  <th mat-header-cell *matHeaderCellDef> Check </th>
+                  <td mat-cell *matCellDef="let element">
+                    <button mat-raised-button color="primary" (click)="openDialog(element)">
+                      <mat-icon> keyboard_arrow_right</mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+              
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+              </table>
+    
+    
+              
+           
+    
+        </mat-drawer-content>
+    </mat-drawer-container>
+<app-footer></app-footer>

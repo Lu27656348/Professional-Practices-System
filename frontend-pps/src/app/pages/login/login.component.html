@@ -1,9 +1,9 @@
-<div >
+<div style="display: flex; width: 100%; height: 100%; align-items: center; justify-content: center;">
     <form [formGroup]="loginForm" class="container">
-        <h1>Sistema de Prácticas Profesionales</h1>
+        <h1><strong>Sistema de Prácticas Profesionales</strong></h1>
         <img src="../../../assets/Logo_UCAB_2.webp" alt="Logo Ucab">
         <mat-form-field class="full-width input-margin">
-            <mat-label>Ingrese su correo:</mat-label>
+            <mat-label>Ingrese su cédula:</mat-label>
             <input formControlName = "userDNI" matInput placeholder="V-27656348" value = "">
         </mat-form-field>
         <mat-form-field class="full-width input-margin">
@@ -11,5 +11,6 @@
             <input formControlName = "password" matInput placeholder="12345678" value = "">
         </mat-form-field>
         <button mat-raised-button color = "primary" class="full-width" (click)="login()" type="submit">Ingresar al sistema</button>
+        <button mat-stroked-button color = "primary" class="full-width margin-15" (click)="register()" type="submit">Registrese aqui</button>
     </form>
 </div>

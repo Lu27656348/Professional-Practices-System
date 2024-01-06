@@ -1,15 +1,40 @@
 import { Component, OnInit } from '@angular/core';
 import { NavbarService } from '../../../services/navbar.service';
 import { Router } from '@angular/router';
-import { Subscription,forkJoin,of  } from 'rxjs';
+import { Subscription,forkJoin,of,switchMap  } from 'rxjs';
 
 import { StudentService } from '../../../services/student.service';
 import { UsersService } from '../../../services/users.service';
 import { ProfessorsService } from '../../../services/professors.service';
 import { EnterpriseService } from '../../../services/enterprise.service';
 import { ExternalPersonnelService } from '../../../services/external-personnel.service'
+import { GraduateworkService } from '../../../services/graduatework.service'
 
 import {FormBuilder, Validators, FormsModule, ReactiveFormsModule,FormGroup } from '@angular/forms';
+
+import { ResponseBlob } from '../../../interfaces/ResponseBlob'
+import { GraduateWorkTable } from '../../../interfaces/GraduateWorkTable'
+
+async function downloadFile(fileName: string) {
+  try {
+    const response = await fetch('http://localhost:8082/download/graduatework', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ fileName: fileName })
+    } as RequestInit);
+
+    const blob = await (response as ResponseBlob<Blob>).blob(); // Type assertion for blobBody
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName; // Set desired filename
+    link.click();
+  } catch (error) {
+    console.error('Error downloading file:', error);
+  }
+}
 
 @Component({
   selector: 'app-student-gw',
@@ -27,8 +52,16 @@ export class StudentGWComponent {
 
   professorList: any[] = [];
   inTutorList: any[] = [];
-  graduateWorkList: any[] = [];
+  graduateWorkList: any = {};
   coordinatorData: any = {};
+  tableData: GraduateWorkTable[] = []
+
+  graduateWorkFileList: any = [];
+  graduateWorkReviewsFileList: any = [];
+  graduateWorkFinalFileList: any = [];
+
+  hasGraduateWorkFile: boolean = false;
+  hasGraduateWorkReviewFile: boolean = false;
 
   dataBs: any;
   dataService$: Subscription = new Subscription();
@@ -39,7 +72,11 @@ export class StudentGWComponent {
   localUser: any;
   user: any = {};
 
-  daysRemaining: number = 120
+  daysRemaining: number = 150
+  currentGraduateWork: any = {};
+  isFinalSubmittion: boolean = false;
+  hasFinalSubmitted: boolean = false;
+  
 
   firstFormGroup = this._formBuilder.group({
     firstCtrl: ['', Validators.required],
@@ -57,18 +94,9 @@ export class StudentGWComponent {
 
   enterprisesData: any = [];
 
-  constructor(private router: Router,private dataService: NavbarService, private studentService: StudentService,private userService: UsersService, private _formBuilder: FormBuilder, private professorService: ProfessorsService, private formBuilder: FormBuilder, private enterpriseService: EnterpriseService, private externalPersonnelService: ExternalPersonnelService){
-    console.log("daacacasas")
+  constructor(private router: Router,private dataService: NavbarService, private studentService: StudentService,private userService: UsersService, private _formBuilder: FormBuilder, private professorService: ProfessorsService, private formBuilder: FormBuilder, private enterpriseService: EnterpriseService, private externalPersonnelService: ExternalPersonnelService, private graduateworkService: GraduateworkService){
 
-    this.dataService.getData().subscribe({
-      next: (data: any) => {
-        console.log(data)
-      },
-      error: (error: any) => {
-        console.log("error")
-      }
-    });
-
+    /* Obtenemos los datos de todas empresas */
     this.enterpriseService.getEnterprises().subscribe({
       next: (data: any) => {
         console.log(data)
@@ -79,6 +107,7 @@ export class StudentGWComponent {
       }
     })
 
+    /* Obtenemos los datos de todos los foraneos */
     this.externalPersonnelService.getInTutors().subscribe({
       next: (data: any) => {
         console.log(data)
@@ -89,59 +118,187 @@ export class StudentGWComponent {
       }
     })
 
+    /* Extraemos del LocalStorage el usuario y los roles de usuario */
     const userString = localStorage.getItem('user');
     const rolesString = localStorage.getItem('roles');
 
     if(userString && rolesString){
+
+      /* En el caso de que tengamos una cuenta iniciada, primero extraemos los datos del
+         usuario para poder realizar las operaciones */
+
       console.log("LOCAL STORAGE")
       this.localUser = JSON.parse(userString);
-      this.userService.getUserData(this.localUser.userDNI).subscribe({
-        next: (userData) => {
-          console.log("userData")
-          console.log(userData)
-          this.user = {...userData}
-          this.studentService.getStudentGraduateWork(this.user.userDNI).subscribe({
-            next: (data: any) => {
-              console.log(data)
-              this.graduateWorkList = [...data]
-              this.studentService.isProcessActive(this.user.userDNI).subscribe({
-                next: (data) => {
-                  this.hasGraduateWork = data;
-                  console.log(data)
-                  if(this.hasGraduateWork){
-                    console.log("Se detecto un proceso activo")
-    
-                    
-                  }else{
-                    console.log("NO Se detecto un proceso activo")
-                  }
-                  
-                },
-                error: (error) => [
-                  console.log(error)
-                ]
-              })
-            },
-            error: (error: any) => {
-              console.log("error")
+
+      this.userService.getUserData(this.localUser.userDNI).pipe(
+
+        /* Una vez que obtenemos el usuario debemos validar, si este tiene alguna tesis activa */
+        switchMap( ( userData ) => {
+          console.log(userData);
+          this.user = userData
+          return this.studentService.isProcessActive(this.user.userDNI)
+        }),
+        switchMap( ( hasGraduateWork ) => {
+
+          /* Si tiene un trabajo de grado procedemos a buscar los datos de este trabajo de grado
+             de lo contrario, si no tiene un trabajo de grado activo se finaliza la extraccion de datos */
+          this.hasGraduateWork = hasGraduateWork
+          if(this.hasGraduateWork){
+            return this.graduateworkService.getCurrentGraduateWork(this.user.userDNI)
+          }else{
+            return of(null)
+          }
+
+        }),
+      
+        switchMap( ( graduateWorkData ) => {
+
+          if(graduateWorkData === null ){
+            return of(null)
+          }
+
+          console.log(graduateWorkData)
+          this.currentGraduateWork = graduateWorkData;
+          return this.graduateworkService.getGraduateWorkFileNames()
+
+        }),
+        switchMap( ( propolsalFileNames ) => {
+          if(propolsalFileNames === null ){
+            return of(null)
+          }
+          console.log( propolsalFileNames )
+          this.graduateWorkFileList = propolsalFileNames;
+          console.log(`graduatework/${this.user.userLastName.split(' ')[0]}${this.user.userFirstName.split(' ')[0]} TG.pdf`)
+          this.graduateWorkFileList.forEach( (element: any)=> {
+            console.log(element)
+            if( element === `graduatework/${this.user.userLastName.split(' ')[0]}${this.user.userFirstName.split(' ')[0]} TG.pdf` ){
+              this.hasGraduateWorkFile = true
+              console.log(this.hasGraduateWorkFile);
+            }
+          });
+          return this.graduateworkService.getGraduateWorReviewsFileNames()
+        }),
+
+        switchMap( ( graduateWorkReviewsData ) => {
+          if(graduateWorkReviewsData === null ){
+            return of(null)
+          }
+          this.graduateWorkReviewsFileList = graduateWorkReviewsData
+          console.log(this.graduateWorkReviewsFileList);
+          this.graduateWorkReviewsFileList.forEach( ( element: any ) => {
+            if( element === `graduatework/reviews/${this.user.userLastName.split(' ')[0]}${this.user.userFirstName.split(' ')[0]} TG Rev.pdf` ){
+              this.hasGraduateWorkReviewFile = true
+              console.log(this.hasGraduateWorkReviewFile);
+            }
+          })
+          return this.graduateworkService.getCurrentGraduateWork(this.user.userDNI)
+        }),
+        switchMap( ( graduateWorkListData ) => {
+          if(graduateWorkListData === null ){
+            return of(null)
+          }
+          console.log(graduateWorkListData)
+          this.graduateWorkList = graduateWorkListData
+          console.log(this.graduateWorkList)
+          return of(this.hasGraduateWorkReviewFile)
+        }),
+        switchMap( ( hasGraduateWorkReviewFile ) => {
+          if(hasGraduateWorkReviewFile === null ){
+            return of(null)
+          }
+          return this.studentService.getStudentCoordinator(this.user.userDNI)
+          
+        }),
+        switchMap( ( coordinatorData ) => {
+          if(coordinatorData === null ){
+            return of(null)
+          }
+          return this.userService.getUserData(coordinatorData.professordni)
+          
+          
+          
+        }),
+        switchMap( ( coordinatorData ) => {
+          if(coordinatorData === null ){
+            return of(null)
+          }
+          this.coordinatorData = coordinatorData;
+          return this.graduateworkService.getGraduateWorReviewsFileNames()
+          
+        }),
+        switchMap( ( graduateWorkReviewsData ) => {
+          if(graduateWorkReviewsData === null ){
+            return of(null)
+          }
+          this.graduateWorkReviewsFileList = graduateWorkReviewsData
+          console.log(this.graduateWorkReviewsFileList);
+          this.graduateWorkReviewsFileList.forEach( ( element: any ) => {
+            if( element === `graduatework/reviews/${this.user.userLastName.split(' ')[0]}${this.user.userFirstName.split(' ')[0]} TG Rev${this.coordinatorData.userFirstName.charAt(0)}${this.coordinatorData.userLastName.charAt(0)}.pdf` ){
+              this.hasGraduateWorkReviewFile = true
+              console.log(this.hasGraduateWorkReviewFile);
+            }
+          })
+          return this.graduateworkService.getCurrentGraduateWork(this.user.userDNI)
+        }),
+        switchMap( ( graduateWorkData ) => {
+
+          if( graduateWorkData === null ){
+            return of(null)
+          }
+
+          return this.graduateworkService.listFinalFiles() 
+
+        }),
+        switchMap( ( finalFiles ) => {
+
+          if( finalFiles === null ){
+            return of(null)
+          }
+          this.graduateWorkFinalFileList = finalFiles;
+          console.log( this.graduateWorkFinalFileList );
+
+          this.graduateWorkFinalFileList.forEach( ( element: any ) => {
+            if( element === `graduatework/final/${this.user.userLastName.split(' ')[0]}${this.user.userFirstName.split(' ')[0]} TG.pdf` ){
+              this.hasFinalSubmitted = true
+              console.log(this.hasFinalSubmitted);
             }
           })
 
-        },
-        error: (errorData) => {
-          console.log("errorData")
-          console.log(errorData)
+
+          return of(finalFiles)
+
+        }),
+        switchMap( ( graduateWorkData ) => {
+
+          if( graduateWorkData === null ){
+            return of(null)
+          }
+
+          console.log( graduateWorkData )
+          return this.graduateworkService.getRemainingDays(this.currentGraduateWork.graduateworkid) 
+
+        }),
+
+
+        
+      ).subscribe({
+        next: (data: any) => {
+          console.log(data)
+          this.daysRemaining = data;
+          if(this.daysRemaining <= 0){
+            this.isFinalSubmittion = true
+          }
         },
         complete: () => {
-          console.log("login completo")
-  
+          console.log("El constructor ha finalizado")
         }
       })
-      console.log(this.localUser.userDNI);
+
+      /****************************************************************************************************/ 
+      
     }else{
       this.router.navigateByUrl("");
     }
-  
   }
 
   register(){
@@ -161,8 +318,6 @@ export class StudentGWComponent {
       }
     })
 
-
-    //this.studentService.isProcessActive()
   }
 
   onSelectionChange(){
@@ -176,68 +331,115 @@ export class StudentGWComponent {
       this.currentFile = file;
       this.fileName = this.currentFile.name;
     }
-
-    // ...
   }
 
-  upload(){
-    this.studentService.upload(this.currentFile as File).subscribe({
+  createGraduteWorkProposal(){
+
+    this.studentService.getStudentCoordinator(this.user.userDNI).subscribe({
       next: (data) => {
+        console.log(data);
+        this.coordinatorData = {...data}
+      },
+      complete: () => {
+        
+  
+      this.studentService.upload(this.currentFile as File, this.user.userDNI as string)
+      .pipe(
+      switchMap(() => {
+        console.log("SE CARGO EL ARCHIVO COMENZANDO CREACION DE PROPUESTA");
+        return this.studentService.createProposal({
+          "studentDNI": this.user.userDNI,
+          "graduateWorkType": this.selectedValue,
+          "graduateWorkTitle": this.secondFormGroup.value.proposalTitle,
+          "graduateWorkCoordinator": this.coordinatorData.professordni,
+          "graduateWorkAcademicTutor": this.academicTutor,
+          "graduateWorkEnterprise": this.selectedEnterpriseValue,
+          "graduateWorkInCompanyTutor": (this.selectedValue === 'Experimental') ? null : this.selectedInCompanyTutor
+        });
+      })
+    )
+    .subscribe({
+      next: (data) => {
+        console.log(data);
+      },
+      complete: () => {
+        window.location.href = window.location.href;
+      },
+      error: (errorMessage) => {
+        console.log("ERROR EN NOMBRE DE ARCHIVO");
+        console.log(errorMessage);
+      }
+    });
+  
+    
+        this.studentService.upload(this.currentFile as File,this.user.userDNI as string).subscribe({
+          next: (data) => {
+            console.log("SE CARGO EL ARCHIVO COMENZANDO CREACION DE PROPUESTA")
+            this.studentService.createProposal({
+              "studentDNI": this.user.userDNI,
+              "graduateWorkType": this.selectedValue,
+              "graduateWorkTitle": this.secondFormGroup.value.proposalTitle,
+              "graduateWorkCoordinator": this.coordinatorData.professordni,
+              "graduateWorkAcademicTutor": this.academicTutor,
+              "graduateWorkEnterprise": this.selectedEnterpriseValue,
+              "graduateWorkInCompanyTutor": (this.selectedValue === 'Experimental') ? null : this.selectedInCompanyTutor
+            }).subscribe({
+              next: (data) => {
+                console.log(data)
+              },
+              complete: () => {
+                window.location.href = window.location.href;
+              }
+            })
+          },
+          error: (errorMessage) => {
+            console.log("ERROR EN NOMBRE DE ARCHIVO")
+            console.log(errorMessage)
+          }
+        })
+  
+    
+        }  })
+  }
+
+  uploadGraduateWorkFile(){
+    this.studentService.uploadGraduateWorkFile(this.currentFile as File,this.user.userDNI as string).subscribe({
+      next: (data: any) => {
         console.log(data)
       },
-      error: (error) => {
-        console.log(error)
+      complete: () => {
+        window.location.href = window.location.href;
       }
     })
   }
-  
-  createGraduteWorkProposal(){
 
-  this.studentService.getStudentCoordinator(this.user.userDNI).subscribe({
-    next: (data) => {
-      console.log(data);
-      this.coordinatorData = {...data}
-    },
-    complete: () => {
-      forkJoin([this.studentService.createProposal({
-        "studentDNI": this.user.userDNI,
-        "graduateWorkType": this.selectedValue,
-        "graduateWorkTitle": this.secondFormGroup.value.proposalTitle,
-        "graduateWorkCoordinator": this.coordinatorData.professordni,
-        "graduateWorkAcademicTutor": this.academicTutor,
-        "graduateWorkEnterprise": this.selectedEnterpriseValue,
-        "graduateWorkInCompanyTutor": (this.selectedValue === 'Experimental') ? null : this.selectedInCompanyTutor
-      }),
-      of(this.upload())
-      ]).subscribe({
-        next: ([proposalData, uploadData]) => {
-          // Ambas funciones se han completado, accede a los resultados
-          console.log('Propuesta creada:', proposalData);
-          console.log('Subida realizada:', uploadData);
-        },
-        error: (error) => {
-          // Maneja errores aquí
-          console.error('Error:', error);
-        },
-        complete: () => {
-          console.log("Termino")
-          window.location.href = window.location.href;
-        }
-      })
+  downloadGraduateWorkFile(){
+    if(this.hasGraduateWorkFile){
+      const fileName: string = this.user.userLastName.split(' ')+this.user.userFirstName.split(' ')+' TG.pdf';
+      console.log(fileName);
+      downloadFile(fileName);
     }
-  })
-    console.log({
-      "studentDNI": this.user.userDNI,
-      "graduateWorkType": this.selectedValue,
-      "graduateWorkTitle": this.secondFormGroup.value.proposalTitle,
-      "graduateWorkCoordinator": this.coordinatorData.professordni,
-      "graduateWorkAcademicTutor": this.academicTutor,
-      "graduateWorkEnterprise": this.selectedEnterpriseValue,
-      "graduateWorkInCompanyTutor": (this.selectedValue === 'Experimental') ? null : this.selectedInCompanyTutor
-    });
-
-  
-
   }
 
-}
+  fileHandler(event : any){
+    console.log("fileHandler()")
+    console.log(event.target.files)
+    console.log(event.target.files[0])
+    this.currentFile = event.target.files[0]
+  }
+
+  uploadFinalDocument(){
+    console.log("Entrega final")
+    this.graduateworkService.uploadFinalSubmittion(this.currentFile as File).subscribe({
+      next: (data: any) => {
+        console.log(data)
+      },
+      complete: () => {
+        window.location.href = window.location.href;
+      }
+    })
+  }
+
+}/* FIN DE COMPONENTE */
+
+

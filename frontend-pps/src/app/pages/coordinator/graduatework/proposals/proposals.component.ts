@@ -98,7 +98,7 @@ export class ProposalsComponent implements OnInit{
     let studentData;
     let graduateWorkData;
 
-    forkJoin([ this.userService.getUserData(data.studentDNI),this.studentService.getStudentGraduateWork(data.studentDNI), this.graduateworkService.getGraduateWorkById(data.graduateWorkId)])
+    forkJoin([ this.userService.getUserData(data.studentDNI),this.graduateworkService.getCurrentGraduateWork(data.studentDNI), this.graduateworkService.getGraduateWorkById(data.graduateWorkId)])
     .subscribe(([result1,result2,result3]) => {
       console.log(result1)
       console.log(result2)
@@ -167,5 +167,11 @@ export class ProposalsComponent implements OnInit{
     this.router.navigateByUrl("/dashboard");
   }
 
+  editProposal(data: any){
+    console.log(data);
+  }
 
+  deleteProposal(data: any){
+    console.log(data);
+  }
 }

@@ -1,8 +1,14 @@
 import { Component, OnInit,Inject } from '@angular/core';
 import { forkJoin, of } from 'rxjs';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { GraduateworkService } from '../../../../../../services/graduatework.service'
-import { StudentService } from '../../../../../../services/student.service'
+
+import { GraduateworkService } from '../../../../../../services/graduatework.service';
+import { StudentService } from '../../../../../../services/student.service';
+import { UsersService } from '../../../../../../services//users.service';
+import { EnterpriseService } from '../../../../../../services/enterprise.service'
+
+import { PlanillaPropuestaTEG } from '../../../../../../form-generator/classes/planillaPropuestaTEG'
+
 // Interface for the request body
 interface ValidateFileNameRequest {
   fileName: string;
@@ -40,26 +46,38 @@ async function downloadFile(fileName: string) {
   styleUrls: ['./validation.component.css']
 })
 export class ValidationComponent implements OnInit{
+
   inputdata: any;
   proposalFileList: any = [];
   coordinatorData: any = {};
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private graduateWorkService: GraduateworkService, private studentService: StudentService){
+  enterpriseData: any = {};
+
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private graduateWorkService: GraduateworkService, private studentService: StudentService,private userService: UsersService, private enterpriseService: EnterpriseService){
     
   }
   ngOnInit(){
     this.inputdata = this.data
     console.log( this.inputdata)
+
     this.studentService.getStudentCoordinator(this.inputdata.user.userDNI).subscribe({
       next: (data) => {
         console.log(data);
+        this.userService.getUserData(data.professordni).subscribe({
+          next: (data) => {
+            console.log(data);
+            this.coordinatorData = data;
+          }
+        })
       }
     })
-    this.graduateWorkService.listProposalFiles().subscribe({
+
+    this.enterpriseService.getEnterpriseById(this.inputdata.graduatework.graduateWorkEnterprise).subscribe({
       next: (data) => {
         console.log(data);
-
+        this.enterpriseData = data;
       }
     })
+    
   }
 
   obtenerPlanillaSolicitud(){
@@ -67,7 +85,7 @@ export class ValidationComponent implements OnInit{
   }
 
   obtenerInformePropuesta(){
-    const fileName: string = this.inputdata.user.userLastName.split(' ')+this.inputdata.user.userFirstName.split(' ')+' PTG.pdf';
+    const fileName: string = this.inputdata.user.userLastName.split(' ')[0]+this.inputdata.user.userFirstName.split(' ')[0]+' PTG.pdf';
     console.log(fileName);
     downloadFile(fileName);
   }
@@ -75,7 +93,7 @@ export class ValidationComponent implements OnInit{
   veredictoPropuesta(decision: string){
     console.log("veredictoPropuesta() -> " + decision)
     if(decision === 'aprobar'){
-      this.graduateWorkService.changeStatus(this.inputdata.proposal[0].graduateworkid,20).subscribe({
+      this.graduateWorkService.changeStatus(this.inputdata.proposal.graduateworkid,20).subscribe({
         next: (data) => {
           console.log(data)
         },
@@ -86,6 +104,20 @@ export class ValidationComponent implements OnInit{
           window.location.href = window.location.href;
         }
       })
+    }else if (decision === 'rechazar'){
+      this.graduateWorkService.changeStatus(this.inputdata.proposal.graduateworkid,400).subscribe({
+        next: (data) => {
+          console.log(data)
+        },
+        error: (error) => {
+          console.log(error)
+        },
+        complete: () => {
+          window.location.href = window.location.href;
+        }
+      })
+    }else{
+      console.log("Iniciar Funcion de Reenvio de Trabajo de Grado ()")
     }
   }
 } 

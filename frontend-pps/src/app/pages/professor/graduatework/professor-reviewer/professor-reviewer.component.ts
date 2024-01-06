@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog'
 import { DialogsComponent } from './dialogs/dialogs.component'
 
+
 @Component({
   selector: 'app-professor-reviewer',
   templateUrl: './professor-reviewer.component.html',

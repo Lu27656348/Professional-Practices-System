@@ -45,7 +45,8 @@ import { ProfessorTutorComponent } from './pages/professor/graduatework/professo
 import { ProfessorJuryComponent } from './pages/professor/graduatework/professor-jury/professor-jury.component';
 import { DialogsComponent } from './pages/professor/graduatework/professor-reviewer/dialogs/dialogs.component';
 import { CouncilComponent } from './pages/coordinator/graduatework/council/council.component';
-import { DialogCouncilComponent } from './pages/coordinator/graduatework/council/dialog-council/dialog-council.component'; 
+import { DialogCouncilComponent } from './pages/coordinator/graduatework/council/dialog-council/dialog-council.component';
+import { DialogTutorComponent } from './pages/professor/graduatework/professor-tutor/dialog-tutor/dialog-tutor.component'; 
 
 
 @NgModule({
@@ -71,7 +72,8 @@ import { DialogCouncilComponent } from './pages/coordinator/graduatework/council
     ProfessorJuryComponent,
     DialogsComponent,
     CouncilComponent,
-    DialogCouncilComponent
+    DialogCouncilComponent,
+    DialogTutorComponent
   ],
   imports: [
     BrowserModule,

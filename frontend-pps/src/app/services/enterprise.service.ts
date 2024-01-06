@@ -15,4 +15,10 @@ export class EnterpriseService {
     return this.http.get(`http://localhost:8081/enterprises`,{headers});
   }
 
+  getEnterpriseById(id: number):Observable<any>{
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`http://localhost:8081/enterprises/${id}`,{headers});
+  }
+
 }

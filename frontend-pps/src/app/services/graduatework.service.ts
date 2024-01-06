@@ -21,6 +21,12 @@ export class GraduateworkService {
     return this.http.get(`http://localhost:8081/graduate-work/data/${graduateWorkId}`,{headers});
   }
 
+  getCurrentGraduateWork( studentDNI: string ) : Observable<any> {
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`http://localhost:8081/graduate-work/proposal/student/${studentDNI}`,{headers});
+  }
+
   getReviewers():Observable<any>{
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
@@ -31,6 +37,12 @@ export class GraduateworkService {
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
     return this.http.get(`http://localhost:8081/graduate-work/proposals/reviewers/pending`,{headers});
+  }
+
+  getJuryPending() : Observable<any> {
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`http://localhost:8081/graduate-work/jury/pending`,{headers});
   }
 
   changeStatus(graduateWorkId: string, statusCode: number):Observable<any>{
@@ -73,6 +85,22 @@ export class GraduateworkService {
     return this.http.post(`http://localhost:8082/upload`,file,{headers});
   }
 
+  uploadRevision(file: any) : Observable<any> {
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post(`http://localhost:8082/upload/graduatework/revision`,formData,{headers});
+  }
+
+  uploadFinalSubmittion ( file : any) : Observable<any> {
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post(`http://localhost:8082/upload/graduatework/final`,formData,{headers});
+  }
+
   downloadProposalFile(fileName: string):Observable<any>{
 
     const body = {
@@ -82,9 +110,64 @@ export class GraduateworkService {
     headers.append('Access-Control-Allow-Origin', '*');
     return this.http.post(`http://localhost:8082/download`,body,{headers});
   }
+
   listProposalFiles():Observable<any>{
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
     return this.http.get(`http://localhost:8082/list`,{headers});
+  }
+
+  listFinalFiles() : Observable<any> {
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`http://localhost:8082/graduatework/final/files`,{headers});
+  }
+
+  getGraduateWorkFileNames() : Observable<any> {
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`http://localhost:8082/graduatework/files`,{headers});
+  }
+
+  getGraduateWorProposalsFileNames() : Observable<any> {
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`http://localhost:8082/graduatework/proposals/files`,{headers});
+  }
+
+  getGraduateWorReviewsFileNames() : Observable<any> {
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`http://localhost:8082/graduatework/reviews/files`,{headers});
+  }
+
+  downloadGraduateWorkFile( fileName: string ) : Observable<any> {
+    const body = {
+      "fileName": fileName
+    }
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.post(`http://localhost:8082/download/graduatework`,body,{headers});
+  }
+
+  getAcademicTutorGraduateWork( professorDNI: string ) : Observable<any> {
+    const body = {
+      "professorDNI": professorDNI
+    }
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.post(`http://localhost:8081/graduate-work/professor/tutor/graduatework`,body,{headers});
+  }
+
+  getGraduateWorkStudents( graduateWorkId: string ) : Observable<any>{
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`http://localhost:8081/graduate-work/students/${graduateWorkId}`,{headers});
+  }
+
+  getRemainingDays( graduateWorkId: string ) : Observable<any>{
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`http://localhost:8081/graduate-work/remaining/days/${graduateWorkId}`,{headers});
   }
 }

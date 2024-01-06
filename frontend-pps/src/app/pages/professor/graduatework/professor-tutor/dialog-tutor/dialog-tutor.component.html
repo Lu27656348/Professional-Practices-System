@@ -1,0 +1,32 @@
+<h2 mat-dialog-title>Datos asociados a la propuesta</h2>
+<mat-dialog-content class="mat-typography">
+  <p><strong>Datos del estudiante</strong></p>
+  <mat-divider></mat-divider>
+  <p>{{'Nombre completo: ' }}</p>
+  <p>{{'Cedula de identidad: ' }}</p>
+  <p>{{'Correo UCAB: ' }}</p>
+  <p>{{'Número de teléfono: ' }}</p>
+
+  <p><strong>Datos del Trabajo de Grado</strong></p>
+  <mat-divider></mat-divider>
+  <p>{{'Título: ' }}</p>
+  <p>{{'Tipo: ' }}</p>
+  <p>{{'Organización donde se realizará: ' }}</p>
+  <p>{{'Posible tutor academico: ' }}</p>
+
+  <h3><strong>Informe de Trabajo de Grado</strong></h3>
+  <mat-divider></mat-divider>
+  <p>Para descargar el Informe de Trabajo de Grado haga, click en descargar:</p>
+  <button mat-button (click)="obtenerInformeTrabajoDeGrado()">Descargar</button>
+  <p></p>
+  
+  <h3><strong>Cargue sus correciones</strong></h3>
+  <input type="file" (change) = "fileHandler($event)"/> 
+  <mat-divider></mat-divider>
+  <p></p>
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-button style="background-color: rgb(245, 171, 21)" [mat-dialog-close]="true" cdkFocusInitial (click)="uploadRevision()">Reenviar</button>
+</mat-dialog-actions>

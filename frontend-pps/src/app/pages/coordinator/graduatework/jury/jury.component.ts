@@ -82,21 +82,7 @@ export class JuryComponent {
       console.log(result1)
       console.log(result2)
       console.log(result3)
-      /*
-      const dialogRef = this.dialog.open(ValidationComponent,{
-        width: '60%',
-        data: {
-          user: result1,
-          proposal: result2,
-          graduatework: result3
-        }
-      })
-      */
-      /*
-      dialogRef.afterClosed().subscribe(result => {
-        console.log(`Dialog result: ${result}`);
-      });
-      */
+
       });
   
     this.userService.getUserData(data.studentDNI).subscribe({

@@ -108,11 +108,12 @@
           </mat-stepper>
           
     </div>
-    <div *ngIf="hasGraduateWork && graduateWorkList[0].graduateworkestatuscode == '10'" style="background-color: antiquewhite; height: 81%; display: flex; align-items: center; justify-content: center;">
+    <div *ngIf="hasGraduateWork && graduateWorkList?.graduateWorkEstatusCode != 50 && isFinalSubmittion == false" style="background-color: antiquewhite; height: 81%; display: flex; align-items: center; justify-content: center;">
       <h1>Tiene un trabajo de grado pendiente por revision</h1>
     </div>
 
-    <div *ngIf="hasGraduateWork && graduateWorkList[0].graduateworkestatuscode == '50'" style="height: 81%; display: flex; flex-direction: column;">
+    <div *ngIf="hasGraduateWork && graduateWorkList?.graduateWorkEstatusCode == 50 && isFinalSubmittion == false " style="height: 81%; display: flex; flex-direction: column;">
+      
       <mat-card class="example-card">
         <mat-card-content>
           <h2 style="display: flex; justify-content: center;">Tiempo restante para entrega</h2>
@@ -125,26 +126,41 @@
                 [value]="150 - daysRemaining">
             </mat-progress-bar>
           </section>
+
         </mat-card-content>
       </mat-card>
+
       <!-- ********************************************************************************************* -->
       <div style="background-color: aliceblue; height: 100%; display: flex; align-items: center; justify-content: center; gap: 20vw;">
+        
         <mat-card style="width: 30vw;">
+
           <mat-card-header>
             <mat-card-title>Informe de Trabajo de Grado</mat-card-title>
             <mat-card-subtitle>Última Actualización: </mat-card-subtitle>
           </mat-card-header>
+
           <mat-card-content>
-        
-            <section class="example-section">
-              <h2>Hola</h2>
+            <section style="background-color: aliceblue;">
+              <input type="file" (change) = "fileHandler($event)"/> 
+              <p> {{ hasGraduateWorkFile ? 'Ya ha cargado un informe' : 'No ha cargado ningun informe' }}</p>
+              <div style="background-color: blue; background-image: url('../../../../assets/Goldo.PNG'); width: 100%; min-height: 180px; background-size: contain;" alt="" *ngIf="hasGraduateWorkFile">
+                
+              </div>
+              
             </section>
           </mat-card-content>
+
           <mat-card-actions style="display: flex; justify-content: flex-end; gap: 10px;">
-            <button mat-raised-button>Descargar Archivo</button>
-            <button mat-raised-button>Subir Archivo</button>
+            <button mat-raised-button (click)="downloadGraduateWorkFile()">Descargar Archivo</button>
+            <button mat-raised-button (click)="uploadGraduateWorkFile()">Subir Archivo</button>
           </mat-card-actions>
+
         </mat-card>
+
+
+
+
         <mat-card style="width: 30vw;">
           <mat-card-header>
             <mat-card-title>Correciones de Tutor</mat-card-title>
@@ -153,7 +169,10 @@
           <mat-card-content>
         
             <section class="example-section">
-              <h2>Hola</h2>
+              <p> {{ hasGraduateWorkReviewFile ? 'El tutor ha cargado una revision' : 'El tutor no ha cargado ninguna revision' }}</p>
+              <div style="background-color: blue; background-image: url('../../../../assets/Goldo.PNG'); width: 100%; min-height: 180px; background-size: contain;" alt="" *ngIf="hasGraduateWorkReviewFile">
+                
+              </div>
             </section>
           </mat-card-content>
           <mat-card-actions style="display: flex; justify-content: flex-end;">
@@ -162,4 +181,14 @@
         </mat-card>
       </div>
     </div>
+    <div *ngIf="isFinalSubmittion && !hasFinalSubmitted" style="display: flex; align-items: center; justify-content: center; flex-direction: column; height: 82%;">
+      <h1>Hora de entregar</h1>
+      <input type="file" (change) = "fileHandler($event)"/>
+      <button mat-raised-button color = "primary" (click)="uploadFinalDocument()" style="margin-top: 15px;">Entregar</button>
+    </div>
+
+    <div *ngIf="hasFinalSubmitted" style="display: flex; align-items: center; justify-content: center; flex-direction: column; height: 82%;">
+      <h1>Pendiente por Asignacion de Jurado</h1>
+    </div>
+
 <app-footer></app-footer>

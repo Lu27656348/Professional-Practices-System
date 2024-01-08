@@ -187,8 +187,19 @@
       <button mat-raised-button color = "primary" (click)="uploadFinalDocument()" style="margin-top: 15px;">Entregar</button>
     </div>
 
-    <div *ngIf="hasFinalSubmitted" style="display: flex; align-items: center; justify-content: center; flex-direction: column; height: 82%;">
+    <div *ngIf="hasFinalSubmitted && !hasCulminated && termination == false" style="display: flex; align-items: center; justify-content: center; flex-direction: column; height: 82%;">
       <h1>Pendiente por Asignacion de Jurado</h1>
+    </div>
+
+    <div *ngIf="hasFinalSubmitted && hasCulminated && termination == false" style="display: flex; align-items: center; justify-content: center; flex-direction: column; height: 82%;">
+      <h1>Cargue el resumen para terminar</h1>
+      <input type="file" (change) = "fileHandler($event)"/>
+      <button mat-raised-button color = "primary" (click)="uploadCulmination()" style="margin-top: 15px;">Entregar</button>
+    </div>
+
+    <div *ngIf="termination" style="display: flex; align-items: center; justify-content: center; flex-direction: column; height: 82%;">
+      <h1>Usted ha culminado su proceso de trabajo de grado</h1>
+      <h2>Aqui termina tu viaje Ing.</h2>
     </div>
 
 <app-footer></app-footer>

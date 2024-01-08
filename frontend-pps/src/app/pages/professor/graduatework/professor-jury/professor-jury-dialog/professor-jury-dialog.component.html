@@ -1,0 +1,38 @@
+<h2 mat-dialog-title>Datos asociados a la propuesta</h2>
+<mat-dialog-content class="mat-typography">
+  <p><strong>Datos del estudiante</strong></p>
+  <mat-divider></mat-divider>
+  <p>{{'Nombre completo: ' + inputdata.studentData.userLastName + ', ' + inputdata.studentData.userFirstName }}</p>
+  <p>{{'Cedula de identidad: ' + inputdata.studentData.userDNI }}</p>
+  <p>{{'Correo UCAB: ' + inputdata.studentData.userEmailUcab }}</p>
+  <p>{{'Número de teléfono: ' + inputdata.studentData.userPhone }}</p>
+
+  <p><strong>Datos del Trabajo de Grado</strong></p>
+  <mat-divider></mat-divider>
+  <p>{{'Título: ' + inputdata.graduateWorkData.graduateWorkTitle}}</p>
+  <p>{{'Tipo: '  + inputdata.graduateWorkData.graduateWorkType }}</p>
+  <p>{{'Organización donde se realizará: UCAB' }}</p>
+  <p>{{'Posible tutor academico: Medina, Luz E.'}}</p>
+
+  <h3><strong>Cargue la nota</strong></h3>
+  <mat-divider></mat-divider>
+  <mat-slider min="1" max="20" style="width: 100%;">
+    <input matSliderThumb (valueChange)="obtenerValorSlider($event)">
+  </mat-slider>
+  <h2>{{ sliderValue }}</h2>
+  <mat-form-field style="width: 100%;">
+    <mat-label>Otorgar Mencion</mat-label>
+    <mat-select matNativeControl style="width: 100%;" [(value)]="mentionSelected" (selectionChange)="obtenerMencion()">
+      <mat-option value="" selected>Sin Mencion</mat-option>
+      <mat-option value="Honorifica">Mencion Honorifica</mat-option>
+      <mat-option value="Publicacion">Mencion Publicacion</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-button [mat-dialog-close]="true" cdkFocusInitial (click)="cargarNotaJurado()">Cargar Nota</button>
+</mat-dialog-actions>

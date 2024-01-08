@@ -1,0 +1,61 @@
+<h2 mat-dialog-title>Datos asociados a la propuesta</h2>
+<mat-dialog-content class="mat-typography">
+
+  <h3><strong>Datos del estudiante</strong></h3>
+  <mat-divider></mat-divider>
+  <p>{{'Nombre completo: ' + inputdata.studentData.userLastName + ', ' + inputdata.studentData.userFirstName }}</p>
+  <p>{{'Cedula de identidad: ' + inputdata.studentData.userDNI }}</p>
+  <p>{{'Correo UCAB: ' +inputdata.studentData.userEmailUcab}}</p>
+  <p>{{'Número de teléfono: ' + inputdata.studentData.userPhone }}</p>
+
+  <h3><strong>Datos del Trabajo de Grado</strong></h3>
+  <mat-divider></mat-divider>
+  <p>{{'Título: ' + inputdata.graduateWorkData.graduateWorkTitle }}</p>
+  <p>{{'Tipo: ' + inputdata.graduateWorkData.graduateWorkType }}</p>
+  <p>{{'Organización donde se realizará: UCAB' }}</p>
+  <p>{{'Posible tutor academico: Medina, Luz E.'}}</p>
+
+
+  <h3><strong>Seleccione a los jurados principales</strong></h3>
+  <mat-divider></mat-divider>
+  <mat-form-field style="width: 100%;">
+    <mat-label>Select Role</mat-label>
+    <mat-select [(value)]="jurySelected" (selectionChange)="juryListHandler(jurySelected)">
+      <mat-option *ngFor="let jury of juryList" [value]="jury.userDNI">
+        {{ jury.userlastname + ', ' + jury.userfirstname }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field style="width: 100%;">
+    <mat-label>Select Role</mat-label>
+    <mat-select [(value)]="jurySelected2" (selectionChange)="juryListHandler(jurySelected2)">
+      <mat-option *ngFor="let jury of juryList" [value]="jury.userDNI" >
+        {{ jury.userlastname + ', ' + jury.userfirstname }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  
+  <h3><strong>Seleccione a los jurados auxiliares</strong></h3>
+  <mat-divider></mat-divider>
+  <mat-form-field style="width: 100%;">
+    <mat-label>Select Role</mat-label>
+    <mat-select [(value)]="jurySelected3" (selectionChange)="juryListHandler(jurySelected3)">
+      <mat-option *ngFor="let jury of juryList" [value]="jury.userDNI">
+        {{ jury.userlastname + ', ' + jury.userfirstname }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field style="width: 100%;">
+    <mat-label>Select Role</mat-label>
+    <mat-select [(value)]="jurySelected4" (selectionChange)="juryListHandler(jurySelected4)">
+      <mat-option *ngFor="let jury of juryList" [value]="jury.userDNI">
+        {{ jury.userlastname + ', ' + jury.userfirstname }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-button style="background-color: green;"  [mat-dialog-close]="true" cdkFocusInitial (click)="createJury()">Asignar jurado</button>
+</mat-dialog-actions>

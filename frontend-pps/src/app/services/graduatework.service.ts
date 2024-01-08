@@ -45,6 +45,13 @@ export class GraduateworkService {
     return this.http.get(`http://localhost:8081/graduate-work/jury/pending`,{headers});
   }
 
+  getDefensePending( ) : Observable<any> {
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`http://localhost:8081/graduate-work/defense/pending`,{headers});
+    
+  }
+
   changeStatus(graduateWorkId: string, statusCode: number):Observable<any>{
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
@@ -71,6 +78,12 @@ export class GraduateworkService {
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
     return this.http.get(`http://localhost:8081/graduate-work/council/pending`,{headers});
+  }
+
+  getFinalDefensePending(professorDNI: string) : Observable <any> {
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`http://localhost:8081/graduate-work/final/defense/pending/${professorDNI}`,{headers});
   }
 
   setGraduateWorkCouncil(data: any):Observable<any>{
@@ -169,5 +182,40 @@ export class GraduateworkService {
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
     return this.http.get(`http://localhost:8081/graduate-work/remaining/days/${graduateWorkId}`,{headers});
+  }
+
+  createJury( professorDNI: string,graduateWorkId: string, juryType: number) : Observable<any>{
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    const body = {
+      "graduateWorkId": graduateWorkId,
+      "professorDNI": professorDNI,
+      "juryType": juryType
+    } 
+    console.log(body)
+    return this.http.post(`http://localhost:8081/graduate-work/create/jury`,body,{headers});
+  }
+
+  setDefenseDate (date: Date, graduateWorkId: string) : Observable<any> {
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    const body = {
+      "graduateWorkId": graduateWorkId,
+      "graduateWorkDefenseDate": date
+    } 
+    console.log(body)
+    return this.http.put(`http://localhost:8081/graduate-work/change/defense/date`,body,{headers});
+  } 
+
+  setDefenseNote(graduateWorkId: string, professorDNI: string, note: number){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    const body = {
+      "graduateWorkId": graduateWorkId,
+      "professorDNI": professorDNI,
+      "note": note
+    } 
+    console.log(body)
+    return this.http.post(`http://localhost:8081/graduate-work/final/defense/note`,body,{headers});
   }
 }

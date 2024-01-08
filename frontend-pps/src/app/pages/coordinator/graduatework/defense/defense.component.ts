@@ -7,6 +7,8 @@ import { forkJoin, of } from 'rxjs';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog'
 
+import { DefenseDialogComponent } from './defense-dialog/defense-dialog.component'
+
 @Component({
   selector: 'app-defense',
   templateUrl: './defense.component.html',
@@ -28,7 +30,7 @@ export class DefenseComponent {
   displayedColumns: string[] = ['graduateWorkId', 'graduateWorkTitle', 'studentDNI', 'symbol',"check"];
 
   constructor(private loginService: LoginService,private router: Router,private userService: UsersService, private graduateworkService: GraduateworkService, private dialog: MatDialog, private studentService: StudentService){
-    this.graduateworkService.getProposals().subscribe({
+    this.graduateworkService.getDefensePending().subscribe({
       next: (data: any) => {
         console.log(data)
         this.reviewerData = [...data]
@@ -77,61 +79,27 @@ export class DefenseComponent {
     let studentData;
     let graduateWorkData;
 
-    forkJoin([ this.userService.getUserData(data.studentDNI),this.studentService.getStudentGraduateWork(data.studentDNI), this.graduateworkService.getGraduateWorkById(data.graduateWorkId)])
-    .subscribe(([result1,result2,result3]) => {
+    forkJoin([ this.userService.getUserData(data.studentDNI),this.graduateworkService.getCurrentGraduateWork(data.studentDNI)])
+    .subscribe(([result1,result2]) => {
       console.log(result1)
       console.log(result2)
-      console.log(result3)
-      /*
-      const dialogRef = this.dialog.open(ValidationComponent,{
+      
+      const dialogRef = this.dialog.open(DefenseDialogComponent,{
         width: '60%',
         data: {
-          user: result1,
-          proposal: result2,
-          graduatework: result3
+          studentData: result1,
+          graduateWorkData: result2
         }
       })
-      */
-      /*
+      
+      
       dialogRef.afterClosed().subscribe(result => {
         console.log(`Dialog result: ${result}`);
       });
-      */
+      
       });
   
-    this.userService.getUserData(data.studentDNI).subscribe({
-      next: (data) => {
-        studentData = {...data}
-        console.log(studentData)
-      }
-    })
 
-  this.studentService.getStudentGraduateWork(data.studentDNI).subscribe({
-    next: (data: any) => {
-      graduateWorkData = [...data]
-      this.proposal = graduateWorkData
-      console.log(graduateWorkData)
-      this.graduateworkService.getGraduateWorkById(graduateWorkData[0].graduateworkid).subscribe({
-        next: (data) => {
-          console.log(data)
-        }
-      })
-    }
-  })
-/*
-    const dialogRef = this.dialog.open(ValidationComponent,{
-      data: {
-        user: this.user,
-        proposal: this.proposal
-      }
-    });
-*/
-/*
-    dialogRef.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`);
-    });
-  }
-*/
   }
   ngOnInit(){
 

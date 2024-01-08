@@ -1,0 +1,33 @@
+<h2 mat-dialog-title>Datos asociados a la propuesta</h2>
+<mat-dialog-content class="mat-typography">
+  <p><strong>Datos del estudiante</strong></p>
+  <mat-divider></mat-divider>
+  <p>{{'Nombre completo: ' + inputdata.studentData.userLastName + ', ' + inputdata.studentData.userFirstName }}</p>
+  <p>{{'Cedula de identidad: ' + inputdata.studentData.userDNI }}</p>
+  <p>{{'Correo UCAB: ' +inputdata.studentData.userEmailUcab}}</p>
+  <p>{{'Número de teléfono: ' + inputdata.studentData.userPhone }}</p>
+
+  <p><strong>Datos del Trabajo de Grado</strong></p>
+  <mat-divider></mat-divider>
+  <p>{{'Título: ' + inputdata.graduateWorkData.graduateWorkTitle }}</p>
+  <p>{{'Tipo: ' + inputdata.graduateWorkData.graduateWorkType }}</p>
+  <p>{{'Organización donde se realizará: UCAB' }}</p>
+  <p>{{'Posible tutor academico: Medina, Luz E.'}}</p>
+
+  <p><strong>Seleccione la fecha</strong></p>
+  <mat-divider></mat-divider>
+  <mat-form-field style="width: 100%;" [formGroup]="myForm">
+    <mat-label>Choose a date</mat-label>
+    <input matInput [matDatepicker]="picker" formControlName="date" (dateChange)="selectedDate($event)">
+    <mat-hint>MM/DD/YYYY</mat-hint>
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+  
+
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-button style="background-color: green;"  [mat-dialog-close]="true" cdkFocusInitial (click)="setDefenseDate()">Designar defensa</button>
+</mat-dialog-actions>

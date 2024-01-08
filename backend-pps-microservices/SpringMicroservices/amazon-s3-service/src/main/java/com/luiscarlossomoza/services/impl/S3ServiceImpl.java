@@ -28,6 +28,7 @@ public class S3ServiceImpl implements IS3Service {
     private final String FOLDER_GW_NAME = "graduatework/";
 
     private final String FOLDER_GWF_NAME = "graduatework/final/";
+    private final String FOLDER_GWFR_NAME = "graduatework/final/resume/";
 
     private final String FOLDER_GWR_NAME = "graduatework/reviews/";
     private final String PDF_EXTENSION = ".pdf";
@@ -128,6 +129,25 @@ public class S3ServiceImpl implements IS3Service {
                 File fileTemp = File.createTempFile("upload", ".tmp");
                 file.transferTo(fileTemp);
                 s3client.putObject(new PutObjectRequest("bucket-gw-storage",FOLDER_GWF_NAME + file.getOriginalFilename(),fileTemp));
+                return ResponseEntity.ok(new RequestResponse("Archivo Subido Correctamente"));
+            }else{
+                return ResponseEntity.badRequest().body(new RequestResponse("Error en nombre de archivo"));
+            }
+
+
+        } catch (IOException e) {
+            throw new IOException(e.getMessage());
+        }
+    }
+
+    public ResponseEntity<RequestResponse> uploadCulmination(MultipartFile file) throws IOException {
+        try (InputStream is = file.getInputStream()) {
+            //Validamos el nombre del archivo
+            System.out.println("Nombre del archivo = " + file.getOriginalFilename().replace(PDF_EXTENSION,""));
+            if(validateFileName(new ValidateFileNameRequest(file.getOriginalFilename().replace(PDF_EXTENSION,"")))){
+                File fileTemp = File.createTempFile("upload", ".tmp");
+                file.transferTo(fileTemp);
+                s3client.putObject(new PutObjectRequest("bucket-gw-storage",FOLDER_GWFR_NAME + file.getOriginalFilename(),fileTemp));
                 return ResponseEntity.ok(new RequestResponse("Archivo Subido Correctamente"));
             }else{
                 return ResponseEntity.badRequest().body(new RequestResponse("Error en nombre de archivo"));

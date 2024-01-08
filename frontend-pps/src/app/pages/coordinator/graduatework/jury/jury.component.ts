@@ -7,6 +7,8 @@ import { forkJoin, of } from 'rxjs';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog'
 
+import { JuryDialogComponent } from './jury-dialog/jury-dialog.component'
+
 @Component({
   selector: 'app-jury',
   templateUrl: './jury.component.html',
@@ -25,10 +27,13 @@ export class JuryComponent {
 
   proposal: any[] = [];
 
+  studentData : any = null;
+  graduateWorkData : any = null;
+
   displayedColumns: string[] = ['graduateWorkId', 'graduateWorkTitle', 'studentDNI', 'symbol',"check"];
 
   constructor(private loginService: LoginService,private router: Router,private userService: UsersService, private graduateworkService: GraduateworkService, private dialog: MatDialog, private studentService: StudentService){
-    this.graduateworkService.getProposals().subscribe({
+    this.graduateworkService.getJuryPending().subscribe({
       next: (data: any) => {
         console.log(data)
         this.reviewerData = [...data]
@@ -60,7 +65,6 @@ export class JuryComponent {
       this.roleSelected = this.userService.getMode();
       this.isRoleSelected = true;
 
-
       console.log(this.localUser);
 
 
@@ -71,54 +75,30 @@ export class JuryComponent {
   }
 
   openDialog(data: any) {
-    console.log(this.user)
-    console.log(data);
-
-    let studentData;
-    let graduateWorkData;
 
     forkJoin([ this.userService.getUserData(data.studentDNI),this.studentService.getStudentGraduateWork(data.studentDNI), this.graduateworkService.getGraduateWorkById(data.graduateWorkId)])
     .subscribe(([result1,result2,result3]) => {
       console.log(result1)
-      console.log(result2)
-      console.log(result3)
+      this.studentData = result1;
+      this.graduateWorkData = result3;
 
+      const dialogRef = this.dialog.open(JuryDialogComponent,{
+        width: '60%',
+        data: {
+          graduateWorkData: this.graduateWorkData,
+          studentData: this.studentData
+        }
       });
   
-    this.userService.getUserData(data.studentDNI).subscribe({
-      next: (data) => {
-        studentData = {...data}
-        console.log(studentData)
-      }
-    })
+      dialogRef.afterClosed().subscribe(result => {
+        console.log(`Dialog result: ${result}`);
+      });
+      
+      });
 
-  this.studentService.getStudentGraduateWork(data.studentDNI).subscribe({
-    next: (data: any) => {
-      graduateWorkData = [...data]
-      this.proposal = graduateWorkData
-      console.log(graduateWorkData)
-      this.graduateworkService.getGraduateWorkById(graduateWorkData[0].graduateworkid).subscribe({
-        next: (data) => {
-          console.log(data)
-        }
-      })
-    }
-  })
-/*
-    const dialogRef = this.dialog.open(ValidationComponent,{
-      data: {
-        user: this.user,
-        proposal: this.proposal
-      }
-    });
-*/
-/*
-    dialogRef.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`);
-    });
+    
   }
-*/
-  }
+
   ngOnInit(){
 
   
@@ -128,4 +108,7 @@ export class JuryComponent {
     this.router.navigateByUrl("/dashboard");
   }
 
-}
+
+  }
+  
+

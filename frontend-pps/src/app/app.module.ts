@@ -46,8 +46,13 @@ import { ProfessorJuryComponent } from './pages/professor/graduatework/professor
 import { DialogsComponent } from './pages/professor/graduatework/professor-reviewer/dialogs/dialogs.component';
 import { CouncilComponent } from './pages/coordinator/graduatework/council/council.component';
 import { DialogCouncilComponent } from './pages/coordinator/graduatework/council/dialog-council/dialog-council.component';
-import { DialogTutorComponent } from './pages/professor/graduatework/professor-tutor/dialog-tutor/dialog-tutor.component'; 
-
+import { DialogTutorComponent } from './pages/professor/graduatework/professor-tutor/dialog-tutor/dialog-tutor.component';
+import { JuryDialogComponent } from './pages/coordinator/graduatework/jury/jury-dialog/jury-dialog.component';
+import { DefenseDialogComponent } from './pages/coordinator/graduatework/defense/defense-dialog/defense-dialog.component'; 
+import {MatDatepickerModule} from '@angular/material/datepicker'; 
+import { MatNativeDateModule } from '@angular/material/core';
+import { ProfessorJuryDialogComponent } from './pages/professor/graduatework/professor-jury/professor-jury-dialog/professor-jury-dialog.component';
+import {MatSliderModule} from '@angular/material/slider'; 
 
 @NgModule({
   declarations: [
@@ -73,7 +78,10 @@ import { DialogTutorComponent } from './pages/professor/graduatework/professor-t
     DialogsComponent,
     CouncilComponent,
     DialogCouncilComponent,
-    DialogTutorComponent
+    DialogTutorComponent,
+    JuryDialogComponent,
+    DefenseDialogComponent,
+    ProfessorJuryDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -96,7 +104,10 @@ import { DialogTutorComponent } from './pages/professor/graduatework/professor-t
     MatDialogModule,
     MatDividerModule,
     MatCheckboxModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatSliderModule
   ],
   providers: [],
   bootstrap: [AppComponent]

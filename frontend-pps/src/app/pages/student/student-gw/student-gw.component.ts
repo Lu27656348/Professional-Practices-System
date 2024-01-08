@@ -62,6 +62,8 @@ export class StudentGWComponent {
 
   hasGraduateWorkFile: boolean = false;
   hasGraduateWorkReviewFile: boolean = false;
+  hasCulminated : boolean = false;
+  termination : boolean = false;
 
   dataBs: any;
   dataService$: Subscription = new Subscription();
@@ -159,6 +161,14 @@ export class StudentGWComponent {
 
           console.log(graduateWorkData)
           this.currentGraduateWork = graduateWorkData;
+          if(this.currentGraduateWork.graduateWorkEstatusCode === 90){
+            this.hasCulminated = true
+            console.log("Trabajo de grado en defensa")
+          }
+          if(this.currentGraduateWork.graduateWorkEstatusCode === 100){
+            this.termination = true
+            console.log("Trabajo de grado culminado")
+          }
           return this.graduateworkService.getGraduateWorkFileNames()
 
         }),
@@ -198,6 +208,12 @@ export class StudentGWComponent {
             return of(null)
           }
           console.log(graduateWorkListData)
+          if(graduateWorkListData.graduateWorkEstatusCode === 90){
+            this.hasCulminated = true
+          }
+          if(graduateWorkListData.graduateWorkEstatusCode === 100){
+            this.termination = true
+          }
           this.graduateWorkList = graduateWorkListData
           console.log(this.graduateWorkList)
           return of(this.hasGraduateWorkReviewFile)
@@ -407,6 +423,17 @@ export class StudentGWComponent {
       next: (data: any) => {
         console.log(data)
       },
+      complete: () => {
+        window.location.href = window.location.href;
+      }
+    })
+  }
+
+  uploadCulmination(){
+    this.graduateworkService.changeStatus(this.graduateWorkList.graduateworkid,100).subscribe({
+      next: (data) => {
+        console.log(data)
+      }, 
       complete: () => {
         window.location.href = window.location.href;
       }

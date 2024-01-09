@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { LoginRequest} from '../interfaces/LoginRequest'
 import { HttpClient,HttpHeaders } from '@angular/common/http';
 import { Observable } from "rxjs";
+import { environment } from 'src/environments/environment';
 
 interface UserData {
   userDNI: string;
@@ -34,7 +35,7 @@ export class LoginService {
   login(credentials: LoginRequest):Observable<any>{
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
-    return this.http.post(`http://localhost:8081/users/validate`,credentials,{headers});
+    return this.http.post(`${environment.apiUrl}/users/validate`,credentials,{headers});
   }
 
   getIsRoleSelected(){

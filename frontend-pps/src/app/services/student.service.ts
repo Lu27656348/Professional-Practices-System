@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient,HttpHeaders } from '@angular/common/http';
 import { Observable, throwError, switchMap, catchError  } from "rxjs";
 import { UsersService } from './users.service'
+import { CreateStudentRequest } from '../interfaces/CreateStudentRequest';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +15,12 @@ export class StudentService {
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
     return this.http.get(`http://localhost:8081/graduate-work/validate/user/${userDNI}`,{headers});
+  }
+  
+  createStudent(createStudentRequest: CreateStudentRequest){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.post(`http://localhost:8081/students`,createStudentRequest,{headers});
   }
 
   createProposal(data:any):Observable<any>{

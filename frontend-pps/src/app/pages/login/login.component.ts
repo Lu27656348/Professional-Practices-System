@@ -26,7 +26,13 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  constructor(private formBuilder: FormBuilder, private router: Router, private LoginService: LoginService, private UserService: UsersService, private registerService: RegisterService){}
+  constructor(private formBuilder: FormBuilder, private router: Router, private LoginService: LoginService, private UserService: UsersService, private registerService: RegisterService){
+    this.LoginService.getWelcomeData().subscribe({
+      next: (welcomeData) => {
+        console.log(welcomeData)
+      }
+    })
+  }
 
   get userDNI(){
     return this.loginForm.controls.userDNI;

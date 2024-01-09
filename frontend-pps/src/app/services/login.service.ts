@@ -28,6 +28,12 @@ export class LoginService {
     return this.loginData
   }
 
+  getWelcomeData(){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`${environment.apiUrl}`,{headers});
+  }
+
   setLoginData(datos: UserData){
     this.loginData = datos;
   }

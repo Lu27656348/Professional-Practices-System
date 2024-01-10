@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient,HttpHeaders } from '@angular/common/http';
 import { Observable } from "rxjs";
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -12,43 +13,43 @@ export class GraduateworkService {
   getProposals():Observable<any>{
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
-    return this.http.get(`http://localhost:8081/graduate-work/proposals`,{headers});
+    return this.http.get(`${environment.apiUrl}/graduate-work/proposals`,{headers});
   }
 
   getGraduateWorkById(graduateWorkId: string):Observable<any>{
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
-    return this.http.get(`http://localhost:8081/graduate-work/data/${graduateWorkId}`,{headers});
+    return this.http.get(`${environment.apiUrl}/graduate-work/data/${graduateWorkId}`,{headers});
   }
 
   getCurrentGraduateWork( studentDNI: string ) : Observable<any> {
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
-    return this.http.get(`http://localhost:8081/graduate-work/proposal/student/${studentDNI}`,{headers});
+    return this.http.get(`${environment.apiUrl}/graduate-work/proposal/student/${studentDNI}`,{headers});
   }
 
   getReviewers():Observable<any>{
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
-    return this.http.get(`http://localhost:8081/graduate-work/proposals/reviewers`,{headers});
+    return this.http.get(`${environment.apiUrl}/graduate-work/proposals/reviewers`,{headers});
   }
 
   getReviewersPending():Observable<any>{
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
-    return this.http.get(`http://localhost:8081/graduate-work/proposals/reviewers/pending`,{headers});
+    return this.http.get(`${environment.apiUrl}/graduate-work/proposals/reviewers/pending`,{headers});
   }
 
   getJuryPending() : Observable<any> {
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
-    return this.http.get(`http://localhost:8081/graduate-work/jury/pending`,{headers});
+    return this.http.get(`${environment.apiUrl}/graduate-work/jury/pending`,{headers});
   }
 
   getDefensePending( ) : Observable<any> {
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
-    return this.http.get(`http://localhost:8081/graduate-work/defense/pending`,{headers});
+    return this.http.get(`${environment.apiUrl}/graduate-work/defense/pending`,{headers});
     
   }
 
@@ -59,37 +60,37 @@ export class GraduateworkService {
       "estatusCode": statusCode,
       "graduateWorkId": graduateWorkId
     }
-    return this.http.put(`http://localhost:8081/graduate-work/change/estatus`,body,{headers});
+    return this.http.put(`${environment.apiUrl}/graduate-work/change/estatus`,body,{headers});
   }
 
   getCriteria():Observable<any>{
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
-    return this.http.get(`http://localhost:8081/criteria`,{headers});
+    return this.http.get(`${environment.apiUrl}/criteria`,{headers});
   }
 
   sendProposalToReviewer(data: any):Observable<any>{
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
-    return this.http.put(`http://localhost:8081/graduate-work/proposals/reviewers`,data,{headers});
+    return this.http.put(`${environment.apiUrl}/graduate-work/proposals/reviewers`,data,{headers});
   }
 
   getCouncilPending():Observable<any>{
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
-    return this.http.get(`http://localhost:8081/graduate-work/council/pending`,{headers});
+    return this.http.get(`${environment.apiUrl}/graduate-work/council/pending`,{headers});
   }
 
   getFinalDefensePending(professorDNI: string) : Observable <any> {
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
-    return this.http.get(`http://localhost:8081/graduate-work/final/defense/pending/${professorDNI}`,{headers});
+    return this.http.get(`${environment.apiUrl}/graduate-work/final/defense/pending/${professorDNI}`,{headers});
   }
 
   setGraduateWorkCouncil(data: any):Observable<any>{
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
-    return this.http.put(`http://localhost:8081/graduate-work/council`,data,{headers});
+    return this.http.put(`${environment.apiUrl}/graduate-work/council`,data,{headers});
   }
 
   uploadProposalFile(file: any):Observable<any>{
@@ -169,19 +170,19 @@ export class GraduateworkService {
     }
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
-    return this.http.post(`http://localhost:8081/graduate-work/professor/tutor/graduatework`,body,{headers});
+    return this.http.post(`${environment.apiUrl}/graduate-work/professor/tutor/graduatework`,body,{headers});
   }
 
   getGraduateWorkStudents( graduateWorkId: string ) : Observable<any>{
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
-    return this.http.get(`http://localhost:8081/graduate-work/students/${graduateWorkId}`,{headers});
+    return this.http.get(`${environment.apiUrl}/graduate-work/students/${graduateWorkId}`,{headers});
   }
 
   getRemainingDays( graduateWorkId: string ) : Observable<any>{
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
-    return this.http.get(`http://localhost:8081/graduate-work/remaining/days/${graduateWorkId}`,{headers});
+    return this.http.get(`${environment.apiUrl}/graduate-work/remaining/days/${graduateWorkId}`,{headers});
   }
 
   createJury( professorDNI: string,graduateWorkId: string, juryType: number) : Observable<any>{
@@ -193,7 +194,7 @@ export class GraduateworkService {
       "juryType": juryType
     } 
     console.log(body)
-    return this.http.post(`http://localhost:8081/graduate-work/create/jury`,body,{headers});
+    return this.http.post(`${environment.apiUrl}/graduate-work/create/jury`,body,{headers});
   }
 
   setDefenseDate (date: Date, graduateWorkId: string) : Observable<any> {
@@ -204,7 +205,7 @@ export class GraduateworkService {
       "graduateWorkDefenseDate": date
     } 
     console.log(body)
-    return this.http.put(`http://localhost:8081/graduate-work/change/defense/date`,body,{headers});
+    return this.http.put(`${environment.apiUrl}/graduate-work/change/defense/date`,body,{headers});
   } 
 
   setDefenseNote(graduateWorkId: string, professorDNI: string, note: number){
@@ -216,6 +217,6 @@ export class GraduateworkService {
       "note": note
     } 
     console.log(body)
-    return this.http.post(`http://localhost:8081/graduate-work/final/defense/note`,body,{headers});
+    return this.http.post(`${environment.apiUrl}/graduate-work/final/defense/note`,body,{headers});
   }
 }

@@ -3,6 +3,7 @@ import { HttpClient,HttpHeaders } from '@angular/common/http';
 import { Observable, throwError, switchMap, catchError  } from "rxjs";
 import { UsersService } from './users.service'
 import { CreateStudentRequest } from '../interfaces/CreateStudentRequest';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -14,19 +15,19 @@ export class StudentService {
   isProcessActive(userDNI: string):Observable<any>{
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
-    return this.http.get(`http://localhost:8081/graduate-work/validate/user/${userDNI}`,{headers});
+    return this.http.get(`${environment.apiUrl}/graduate-work/validate/user/${userDNI}`,{headers});
   }
   
   createStudent(createStudentRequest: CreateStudentRequest){
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
-    return this.http.post(`http://localhost:8081/students`,createStudentRequest,{headers});
+    return this.http.post(`${environment.apiUrl}/students`,createStudentRequest,{headers});
   }
 
   createProposal(data:any):Observable<any>{
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
-    return this.http.post(`http://localhost:8081/graduate-work/create/proposal`,data,{headers});
+    return this.http.post(`${environment.apiUrl}/graduate-work/create/proposal`,data,{headers});
   }
 
   validateProposalFileName(fileName: string) : Boolean {
@@ -93,13 +94,13 @@ uploadGraduateWorkFile(file: File, studentDNI: string) : Observable<any> {
   getStudentGraduateWork(studentDNI: string):Observable<any>{
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
-    return this.http.get(`http://localhost:8081/students/graduate-work/${studentDNI}`,{headers});
+    return this.http.get(`${environment.apiUrl}/students/graduate-work/${studentDNI}`,{headers});
   }
 
   getStudentCoordinator(studentDNI: string):Observable<any>{
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
-    return this.http.get(`http://localhost:8081/students/coordinator/${studentDNI}`,{headers});
+    return this.http.get(`${environment.apiUrl}/students/coordinator/${studentDNI}`,{headers});
   }
 
 }

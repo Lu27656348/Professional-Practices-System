@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { RegisterRequest } from '../interfaces/RegisterRequest'
 import { HttpClient,HttpHeaders } from '@angular/common/http';
 import { Observable } from "rxjs";
+import { environment  } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +25,6 @@ export class RegisterService {
   registration(registerRequest: RegisterRequest) : Observable<any>{
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
-    return this.http.post(`http://localhost:8081/users/registration`,registerRequest,{headers});
+    return this.http.post(`${environment.apiUrl}/users/registration`,registerRequest,{headers});
   }
 }

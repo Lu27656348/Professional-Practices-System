@@ -14,7 +14,7 @@ export class UsersService {
   getUserRoles(userDNI: string):Observable<any>{
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
-    return this.http.get(`${environment.apiUrl}/${userDNI}`,{headers});
+    return this.http.get(`${environment.apiUrl}/users/roles/${userDNI}`,{headers});
   }
 
   getUserData(userDNI: string):Observable<any>{

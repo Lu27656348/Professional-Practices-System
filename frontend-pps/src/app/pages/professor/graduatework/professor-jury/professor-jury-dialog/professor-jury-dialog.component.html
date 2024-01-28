@@ -1,38 +1,489 @@
-<h2 mat-dialog-title>Datos asociados a la propuesta</h2>
+<h2 mat-dialog-title>Defensa de Trabajo de Grado</h2>
 <mat-dialog-content class="mat-typography">
-  <p><strong>Datos del estudiante</strong></p>
-  <mat-divider></mat-divider>
-  <p>{{'Nombre completo: ' + inputdata.studentData.userLastName + ', ' + inputdata.studentData.userFirstName }}</p>
-  <p>{{'Cedula de identidad: ' + inputdata.studentData.userDNI }}</p>
-  <p>{{'Correo UCAB: ' + inputdata.studentData.userEmailUcab }}</p>
-  <p>{{'Número de teléfono: ' + inputdata.studentData.userPhone }}</p>
 
-  <p><strong>Datos del Trabajo de Grado</strong></p>
-  <mat-divider></mat-divider>
-  <p>{{'Título: ' + inputdata.graduateWorkData.graduateWorkTitle}}</p>
-  <p>{{'Tipo: '  + inputdata.graduateWorkData.graduateWorkType }}</p>
-  <p>{{'Organización donde se realizará: UCAB' }}</p>
-  <p>{{'Posible tutor academico: Medina, Luz E.'}}</p>
+  <div *ngIf="isJuryPresent === null && juryData?.juryType != 'TUTOR'" style="display: flex; align-items: center; justify-content: center; flex-direction: column;">
+    <p><strong>¡Bienvenido profesor!</strong></p>
+    <p><strong>Usted ha iniciado el proceso de Defensa de Trabajo de Grado</strong></p>
+    <p><strong>¿Desea asumir el rol de presidente de Jurado?</strong></p>
+    <div>
+      <button mat-raised-button color="warn" (click)="designarPresidenteJurado(false)">No</button>
+      <button mat-raised-button (click)="designarPresidenteJurado(true)" [disabled]="hasPresident">Si</button>
+    </div>
+    <mat-divider></mat-divider>
+  </div>
 
-  <h3><strong>Cargue la nota</strong></h3>
-  <mat-divider></mat-divider>
-  <mat-slider min="1" max="20" style="width: 100%;">
-    <input matSliderThumb (valueChange)="obtenerValorSlider($event)">
-  </mat-slider>
-  <h2>{{ sliderValue }}</h2>
-  <mat-form-field style="width: 100%;">
-    <mat-label>Otorgar Mencion</mat-label>
-    <mat-select matNativeControl style="width: 100%;" [(value)]="mentionSelected" (selectionChange)="obtenerMencion()">
-      <mat-option value="" selected>Sin Mencion</mat-option>
-      <mat-option value="Honorifica">Mencion Honorifica</mat-option>
-      <mat-option value="Publicacion">Mencion Publicacion</mat-option>
-    </mat-select>
-  </mat-form-field>
+  <div *ngIf="isJuryPresent === null && juryData?.juryType == 'TUTOR'" style="display: flex; align-items: center; justify-content: center; flex-direction: column;">
+    <p><strong>¡Bienvenido profesor!</strong></p>
+    <p><strong>Usted ha iniciado el proceso de Defensa de Trabajo de Grado</strong></p>
+    <p><strong>Presione siguiente para marcar su asistencia</strong></p>
+    <div>
+      <button mat-raised-button color="warn" (click)="designarPresidenteJurado(false)">Siguiente</button>
+    </div>
+    <mat-divider></mat-divider>
+  </div>
+
+  <div *ngIf="isJuryPresent !== null && graduateWorkType === 'EXPERIMENTAL' && juryData?.juryType == 'TUTOR' && tutorSubmitted == false">
+    <h3 style="display: flex; align-items: center; justify-content: center;"><strong>Planillas de Evaluación Trabajo Experimental de Grado (TEG) - Tutor</strong></h3>
+    <mat-tab-group>
+      <mat-tab label="Trabajo Escrito">
+        
+        <table mat-table [dataSource]="graduateWorkSource" style="width: 50%;">
+
+          <ng-container matColumnDef="criteria" sticky >
+            <th mat-header-cell *matHeaderCellDef>Criterios de Evaluacion.</th>
+            <td mat-cell *matCellDef="let element">{{element.criteriaName}}</td>
+            <td mat-footer-cell *matFooterCellDef> Total </td>
+          </ng-container>
+
+          <ng-container matColumnDef="0">
+            <th mat-header-cell *matHeaderCellDef >0</th>
+            <td mat-cell *matCellDef="let element" [style]="(0 > element.maxNote) ? 'background-color: red' : '' ">
+              <mat-checkbox style="width: 5; height: 5;" (change)="onCheckboxChange(element, 0)" [checked]="element.selectedCheckBoxIndex === 0" [disabled]="0 > element.maxNote" ></mat-checkbox>
+            </td>
+            <td mat-footer-cell *matFooterCellDef> </td>
+          </ng-container>
+          <ng-container matColumnDef="1">
+            <th mat-header-cell *matHeaderCellDef>1</th>
+            <td mat-cell *matCellDef="let element">
+              <mat-checkbox (change)="onCheckboxChange(element, 1)" [checked]="element.selectedCheckBoxIndex === 1" [disabled]="1 > element.maxNote"></mat-checkbox>
+            </td>
+            <td mat-footer-cell *matFooterCellDef> </td>
+          </ng-container>
+          <ng-container matColumnDef="2">
+            <th mat-header-cell *matHeaderCellDef>2</th>
+            <td mat-cell *matCellDef="let element">
+              <mat-checkbox (change)="onCheckboxChange(element, 2)" [checked]="element.selectedCheckBoxIndex === 2" [disabled]="2 > element.maxNote"></mat-checkbox>
+            </td>
+            <td mat-footer-cell *matFooterCellDef> </td>
+          </ng-container>
+          <ng-container matColumnDef="3">
+            <th mat-header-cell *matHeaderCellDef>3</th>
+            <td mat-cell *matCellDef="let element">
+              <mat-checkbox (change)="onCheckboxChange(element, 3)" [checked]="element.selectedCheckBoxIndex === 3" [disabled]="3 > element.maxNote"></mat-checkbox>
+            </td>
+            <td mat-footer-cell *matFooterCellDef> </td>
+          </ng-container>
+          <ng-container matColumnDef="4">
+            <th mat-header-cell *matHeaderCellDef>4</th>
+            <td mat-cell *matCellDef="let element">
+              <mat-checkbox (change)="onCheckboxChange(element, 4)" [checked]="element.selectedCheckBoxIndex === 4" [disabled]="4 > element.maxNote"></mat-checkbox>
+            </td>
+            <td mat-footer-cell *matFooterCellDef> </td>
+          </ng-container>
+          <ng-container matColumnDef="5">
+            <th mat-header-cell *matHeaderCellDef>5</th>
+            <td mat-cell *matCellDef="let element">
+              <mat-checkbox (change)="onCheckboxChange(element, 5)" [checked]="element.selectedCheckBoxIndex === 5" [disabled]="5 > element.maxNote"></mat-checkbox>
+            </td>
+            <td mat-footer-cell *matFooterCellDef> </td>
+          </ng-container>
+          <ng-container matColumnDef="6">
+            <th mat-header-cell *matHeaderCellDef>6</th>
+            <td mat-cell *matCellDef="let element">
+              <mat-checkbox (change)="onCheckboxChange(element, 6)" [checked]="element.selectedCheckBoxIndex === 6" [disabled]="6 > element.maxNote"></mat-checkbox>
+            </td>
+            <td mat-footer-cell *matFooterCellDef> {{totalSum}} / 60</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true;"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+        </table>
+        
+
+      </mat-tab>
+      <mat-tab [label]="'Presentación Oral '+ firstStudentName" > 
+        <!-- Colocamos una tabla para los requerimientos comunes -->
+        
+        <table mat-table [dataSource]="graduateWorkOralSource" style="width: 100%;">
+
+          <ng-container matColumnDef="criteria" sticky >
+            <th mat-header-cell *matHeaderCellDef>Criterios de Evaluacion.</th>
+            <td mat-cell *matCellDef="let element">{{element.criteriaName}}</td>
+            <td mat-footer-cell *matFooterCellDef> Total </td>
+          </ng-container>
+
+          <ng-container matColumnDef="points" sticky >
+            <th mat-header-cell *matHeaderCellDef>Califique al estudiante por criterio</th>
+            <td mat-cell *matCellDef="let element" style="height: 15vh;">
+              <mat-slider
+              class="example-margin"
+              [max]="element.maxNote"
+              [min]="0"
+              [step]="1"
+              [discrete]="true"
+              (input)="onSliderChange($event,element)"
+              >
+            
+              <input matSliderThumb #slider [value]="sliderValue">
+            </mat-slider>
+
+            
+            
+            </td>
+            <td mat-footer-cell *matFooterCellDef> {{totalOralSum[0]}} / 60 </td>
+          </ng-container>
+      
+
+          <tr mat-header-row *matHeaderRowDef="displayedOralColumns; sticky: true;"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedOralColumns;"></tr>
+          <tr mat-footer-row *matFooterRowDef="displayedOralColumns"></tr>
+        </table>
+        <!-- Colocamos una tabla para los individuales de cada alumno -->
+      </mat-tab>
+      <mat-tab [label]="'Presentación Oral '+ secondStudentName" *ngIf="this.studentList.length > 1"> 
+
+        <table mat-table [dataSource]="graduateWorkOralSource" style="width: 100%;">
+          <ng-container matColumnDef="criteria" sticky >
+            <th mat-header-cell *matHeaderCellDef>Criterios de Evaluacion.</th>
+            <td mat-cell *matCellDef="let element">{{element.criteriaName}}</td>
+            <td mat-footer-cell *matFooterCellDef> Total </td>
+          </ng-container>
+
+          <ng-container matColumnDef="points" sticky >
+            <th mat-header-cell *matHeaderCellDef>Califique al estudiante por criterio</th>
+            <td mat-cell *matCellDef="let element" style="height: 15vh;">
+              <mat-slider
+              class="example-margin"
+              [max]="element.maxNote"
+              [min]="0"
+              [step]="1"
+              [discrete]="true"
+              (input)="onSliderChangeAlt($event,element)"
+              >
+            
+              <input matSliderThumb #slider [value]="sliderValue">
+            </mat-slider>
+
+            
+            
+            </td>
+            <td mat-footer-cell *matFooterCellDef> {{totalOralSum[1]}} </td>
+          </ng-container>
+    
+
+          <tr mat-header-row *matHeaderRowDef="displayedOralColumns; sticky: true;"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedOralColumns;"></tr>
+          <tr mat-footer-row *matFooterRowDef="displayedOralColumns"></tr>
+        </table>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+
+  <!-- Validar que las notas han sido cargadas -->
+  <div *ngIf="isJuryPresent !== null && graduateWorkType === 'EXPERIMENTAL' && juryData?.juryType == 'TUTOR' && tutorSubmitted == true && allNotesSubmitted == false" >
+    <h3 style="display: flex; align-items: center; justify-content: center;"><strong>Todas las notas has sido cargadas exitosamente, por favor espere a los demas jurados</strong></h3>
+  </div>
+
+  <div *ngIf="isJuryPresent !== null && graduateWorkType === 'EXPERIMENTAL' && juryData?.juryType != 'TUTOR' && jurySubmitted == true && allNotesSubmitted == false">
+    <h3 style="display: flex; align-items: center; justify-content: center;"><strong>Todas las notas has sido cargadas exitosamente, por favor espere a los demas jurados</strong></h3>
+  </div>
+
+  <div *ngIf="isJuryPresent !== null && graduateWorkType === 'EXPERIMENTAL' && juryData?.juryType != 'PRESIDENT' && allNotesSubmitted == true">
+    <h3 style="display: flex; align-items: center; justify-content: center;"><strong>Entrando a proceso de deliberacion, consulte con el Presidente de Jurado la nota final</strong></h3>
+  </div>
+
+  <div *ngIf="isJuryPresent !== null && graduateWorkType === 'EXPERIMENTAL' && juryData?.juryType == 'PRESIDENT' && allNotesSubmitted == true">
+    <h3 style="display: flex; align-items: center; justify-content: center;"><strong>Presidente del jurado, proceda a insertar la nota final del trabajo de grado</strong></h3>
+    
+    <table mat-table [dataSource]="resumeSource" style="width: 100%;">
+
+      <ng-container matColumnDef="studentName" sticky >
+        <th mat-header-cell *matHeaderCellDef>Alumno: </th>
+        <td mat-cell *matCellDef="let element" style="text-align: center;"> {{element.userName}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="presidentNote" sticky >
+        <th mat-header-cell *matHeaderCellDef> Presidente Jurado </th>
+        <td mat-cell *matCellDef="let element" style="text-align: center;"> {{element.presidentNote}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="principalNote" sticky >
+        <th mat-header-cell *matHeaderCellDef> Jurado </th>
+        <td mat-cell *matCellDef="let element" style="text-align: center;"> {{element.principalNote}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="tutorNote" sticky >
+        <th mat-header-cell *matHeaderCellDef> Tutor </th>
+        <td mat-cell *matCellDef="let element" style="text-align: center;"> {{element.tutorNote}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="finalNote" sticky >
+        <th mat-header-cell *matHeaderCellDef> Total Sobre 300 </th>
+        <td mat-cell *matCellDef="let element" style="text-align: center;">
+          <button mat-raised-button #tooltip="matTooltip"
+            [matTooltip]=" 'Faltan ' + element.nextNote + ' Puntos Para la siguiente nota' "
+            matTooltipPosition="above"
+            matTooltipHideDelay="100000"
+            aria-label="Button that displays a tooltip that hides when scrolled out of the container"
+            class="example-button"
+            (click)="imprimirElemento(element)">
+            {{element.finalNote}}
+          </button>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="equivalentNote" sticky >
+        <th mat-header-cell *matHeaderCellDef> Equivalencia con base 20 </th>
+        <td mat-cell *matCellDef="let element" style="text-align: center;">
+          <button mat-raised-button #tooltip="matTooltip"
+            [matTooltip]=" 'La nota se encuentra en el rango ' + element.minValueRange + ' - ' + element.maxValueRange "
+            matTooltipPosition="above"
+            matTooltipHideDelay="100000"
+            aria-label="Button that displays a tooltip that hides when scrolled out of the container"
+            class="example-button"
+            (click)="imprimirElemento(element)">
+            {{element.equivalentNote}}
+          </button>
+        </td>
+      </ng-container>
+      
+      <ng-container matColumnDef="actions" sticky >
+        <th mat-header-cell *matHeaderCellDef> Acciones </th>
+        <td mat-cell *matCellDef="let element" style="text-align: center;"><button mat-raised-button color="primary" (click)="editarJurado(element)"> Editar </button></td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedFinalColumns; sticky: true;"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedFinalColumns;"></tr>
+    </table>
+    
+    <h3 style="display: flex; justify-content: center; margin-top: 20px; margin-bottom: 20px;" *ngIf="editFinalNote"><strong>Seleccione la seccion que quiere modificar</strong></h3>
+    <mat-form-field style="width: 100%;" *ngIf="editFinalNote">
+      <mat-label>Seleccione un jurado</mat-label>
+      <mat-select [(value)]="jurySelected">
+        <mat-option value="PRESIDENT"> Presidente de Jurado </mat-option>
+        <mat-option value="PRINCIPAL"> Jurado Principal </mat-option>
+        <mat-option value="TUTOR"> Jurado Tutor </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <h3 style="display: flex; justify-content: center; margin-top: 20px; margin-bottom: 20px;" *ngIf="jurySelected"><strong>Seleccione la planilla que desea cambiar</strong></h3>
+    <mat-form-field style="width: 100%;" *ngIf="jurySelected">
+      <mat-label>Seleccione la planilla</mat-label>
+      <mat-select [(value)]="formSelected">
+        <mat-option value="ORAL"> Planilla de Evaluacion de Defensa Oral </mat-option>
+        <mat-option value="REPORT"> Planilla de Evaluacion de Trabajo Escrito </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button *ngIf = "formSelected!=null" mat-raised-button (click)="cargarCriterios()" >Cargas Criterios para edicion</button>
+    <table mat-table [dataSource]="graduateWorkEditSource" *ngIf = "formSelected!=null" style="width: 100%;">
+
+      <ng-container matColumnDef="criteria" sticky >
+        <th mat-header-cell *matHeaderCellDef>Criterios de Evaluacion.</th>
+        <td mat-cell *matCellDef="let element">{{element.criteriaName}}</td>
+        <td mat-footer-cell *matFooterCellDef> Total </td>
+      </ng-container>
+
+      <ng-container matColumnDef="points" sticky >
+        <th mat-header-cell *matHeaderCellDef>Califique al estudiante por criterio</th>
+        <td mat-cell *matCellDef="let element" style="height: 15vh;">
+        <mat-slider
+          class="example-margin"
+          [max]="element.maxNote"
+          [min]="0"
+          [step]="1"
+          [discrete]="true"
+          
+          (input)="onSliderNewChange($event,element)"
+          >
+        
+          <input matSliderThumb #slider [value]="sliderValue">
+        </mat-slider>
+
+        
+        
+        </td>
+        <td mat-footer-cell *matFooterCellDef> {{totalNewSum[0]}} / {{limitEdition}}</td>
+      </ng-container>
+  
+
+      <tr mat-header-row *matHeaderRowDef="displayedOralColumns; sticky: true;"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedOralColumns;"></tr>
+      <tr mat-footer-row *matFooterRowDef="displayedOralColumns"></tr>
+    </table>
+    <button *ngIf = "chargeCriteria" mat-raised-button color = "primary"
+    (click)="cargarNuevasNotas()">
+      Cargar nuevas notas
+    </button>
+    <ng-template #thenBlock>
+    </ng-template>
+
+    <h3 style="display: flex; justify-content: center; margin-top: 20px; margin-bottom: 20px;"><strong>Seleccione la mencion a otorgar</strong></h3>
+    <mat-form-field style="width: 100%;">
+      <mat-label>Seleccione una mecion</mat-label>
+      <mat-select [(value)]="mentionSelected">
+        <mat-option value="HONORABLE"> Honorifica </mat-option>
+        <mat-option value="PUBLICATION"> Publicacion </mat-option>
+        <mat-option selected="selected" value="NULL"> Sin mencion </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+  </div>
+
+  <div *ngIf="isJuryPresent !== null && graduateWorkType === 'EXPERIMENTAL' && juryData?.juryType !== 'TUTOR' && jurySubmitted == false" >
+    <h3 style="display: flex; align-items: center; justify-content: center;"><strong>Planillas de Evaluación Trabajo Experimental de Grado (TEG) - Jurado</strong></h3>
+    <mat-tab-group>
+      <mat-tab label="Trabajo Escrito">
+        
+        <table mat-table [dataSource]="graduateWorkSource" style="width: 50%;">
+
+          <ng-container matColumnDef="criteria" sticky >
+            <th mat-header-cell *matHeaderCellDef>Criterios de Evaluacion.</th>
+            <td mat-cell *matCellDef="let element">{{element.criteriaName}}</td>
+            <td mat-footer-cell *matFooterCellDef> Total </td>
+          </ng-container>
+
+          <ng-container matColumnDef="0">
+            <th mat-header-cell *matHeaderCellDef >0</th>
+            <td mat-cell *matCellDef="let element" [style]="(0 > element.maxNote) ? 'background-color: red' : '' ">
+              <mat-checkbox style="width: 5; height: 5;" (change)="onCheckboxChange(element, 0)" [checked]="element.selectedCheckBoxIndex === 0" [disabled]="0 > element.maxNote" ></mat-checkbox>
+            </td>
+            <td mat-footer-cell *matFooterCellDef> </td>
+          </ng-container>
+          <ng-container matColumnDef="1">
+            <th mat-header-cell *matHeaderCellDef>1</th>
+            <td mat-cell *matCellDef="let element">
+              <mat-checkbox (change)="onCheckboxChange(element, 1)" [checked]="element.selectedCheckBoxIndex === 1" [disabled]="1 > element.maxNote"></mat-checkbox>
+            </td>
+            <td mat-footer-cell *matFooterCellDef> </td>
+          </ng-container>
+          <ng-container matColumnDef="2">
+            <th mat-header-cell *matHeaderCellDef>2</th>
+            <td mat-cell *matCellDef="let element">
+              <mat-checkbox (change)="onCheckboxChange(element, 2)" [checked]="element.selectedCheckBoxIndex === 2" [disabled]="2 > element.maxNote"></mat-checkbox>
+            </td>
+            <td mat-footer-cell *matFooterCellDef> </td>
+          </ng-container>
+          <ng-container matColumnDef="3">
+            <th mat-header-cell *matHeaderCellDef>3</th>
+            <td mat-cell *matCellDef="let element">
+              <mat-checkbox (change)="onCheckboxChange(element, 3)" [checked]="element.selectedCheckBoxIndex === 3" [disabled]="3 > element.maxNote"></mat-checkbox>
+            </td>
+            <td mat-footer-cell *matFooterCellDef> </td>
+          </ng-container>
+          <ng-container matColumnDef="4">
+            <th mat-header-cell *matHeaderCellDef>4</th>
+            <td mat-cell *matCellDef="let element">
+              <mat-checkbox (change)="onCheckboxChange(element, 4)" [checked]="element.selectedCheckBoxIndex === 4" [disabled]="4 > element.maxNote"></mat-checkbox>
+            </td>
+            <td mat-footer-cell *matFooterCellDef> </td>
+          </ng-container>
+          <ng-container matColumnDef="5">
+            <th mat-header-cell *matHeaderCellDef>5</th>
+            <td mat-cell *matCellDef="let element">
+              <mat-checkbox (change)="onCheckboxChange(element, 5)" [checked]="element.selectedCheckBoxIndex === 5" [disabled]="5 > element.maxNote"></mat-checkbox>
+            </td>
+            <td mat-footer-cell *matFooterCellDef> </td>
+          </ng-container>
+          <ng-container matColumnDef="6">
+            <th mat-header-cell *matHeaderCellDef>6</th>
+            <td mat-cell *matCellDef="let element">
+              <mat-checkbox (change)="onCheckboxChange(element, 6)" [checked]="element.selectedCheckBoxIndex === 6" [disabled]="6 > element.maxNote"></mat-checkbox>
+            </td>
+            <td mat-footer-cell *matFooterCellDef> {{totalSum}} / 60</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true;"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+        </table>
+        
+
+      </mat-tab>
+      <mat-tab [label]="'Presentación Oral '+ firstStudentName" > 
+        <!-- Colocamos una tabla para los requerimientos comunes -->
+        
+        <table mat-table [dataSource]="graduateWorkOralSource" style="width: 100%;">
+
+          <ng-container matColumnDef="criteria" sticky >
+            <th mat-header-cell *matHeaderCellDef>Criterios de Evaluacion.</th>
+            <td mat-cell *matCellDef="let element">{{element.criteriaName}}</td>
+            <td mat-footer-cell *matFooterCellDef> Total </td>
+          </ng-container>
+
+          <ng-container matColumnDef="points" sticky >
+            <th mat-header-cell *matHeaderCellDef>Califique al estudiante por criterio</th>
+            <td mat-cell *matCellDef="let element" style="height: 15vh;">
+              <mat-slider
+              class="example-margin"
+              [max]="element.maxNote"
+              [min]="0"
+              [step]="1"
+              [discrete]="true"
+              (input)="onSliderChange($event,element)"
+              >
+            
+              <input matSliderThumb #slider [value]="sliderValue">
+            </mat-slider>
+
+            
+            
+            </td>
+            <td mat-footer-cell *matFooterCellDef> {{totalOralSum[0]}} / 40 </td>
+          </ng-container>
+      
+
+          <tr mat-header-row *matHeaderRowDef="displayedOralColumns; sticky: true;"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedOralColumns;"></tr>
+          <tr mat-footer-row *matFooterRowDef="displayedOralColumns"></tr>
+        </table>
+        <!-- Colocamos una tabla para los individuales de cada alumno -->
+      </mat-tab>
+
+      <mat-tab [label]="'Presentación Oral '+ secondStudentName" *ngIf="this.studentList.length > 1"> 
+
+        <table mat-table [dataSource]="graduateWorkOralSource" style="width: 100%;">
+          <ng-container matColumnDef="criteria" sticky >
+            <th mat-header-cell *matHeaderCellDef>Criterios de Evaluacion.</th>
+            <td mat-cell *matCellDef="let element">{{element.criteriaName}}</td>
+            <td mat-footer-cell *matFooterCellDef> Total </td>
+          </ng-container>
+
+          <ng-container matColumnDef="points" sticky >
+            <th mat-header-cell *matHeaderCellDef>Califique al estudiante por criterio</th>
+            <td mat-cell *matCellDef="let element" style="height: 15vh;">
+              <mat-slider
+              class="example-margin"
+              [max]="element.maxNote"
+              [min]="0"
+              [step]="1"
+              [discrete]="true"
+              (input)="onSliderChangeAlt($event,element)"
+              >
+            
+              <input matSliderThumb #slider [value]="sliderValue">
+            </mat-slider>
+
+            
+            
+            </td>
+            <td mat-footer-cell *matFooterCellDef> {{totalOralSum[1]}} / 40 </td>
+          </ng-container>
+    
+
+          <tr mat-header-row *matHeaderRowDef="displayedOralColumns; sticky: true;"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedOralColumns;"></tr>
+          <tr mat-footer-row *matFooterRowDef="displayedOralColumns"></tr>
+        </table>
+      </mat-tab>
+
+    </mat-tab-group>
+    
+
+  </div>
+
+  <div *ngIf="isJuryPresent !== null && graduateWorkType === 'INSTRUMENTAL' && juryData.juryType !== 'TUTOR'" >
+    <p><strong>Planilla Evaluación Presentación Oral Trabajo Instrumental de Grado (TIG)</strong></p>
+  </div>
 
   
 
 </mat-dialog-content>
+
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>Cancel</button>
-  <button mat-button [mat-dialog-close]="true" cdkFocusInitial (click)="cargarNotaJurado()">Cargar Nota</button>
+  <button mat-raised-button color = "primary" (click)="cargarNotaJurado()" *ngIf="isJuryPresent !== null && (tutorSubmitted == false && jurySubmitted == false)" [disabled]="!areAllNotesSelected">Cargar Nota</button>
+  <button mat-raised-button color = "primary" (click)="cargarNotaFinalJurado()" *ngIf="isJuryPresent !== null && juryData?.juryType == 'PRESIDENT'">Cargar Final de Jurado</button>
+
 </mat-dialog-actions>
+

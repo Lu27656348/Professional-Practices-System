@@ -3,7 +3,6 @@ import file_saver from 'file-saver'
 const { saveAs } = file_saver
 // Load the full build.
 import lodash from 'lodash';
-const { _ } =  lodash;
 const { TableRow,BorderStyle } = docx;
 const { WidthType,Paragraph } = docx;
 const { VerticalAlign, Document } = docx;
@@ -13,10 +12,7 @@ const { HeightRule,TableCell } = docx;
 const { Footer, LineRuleType } = docx;
 const { Table, PageBreak } = docx;
 const { HeadingLevel,Packer } = docx;
-//const { TableRow,BorderStyle } = docx;
 
-import * as fs from 'fs'
-const { writeFileSync } = fs;
 
 const sin_bordes = {
     top: {
@@ -70,14 +66,14 @@ const celda_vacia = new TableCell({
                             type: WidthType.DXA
                         }
                     });
-function is_char(value)
+function is_char(value: string)
 {
     if (Object.prototype.toString.call(value) !== '[object String]')
      return false;
     return value && value.length === 1;
 }
 const tam_cuadro_titulo = 280;
-const generar50Celdas = (titulo) => {
+const generar50Celdas = (titulo: string) => {
     const lista = []
     for (let j = 0; j < 50; j++){
             if(is_char(titulo[j])){
@@ -115,7 +111,7 @@ const generar50Celdas = (titulo) => {
     return lista;
 
 }
-const generarTituloOneHundred = (titulo) => {
+const generarTituloOneHundred = (titulo: string) => {
     const rows = [];
     let mitad = 50
     let extraer = titulo.slice(0,50);
@@ -133,11 +129,11 @@ const generarTituloOneHundred = (titulo) => {
 }
 //generarTituloOneHundred(titulo)
 
-function convertProxyObjectToPojo(proxyObj) {
-    return _.cloneDeep(proxyObj);
+function convertProxyObjectToPojo(proxyObj: any) {
+    return lodash.cloneDeep(proxyObj);
 }
   
-const generarDatosAlumno = ( object ) => {
+const generarDatosAlumno = ( object:any ) => {
                 if(object !== undefined && !(Object.keys(object).length === 0)){
                     const pt = convertProxyObjectToPojo(object)
                     const resultado = new Paragraph({
@@ -255,7 +251,7 @@ const encabezadoTablaAlumno = new TableRow({
         }),
     ]
 })
-const generarNombresAlumno = ( object ) => {
+const generarNombresAlumno = ( object:any ) => {
     console.log("generarNombresAlumno()");
     console.log(object);
     console.log(object.nombres);
@@ -337,12 +333,12 @@ const generarNombresAlumno = ( object ) => {
     }
 
 }
-const generarFilaAlumno = (planilla_propuesta_TEG) => {
+const generarFilaAlumno = (planilla_propuesta_TEG: any) => {
     console.log("generarFilaAlumno()");
     console.log(planilla_propuesta_TEG);
     const filas = [];
     filas.push(encabezadoTablaAlumno);
-    planilla_propuesta_TEG.alumnos.forEach( (element) => {
+    planilla_propuesta_TEG.alumnos.forEach( (element:any) => {
         if(element !== undefined && !(Object.keys(element).length === 0)){
             const fila = new TableRow({
                 height: {
@@ -498,7 +494,7 @@ const generarFilaAlumno = (planilla_propuesta_TEG) => {
     })
     return filas;
 }
-const generarDatosAlumno2 = (object) => {
+const generarDatosAlumno2 = (object:any) => {
     if(object !== undefined && !(Object.keys(object).length === 0)){
         const parrafo = new Paragraph({
                                 style: "aside",
@@ -533,7 +529,7 @@ const generarDatosAlumno2 = (object) => {
                 });
     return parrafo;
 }
-const generarTablaDatosAlumno = (object) => {
+const generarTablaDatosAlumno = (object:any) => {
 
     if(object !== undefined && !(Object.keys(object).length === 0)){
         const tablaAlumno = [
@@ -778,7 +774,7 @@ const generarTablaDatosAlumno = (object) => {
             
 
 }
-export const generarPlanillaPropuestaTEG = (planilla_propuesta_TEG) => {
+export const generarPlanillaPropuestaTEG = (planilla_propuesta_TEG:any) => {
     console.log("planilla_propuesta_TEG")
     /* Validamos si la cantidad de experiencia del tutor es nula o '0' */
     let tutor_experiencia;
@@ -834,28 +830,25 @@ export const generarPlanillaPropuestaTEG = (planilla_propuesta_TEG) => {
         sections: [{
             properties: {
                 type: SectionType.CONTINUOUS,
-                margin: {
-                    right: 150,
-                    bottom: 150,
-                    left: 150,
-                }
             },
             headers: {
                 default: new Header({
-                    children: [new Paragraph({
-                        children: [
-                            /*
-                            new ImageRun({
-                                data: readFileSync('logo.png'),
-                                transformation: {
-                                    width: 400,
-                                    height: 100,
-                                },
-                            }),
-                            */
-                        ],
-                        alignment: AlignmentType.LEFT
-                    })],
+                    children: [
+                        new Paragraph({
+                            children: [
+                                /*
+                                new ImageRun({
+                                    data: readFileSync('logo.png'),
+                                    transformation: {
+                                        width: 400,
+                                        height: 100,
+                                    },
+                                }),
+                                */
+                            ],
+                            alignment: AlignmentType.LEFT
+                        })
+                    ],
                 }),
             },
             footers: {
@@ -1145,23 +1138,6 @@ export const generarPlanillaPropuestaTEG = (planilla_propuesta_TEG) => {
                                     children: [
                                         new Paragraph({
                                             style: "aside",
-                                            borders: {
-                                                top: {
-                                                    style: BorderStyle.NONE,
-                                                    size: 1,
-                                                    color: "ff0000",
-                                                },
-                                                left: {
-                                                    style: BorderStyle.NONE,
-                                                    size: 1,
-                                                    color: "ff0000",
-                                                },
-                                                right: {
-                                                    style: BorderStyle.NONE,
-                                                    size: 1,
-                                                    color: "ff0000",
-                                                }
-                                            },
                                             children: [
                                                 new TextRun({
                                                     text: planilla_propuesta_TEG.tutor_academico.nombres,
@@ -1324,23 +1300,6 @@ export const generarPlanillaPropuestaTEG = (planilla_propuesta_TEG) => {
                                     children: [
                                         new Paragraph({
                                             style: "aside",
-                                            borders: {
-                                                top: {
-                                                    style: BorderStyle.NONE,
-                                                    size: 1,
-                                                    color: "ff0000",
-                                                },
-                                                left: {
-                                                    style: BorderStyle.NONE,
-                                                    size: 1,
-                                                    color: "ff0000",
-                                                },
-                                                right: {
-                                                    style: BorderStyle.NONE,
-                                                    size: 1,
-                                                    color: "ff0000",
-                                                }
-                                            },
                                             children: [
                                                 new TextRun({
                                                     text: planilla_propuesta_TEG.tutor_academico.telefono,
@@ -2588,9 +2547,7 @@ export const generarPlanillaPropuestaTEG = (planilla_propuesta_TEG) => {
                                             ],
                                             alignment: AlignmentType.LEFT,
                                             indent: {
-                                                firstLine: 300,
-                                                size: 300,
-                                                type: WidthType.DXA,
+                                                firstLine: 300
                                             }
                                         })
                                     ],
@@ -2637,9 +2594,7 @@ export const generarPlanillaPropuestaTEG = (planilla_propuesta_TEG) => {
                                             style: "aside",
                                             alignment: AlignmentType.LEFT,
                                             indent: {
-                                                firstLine: 300,
-                                                size: 300,
-                                                type: WidthType.DXA,
+                                                firstLine: 300
                                             }
                                         })
                                     ],
@@ -2686,9 +2641,7 @@ export const generarPlanillaPropuestaTEG = (planilla_propuesta_TEG) => {
                                             style: "aside",
                                             alignment: AlignmentType.LEFT,
                                             indent: {
-                                                firstLine: 300,
-                                                size: 300,
-                                                type: WidthType.DXA,
+                                                firstLine: 300
                                             }
                                         })
                                     ],
@@ -2808,8 +2761,7 @@ export const generarPlanillaPropuestaTEG = (planilla_propuesta_TEG) => {
                                             alignment: AlignmentType.LEFT
                                         })
                                     ],
-                                    verticalAlign: VerticalAlign.CENTER,
-                                    borders: sin_bordes,
+                                    verticalAlign: VerticalAlign.CENTER
                                 })
                             ]
                         })

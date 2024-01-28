@@ -3,7 +3,7 @@ import { LoginService } from '../../../../services/login.service';
 import { UsersService } from '../../../../services/users.service';
 import { StudentService} from '../../../../services/student.service'
 import { GraduateworkService } from '../../../../services/graduatework.service'
-import { forkJoin, of } from 'rxjs';
+import { Observable, forkJoin, of, switchMap } from 'rxjs';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog'
 
@@ -27,14 +27,39 @@ export class DefenseComponent {
 
   proposal: any[] = [];
 
-  displayedColumns: string[] = ['graduateWorkId', 'graduateWorkTitle', 'studentDNI', 'symbol',"check"];
+  displayedColumns: string[] = ['graduateWorkId', 'graduateWorkTitle', 'studentDNI',"check"];
 
   constructor(private loginService: LoginService,private router: Router,private userService: UsersService, private graduateworkService: GraduateworkService, private dialog: MatDialog, private studentService: StudentService){
-    this.graduateworkService.getDefensePending().subscribe({
+    this.graduateworkService.getDefensePending()
+    .pipe(
+      switchMap(
+        (data: any) => {
+          console.log(data)
+          this.reviewerData = [...data]
+          const observables: Observable<any>[] = []
+          this.reviewerData.forEach( (proposal:any) => {
+            observables.push(this.graduateworkService.getGraduateWorkStudentData(proposal.graduateWorkId))
+          })
+          return forkJoin(observables)
+        }
+      )
+    )
+    .subscribe({
       next: (data: any) => {
-        console.log(data)
-        this.reviewerData = [...data]
-        console.log(this.reviewerData)
+        this.reviewerData.forEach( (proposal:any,indexP: number) => {
+          let authors = ""; 
+          data[indexP].forEach( (author: any, index: number) => {
+           console.log(data[indexP])
+           if(index == 0){
+             authors = authors + author.userLastName.split(" ")[0]+ author.userFirstName.split(" ")[0] + "/";
+           }else{
+             authors = authors + author.userLastName.split(" ")[0]+ author.userFirstName.split(" ")[0];
+           } 
+           console.log(data[indexP][0])
+           this.reviewerData[indexP].studentDNI = data[indexP][0].userDNI;
+          })
+          this.reviewerData[indexP].authors = authors;
+         })
       },
       error: (error: any) => {
         console.log(error)
@@ -73,13 +98,10 @@ export class DefenseComponent {
   }
 
   openDialog(data: any) {
-    console.log(this.user)
     console.log(data);
 
-    let studentData;
-    let graduateWorkData;
-
-    forkJoin([ this.userService.getUserData(data.studentDNI),this.graduateworkService.getCurrentGraduateWork(data.studentDNI)])
+    
+    forkJoin([ this.graduateworkService.getGraduateWorkStudentData(data.graduateWorkId),this.graduateworkService.getCurrentGraduateWork(data.studentDNI)])
     .subscribe(([result1,result2]) => {
       console.log(result1)
       console.log(result2)
@@ -98,7 +120,6 @@ export class DefenseComponent {
       });
       
       });
-  
 
   }
   ngOnInit(){

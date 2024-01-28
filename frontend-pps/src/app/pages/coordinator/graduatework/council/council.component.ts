@@ -5,7 +5,7 @@ import { GraduateworkService } from '../../../../services/graduatework.service'
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog'
 import { StudentService} from '../../../../services/student.service'
-import { forkJoin, of } from 'rxjs';
+import { Observable, forkJoin, of, switchMap } from 'rxjs';
 
 import { DialogCouncilComponent } from './dialog-council/dialog-council.component'
 
@@ -29,10 +29,40 @@ export class CouncilComponent implements OnInit{
 
   proposal: any[] = [];
 
-  displayedColumns: string[] = ['graduateWorkId', 'graduateWorkTitle', 'studentDNI', 'symbol',"check"];
+  displayedColumns: string[] = ['graduateWorkId', 'graduateWorkTitle', 'studentDNI',"check"];
 
   constructor(private loginService: LoginService,private router: Router,private userService: UsersService, private graduateworkService: GraduateworkService, private dialog: MatDialog, private studentService: StudentService){
-    this.graduateworkService.getCouncilPending().subscribe({
+    this.graduateworkService.getCouncilPending().pipe(
+      switchMap(
+        (data) => {
+          this.councilData = [...data]
+          const observables: Observable<any>[] = []
+          this.councilData.forEach( (proposal:any) => {
+            observables.push(this.graduateworkService.getGraduateWorkStudentData(proposal.graduateWorkId))
+          })
+          return forkJoin(observables)
+        }
+      ),
+      switchMap(
+        (data) => {
+          this.councilData.forEach( (proposal:any,indexP: number) => {
+            let authors = ""; 
+            data[indexP].forEach( (author: any, index: number) => {
+             console.log(data[indexP])
+             if(index == 0){
+               authors = authors + author.userLastName.split(" ")[0]+ author.userFirstName.split(" ")[0] + "/";
+             }else{
+               authors = authors + author.userLastName.split(" ")[0]+ author.userFirstName.split(" ")[0];
+             } 
+             console.log(data[indexP][0])
+             this.councilData[indexP].studentDNI = data[indexP][0].userDNI;
+            })
+            this.councilData[indexP].authors = authors;
+           })
+           return of(this.councilData)
+        }
+      ),
+    ).subscribe({
       next: (data: any) => {
         console.log(data)
         this.councilData = [...data]
@@ -78,7 +108,7 @@ export class CouncilComponent implements OnInit{
 
     console.log(data)
 
-    forkJoin([this.userService.getUserData(data.studentDNI),this.graduateworkService.getGraduateWorkById(data.graduateWorkId)]).subscribe({
+    forkJoin([this.graduateworkService.getGraduateWorkStudentData(data.graduateWorkId),this.graduateworkService.getGraduateWorkById(data.graduateWorkId)]).subscribe({
       next: ([userData,graduateWorkData]) => {
 
         const dialogRef = this.dialog.open(DialogCouncilComponent,{

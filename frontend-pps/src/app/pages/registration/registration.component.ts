@@ -9,8 +9,15 @@ import { StudentService } from 'src/app/services/student.service';
 import { ProfessorsService } from 'src/app/services/professors.service';
 
 import { RegisterRequest } from '../../interfaces/RegisterRequest'
+import { CreateUserRequest } from 'src/app/interfaces/requests/CreateUserRequest';
+import { UsersService } from 'src/app/services/users.service';
+import { CreateStudentRequest } from 'src/app/interfaces/CreateStudentRequest';
 
-
+import { MatSnackBar, MatSnackBarHorizontalPosition,MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
+import { EnterpriseService } from 'src/app/services/enterprise.service';
+import { CreateExternalRequest } from 'src/app/interfaces/requests/CreateExternalRequest';
+import { ExternalPersonnelService } from 'src/app/services/external-personnel.service';
+import { createProfessorRequest } from 'src/app/interfaces/CreateProfessorRequest';
 
 @Component({
   selector: 'app-registration',
@@ -19,6 +26,12 @@ import { RegisterRequest } from '../../interfaces/RegisterRequest'
 })
 export class RegistrationComponent implements OnInit {
 
+  horizontalPosition: MatSnackBarHorizontalPosition = 'right';
+  verticalPosition: MatSnackBarVerticalPosition = 'bottom';
+
+  formatSelected: string = "V-";
+  hide = true;
+  hideConfirmation = true;
   dataBs: any;
   dataService$: Subscription = new Subscription();
 
@@ -28,8 +41,13 @@ export class RegistrationComponent implements OnInit {
   schoolNameSelected: any = null;
   schoolList: any = null;
 
+  enterpriseList: any = [];
+  enterpriseSelected: any = null;
+
   selectedDateVar: any = null
   selectedDateValue: any = null;
+
+  emailFormatSelected: string | null = "@est.ucab.edu.ve";
 
   myForm = new FormGroup({
     date: new FormControl()
@@ -50,11 +68,13 @@ export class RegistrationComponent implements OnInit {
   semesterSelected: any = null;
 
   registerForm = this.formBuilder.group({
-    userDNI: ['',[Validators.required]],
+    userDNI: ['',[Validators.required,Validators.pattern(/^[0-9]+$/)]],
     password: ['',Validators.required],
+    passwordConfirmation: ['',Validators.required],
+    userphone: ['',Validators.required],
     userfirstname: ['',Validators.required],
     userlastname: ['',Validators.required],
-    useremailucab: ['',Validators.required],
+    useremailucab: ['',Validators.required]
   })
 
   studentForm = this.formBuilder.group({
@@ -72,16 +92,23 @@ export class RegistrationComponent implements OnInit {
   })
 
   externalForm = this.formBuilder.group({
-    userDNI: ['',[Validators.required]],
-    password: ['',Validators.required],
-    userfirstname: ['',Validators.required],
-    userlastname: ['',Validators.required],
-    useremailucab: ['',Validators.required],
+    externalPersonnelEnterpriseId: ['',[Validators.required]],
+    externalPersonnelProfession: ['',[Validators.required]],
+    externalPersonnelOffice: ['',Validators.required],
+    externalPersonnelAddress: ['',Validators.required],
+    externalPersonnelWorkExperience: ['',Validators.required]
   })
 
-  constructor(private formBuilder: FormBuilder, private router: Router, private registerService: RegisterService, private schoolService: SchoolService,private studentService: StudentService, private professorService: ProfessorsService){}
+  constructor(private formBuilder: FormBuilder, private router: Router, private registerService: RegisterService, private schoolService: SchoolService,private studentService: StudentService, private professorService: ProfessorsService,private userService: UsersService, private _snackBar: MatSnackBar, private enterpriseService: EnterpriseService, private externalService: ExternalPersonnelService){}
 
   ngOnInit(): void {
+
+    this.enterpriseService.getEnterprises().subscribe({
+      next: (enterpriseListData) => {
+        console.log(enterpriseListData)
+        this.enterpriseList = enterpriseListData
+      }
+    })
 
     this.schoolService.getSchools().subscribe({
       next: (schoolListData) => {
@@ -99,69 +126,38 @@ export class RegistrationComponent implements OnInit {
     return (domain != null ) ? domain : '';
   }
 
-  register(){
-    console.log("Registrando")
-    if(this.registerForm.valid){
-      const body = this.registerForm.value;
-      console.log(body);
-      if(body.useremailucab){
-        switch (this.validateEmail(body.useremailucab)) {
-          case 'gmail.com':
-            console.log("crear usuario foraneo")
-            this.formCase = "External"
-            break;
-          case 'ucab.edu.ve':
-            console.log("crear usuario profesor")
-            this.formCase = "Professor"
-            break;
-          case 'est.ucab.edu.ve':
-            console.log("crear usuario estudiante")
-            this.formCase = "Student"
-            break; 
-          default:
-            console.log("Error en tipo de usuario")
-            break;
-        }
-        
-        this.registerService.registration(body as RegisterRequest).subscribe({
-          next: (userData) => {
-            console.log("next")
-            console.log(userData)
-            this.router.navigateByUrl("login");
-            this.registerForm.reset();
-          },
-          error: (errorData) => {
-            console.log("error")
-          }
-        });
-        
-
-        
-      }
-      
-      /*
-    
-      */
-    }
-  }
-
   registerStudent(){
     if(this.registerForm.valid && this.studentForm.valid){
+
       const body = this.registerForm.value;
       const studentBody = this.studentForm.value
+      body.userDNI = this.formatSelected + body.userDNI
+
+      const userData: CreateUserRequest = {
+        userDNI: body.userDNI,
+	      userPassword: body.password as string, 
+	      userFirstName: body.userfirstname as string,
+	      userLastName: body.userlastname as string,
+	      userEmail: body.useremailucab as string + this.emailFormatSelected as string,
+	      userPhone: body.userphone as string,
+	      userEmailAlt: null
+      }
+
+      const studentData: CreateStudentRequest = {
+        "studentDNI": body.userDNI as string,
+        "studentSchoolName": studentBody.studentSchoolName as string,
+        "studentSemester": studentBody.studentSemester as string,
+        "studentAddress": studentBody.studentAddress as string ,
+        "studentOffice": studentBody.studentOffice as string
+      }
+
       console.log(body);
       console.log(studentBody);
 
-      this.registerService.registration(body as RegisterRequest).pipe(
+      this.userService.createUser(userData as CreateUserRequest).pipe(
         switchMap( (userData) => {
           console.log(userData)
-          return this.studentService.createStudent({
-            "studentDNI": userData.userDNI,
-            "studentSchoolName": studentBody.studentSchoolName as string,
-            "studentSemester": studentBody.studentSemester as string,
-            "studentAddress": studentBody.studentAddress as string ,
-            "studentOffice": studentBody.studentOffice as string
-          })
+          return this.studentService.createStudent(studentData)
         }),
       )
       .subscribe({
@@ -169,10 +165,15 @@ export class RegistrationComponent implements OnInit {
           console.log(studentData)
           this.registerForm.reset();
           this.studentForm.reset();
-          this.router.navigateByUrl("login");
         },
         error: (errorData) => {
-          console.log("error")
+          this._snackBar.open(errorData, 'Cerrar', {
+            horizontalPosition: this.horizontalPosition,
+            verticalPosition: this.verticalPosition,
+          });
+        },
+        complete: () => {
+          this.router.navigateByUrl("login");
         }
       });
       
@@ -180,27 +181,44 @@ export class RegistrationComponent implements OnInit {
   }
 
   registerProfessor(){
+
     if(this.registerForm.valid && this.professorForm.valid){
+
       const body = this.registerForm.value;
       const professorBody = this.professorForm.value
+
+      const userData: CreateUserRequest = {
+        userDNI: this.formatSelected+body.userDNI as string,
+	      userPassword: body.password as string, 
+	      userFirstName: body.userfirstname as string,
+	      userLastName: body.userlastname as string,
+	      userEmail: body.useremailucab as string + this.emailFormatSelected as string,
+	      userPhone: body.userphone as string,
+	      userEmailAlt: null
+      }
+      
+      const professorData: createProfessorRequest = {
+        "professorDNI": userData.userDNI,
+        "professorSchoolName": professorBody.professorSchoolName as string,
+        "professorProfession": "Regular",
+        "professorOffice": professorBody.professorOffice as string ,
+        "professorWorkExperience": professorBody.professorWorkExperience as string,
+        "professorGraduationYear": this.myForm.value.date as Date,
+      }
+      
+      body.userDNI = this.formatSelected + body.userDNI
+      body.useremailucab = body.useremailucab as string + this.emailFormatSelected as string
+
       console.log(body);
       console.log(professorBody);
       console.log(this.myForm.value.date)
 
-      this.registerService.registration(body as RegisterRequest).pipe(
+      this.userService.createUser(userData as CreateUserRequest).pipe(
         switchMap( (userData) => {
           console.log(userData)
-          return this.professorService.createProfessors({
-            "professorDNI": userData.userDNI,
-            "professorSchoolName": professorBody.professorSchoolName as string,
-            "professorProfession": "Regular",
-            "professorOffice": professorBody.professorOffice as string ,
-            "professorWorkExperience": professorBody.professorWorkExperience as string,
-            "professorGraduationYear": this.myForm.value.date as Date,
-          })
-        }),
-      )
-      .subscribe({
+          return this.professorService.createProfessors(professorData)
+        })
+      ).subscribe({
         next: (professorData) => {
           console.log(professorData)
           this.registerForm.reset();
@@ -214,7 +232,59 @@ export class RegistrationComponent implements OnInit {
     }
   }
 
+  registerExternal(){
+    if(this.registerForm.valid && this.externalForm.valid){
+      const body = this.registerForm.value;
+      const externalBody = this.externalForm.value
+      console.log(body)
+      console.log(externalBody)
 
+      const userData: CreateUserRequest = {
+        userDNI: this.formatSelected + body.userDNI as string,
+	      userPassword: body.password as string, 
+	      userFirstName: body.userfirstname as string,
+	      userLastName: body.userlastname as string,
+	      userEmail: body.useremailucab as string + this.emailFormatSelected,
+	      userPhone: body.userphone as string,
+	      userEmailAlt: null
+      }
+      
+      const externalData: CreateExternalRequest = {
+        externalPersonnelDNI: this.formatSelected + body.userDNI as string,
+        externalPersonnelEnterpriseId: parseInt(externalBody.externalPersonnelEnterpriseId as string),
+        externalPersonnelProfession: externalBody.externalPersonnelProfession as string,
+        externalPersonnelOffice: externalBody.externalPersonnelOffice as string,
+        externalPersonnelAddress: externalBody.externalPersonnelAddress as string,
+        externalPersonnelGraduationYear: this.myForm.value.date as string,
+        externalPersonnelWorkExperience: externalBody.externalPersonnelWorkExperience as string
+      }
+
+      this.userService.createUser(userData as CreateUserRequest).pipe(
+        switchMap( (userData) => {
+          console.log(userData)
+          return this.externalService.createExternal(externalData)
+        })
+      )
+      .subscribe({
+        next: (externalData) => {
+          console.log(externalData)
+          this.registerForm.reset();
+          this.studentForm.reset();
+        },
+        error: (errorData) => {
+          this._snackBar.open(errorData, 'Cerrar', {
+            horizontalPosition: this.horizontalPosition,
+            verticalPosition: this.verticalPosition,
+          });
+        },
+        complete: () => {
+          this.router.navigateByUrl("login");
+        }
+      });
+
+      
+    }
+  }
   selectedDate(date: any) {
     console.log("Selected date:", date.target);
     console.log("Selected date:", this.selectedDateValue);
@@ -229,7 +299,8 @@ export class RegistrationComponent implements OnInit {
       const body = this.registerForm.value;
       console.log(body);
       if(body.useremailucab){
-        switch (this.validateEmail(body.useremailucab)) {
+        console.log(body.useremailucab+this.emailFormatSelected)
+        switch (this.validateEmail(body.useremailucab+this.emailFormatSelected)) {
           case 'gmail.com':
             console.log("crear usuario foraneo")
             this.formCase = 'External'

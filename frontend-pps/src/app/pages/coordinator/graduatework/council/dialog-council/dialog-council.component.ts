@@ -5,6 +5,10 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CouncilService } from '../../../../../services/council.service'
 import { GraduateworkService } from '../../../../../services/graduatework.service'
 
+import {FormBuilder, Validators, FormsModule, ReactiveFormsModule,FormGroup,FormControl } from '@angular/forms';
+import { UsersService } from 'src/app/services/users.service';
+import { EnterpriseService } from 'src/app/services/enterprise.service';
+
 @Component({
   selector: 'app-dialog-council',
   templateUrl: './dialog-council.component.html',
@@ -17,7 +21,18 @@ export class DialogCouncilComponent implements OnInit{
 
   councilSelected: any = null;
 
-  constructor(private councilService: CouncilService,@Inject(MAT_DIALOG_DATA) public data: any, private graduateWorkService: GraduateworkService){}
+  isCreateNewSchoolCouncil: boolean = false;
+
+  studentCount: number = 0;
+
+  coordinatorData: any = null;
+  enterpriseData: any = null;
+
+  schoolCouncilForm =  this.formGroup.group({
+    schoolCouncil: ['']
+  }) 
+
+  constructor(private councilService: CouncilService,@Inject(MAT_DIALOG_DATA) public data: any, private graduateWorkService: GraduateworkService,private formGroup: FormBuilder,private userService: UsersService, private enterpriseService: EnterpriseService){}
 
   ngOnInit(){
     this.inputdata = this.data
@@ -27,6 +42,20 @@ export class DialogCouncilComponent implements OnInit{
         this.councilList = data
       }
     })
+    this.enterpriseService.getEnterpriseById(this.inputdata.graduateWorkData.graduateWorkEnterprise).subscribe({
+      next: (enterpriseData) => {
+        this.enterpriseData = enterpriseData
+        console.log(this.enterpriseData)
+      }
+    });
+    this.userService.getUserData(this.inputdata.graduateWorkData.graduateWorkCoordinator).subscribe({
+      next: (coordinatorData) => {
+        this.coordinatorData = coordinatorData
+        console.log(coordinatorData)
+      }
+    })
+    this.studentCount = this.inputdata.userData.length
+    console.log(this.studentCount)
   }
 
   veredictoPropuesta(decision: string){
@@ -50,6 +79,15 @@ export class DialogCouncilComponent implements OnInit{
         }
       })
     }
+  }
+
+  createSchoolCouncil(){
+    console.log("createReviewerCriteria()")
+    this.isCreateNewSchoolCouncil = !this.isCreateNewSchoolCouncil
+  }
+
+  addSchoolCouncil(){
+    console.log("addSchoolCouncil()")
   }
 
 }

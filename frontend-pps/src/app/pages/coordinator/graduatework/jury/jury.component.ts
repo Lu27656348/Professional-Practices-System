@@ -3,7 +3,7 @@ import { LoginService } from '../../../../services/login.service';
 import { UsersService } from '../../../../services/users.service';
 import { StudentService} from '../../../../services/student.service'
 import { GraduateworkService } from '../../../../services/graduatework.service'
-import { forkJoin, of } from 'rxjs';
+import { Observable, forkJoin, of, switchMap } from 'rxjs';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog'
 
@@ -29,15 +29,40 @@ export class JuryComponent {
 
   studentData : any = null;
   graduateWorkData : any = null;
+  studentList: any = null;
 
-  displayedColumns: string[] = ['graduateWorkId', 'graduateWorkTitle', 'studentDNI', 'symbol',"check"];
+  displayedColumns: string[] = ['graduateWorkId', 'graduateWorkTitle', 'studentDNI',"check"];
 
   constructor(private loginService: LoginService,private router: Router,private userService: UsersService, private graduateworkService: GraduateworkService, private dialog: MatDialog, private studentService: StudentService){
-    this.graduateworkService.getJuryPending().subscribe({
+    this.graduateworkService.getJuryPending().pipe(
+      switchMap(
+        (data: any) => {
+          console.log(data)
+          this.reviewerData = [...data]
+          const observables: Observable<any>[] = []
+          this.reviewerData.forEach( (proposal:any) => {
+            observables.push(this.graduateworkService.getGraduateWorkStudentData(proposal.graduateWorkId))
+          })
+          return forkJoin(observables)
+        }
+      )
+    )
+    .subscribe({
       next: (data: any) => {
-        console.log(data)
-        this.reviewerData = [...data]
-        console.log(this.reviewerData)
+        this.reviewerData.forEach( (proposal:any,indexP: number) => {
+          let authors = ""; 
+          data[indexP].forEach( (author: any, index: number) => {
+           console.log(data[indexP])
+           if(index == 0){
+             authors = authors + author.userLastName.split(" ")[0]+ author.userFirstName.split(" ")[0] + "/";
+           }else{
+             authors = authors + author.userLastName.split(" ")[0]+ author.userFirstName.split(" ")[0];
+           } 
+           console.log(data[indexP][0])
+           this.reviewerData[indexP].studentDNI = data[indexP][0].userDNI;
+          })
+          this.reviewerData[indexP].authors = authors;
+         })
       },
       error: (error: any) => {
         console.log(error)
@@ -75,28 +100,33 @@ export class JuryComponent {
   }
 
   openDialog(data: any) {
-
-    forkJoin([ this.userService.getUserData(data.studentDNI),this.studentService.getStudentGraduateWork(data.studentDNI), this.graduateworkService.getGraduateWorkById(data.graduateWorkId)])
-    .subscribe(([result1,result2,result3]) => {
-      console.log(result1)
-      this.studentData = result1;
-      this.graduateWorkData = result3;
-
-      const dialogRef = this.dialog.open(JuryDialogComponent,{
-        width: '60%',
-        data: {
-          graduateWorkData: this.graduateWorkData,
-          studentData: this.studentData
+    console.log(data)
+    this.graduateworkService.getGraduateWorkById(data.graduateWorkId).pipe(
+      switchMap(
+        (graduateWorkData) => {
+          console.log(graduateWorkData)
+          this.graduateWorkData = graduateWorkData
+          return this.graduateworkService.getGraduateWorkStudentData(graduateWorkData.graduateworkid)
         }
-      });
-  
-      dialogRef.afterClosed().subscribe(result => {
-        console.log(`Dialog result: ${result}`);
-      });
-      
-      });
-
+      )
+    ).subscribe({
+      next: (result) => {
+        console.log(result)
+        this.studentList = result
+        const dialogRef = this.dialog.open(JuryDialogComponent,{
+          width: '60%',
+          data: {
+            graduateWorkData: this.graduateWorkData,
+            studentData: this.studentList
+          }
+        });
     
+        dialogRef.afterClosed().subscribe(result => {
+          console.log(`Dialog result: ${result}`);
+        });
+
+      }
+    })
   }
 
   ngOnInit(){

@@ -22,6 +22,7 @@ import {MatListModule} from '@angular/material/list';
 import {MatTableModule} from '@angular/material/table'; 
 import {MatSlideToggleModule} from '@angular/material/slide-toggle'; 
 import {MatProgressBarModule} from '@angular/material/progress-bar'; 
+import {MatTabsModule} from '@angular/material/tabs'; 
 
 import { GraduateworkComponent } from './pages/coordinator/graduatework/graduatework.component';
 import { ProposalsComponent } from './pages/coordinator/graduatework/proposals/proposals.component';
@@ -53,7 +54,16 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { ProfessorJuryDialogComponent } from './pages/professor/graduatework/professor-jury/professor-jury-dialog/professor-jury-dialog.component';
 import {MatSliderModule} from '@angular/material/slider'; 
-
+import {MatTooltipModule} from '@angular/material/tooltip';
+import { FilesComponent } from './pages/coordinator/graduatework/files/files.component'; 
+import {MatTreeModule} from '@angular/material/tree'; 
+import {MatSnackBarModule} from '@angular/material/snack-bar';
+import { ResubmittionComponent } from './pages/coordinator/graduatework/proposals/dialogs/resubmittion/resubmittion.component';
+import { EvaluationDialogComponent } from './pages/professor/graduatework/professor-reviewer/dialogs/evaluation-dialog/evaluation-dialog.component';
+import {MatExpansionModule} from '@angular/material/expansion';
+import { OutsiderComponent } from './pages/outsider/outsider.component';
+import { ExternalJuryComponent } from './pages/outsider/graduatework/external-jury/external-jury.component';
+import { ExternalTutorComponent } from './pages/outsider/graduatework/external-tutor/external-tutor.component'; 
 @NgModule({
   declarations: [
     AppComponent,
@@ -81,7 +91,13 @@ import {MatSliderModule} from '@angular/material/slider';
     DialogTutorComponent,
     JuryDialogComponent,
     DefenseDialogComponent,
-    ProfessorJuryDialogComponent
+    ProfessorJuryDialogComponent,
+    FilesComponent,
+    ResubmittionComponent,
+    EvaluationDialogComponent,
+    OutsiderComponent,
+    ExternalJuryComponent,
+    ExternalTutorComponent
   ],
   imports: [
     BrowserModule,
@@ -107,7 +123,12 @@ import {MatSliderModule} from '@angular/material/slider';
     MatProgressBarModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatSliderModule
+    MatSliderModule,
+    MatTooltipModule,
+    MatTreeModule,
+    MatSnackBarModule,
+    MatExpansionModule,
+    MatTabsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

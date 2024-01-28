@@ -2,10 +2,10 @@
 <mat-dialog-content class="mat-typography">
   <p><strong>Datos del estudiante</strong></p>
   <mat-divider></mat-divider>
-  <p>{{'Nombre completo: ' + inputdata.studentData.userLastName + ', ' + inputdata.studentData.userFirstName }}</p>
-  <p>{{'Cedula de identidad: ' + inputdata.studentData.userDNI }}</p>
-  <p>{{'Correo UCAB: ' +inputdata.studentData.userEmailUcab}}</p>
-  <p>{{'Número de teléfono: ' + inputdata.studentData.userPhone }}</p>
+  <p>{{'Nombre completo: ' + inputdata.studentData[0].userLastName + ', ' + inputdata.studentData[0].userFirstName }}</p>
+  <p>{{'Cedula de identidad: ' + inputdata.studentData[0].userDNI }}</p>
+  <p>{{'Correo UCAB: ' +inputdata.studentData[0].userEmail}}</p>
+  <p>{{'Número de teléfono: ' + inputdata.studentData[0].userPhone }}</p>
 
   <p><strong>Datos del Trabajo de Grado</strong></p>
   <mat-divider></mat-divider>
@@ -14,14 +14,17 @@
   <p>{{'Organización donde se realizará: UCAB' }}</p>
   <p>{{'Posible tutor academico: Medina, Luz E.'}}</p>
 
-  <p><strong>Seleccione la fecha</strong></p>
+  <p><strong>Seleccione la fecha y la hora de la defensa</strong></p>
   <mat-divider></mat-divider>
   <mat-form-field style="width: 100%;" [formGroup]="myForm">
-    <mat-label>Choose a date</mat-label>
-    <input matInput [matDatepicker]="picker" formControlName="date" (dateChange)="selectedDate($event)">
+    <mat-label>Escoja la fecha y hora de la defensa</mat-label>
+    <input matInput type="datetime-local"  formControlName="time" (dateChange)="selectedDate($event)">
     <mat-hint>MM/DD/YYYY</mat-hint>
-    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+  <p><strong>Ingrese el lugar de la defensa</strong></p>
+  <mat-form-field style="width: 100%;" [formGroup]="myForm">
+    <mat-label>Ingrese el lugar de la defensa</mat-label>
+    <input matInput type="text" formControlName="location">
   </mat-form-field>
   
 
@@ -29,5 +32,5 @@
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>Cancel</button>
-  <button mat-button style="background-color: green;"  [mat-dialog-close]="true" cdkFocusInitial (click)="setDefenseDate()">Designar defensa</button>
+  <button mat-button style="background-color: green;" cdkFocusInitial (click)="setDefenseDate()">Designar defensa</button>
 </mat-dialog-actions>

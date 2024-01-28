@@ -1,18 +1,23 @@
 <h2 mat-dialog-title>Datos asociados a la propuesta</h2>
 <mat-dialog-content class="mat-typography">
-  <p><strong>Datos del estudiante</strong></p>
+  <p *ngIf="studentCount < 2"><strong>Datos del estudiante</strong></p>
+  <p *ngIf="studentCount >= 2"><strong>Datos del los estudiantes</strong></p>
   <mat-divider></mat-divider>
-  <p>{{'Nombre completo: ' }}</p>
-  <p>{{'Cedula de identidad: ' }}</p>
-  <p>{{'Correo UCAB: ' }}</p>
-  <p>{{'Número de teléfono: ' }}</p>
+  <p>{{'Nombre completo: ' + studentData?.userLastName + ', ' + studentData?.userFirstName }}</p>
+  <p>{{'Cedula de identidad: ' + studentData?.userDNI}}</p>
+  <p>{{'Correo UCAB: ' + studentData?.userEmail}}</p>
+  <p>{{'Número de teléfono: ' + studentData?.userPhone }}</p>
+  <mat-divider *ngIf="studentCount >= 2"></mat-divider>
+  <p *ngIf="studentCount >= 2">{{'Nombre completo: ' + studentList[1]?.userLastName + ', ' + studentList[1]?.userFirstName }}</p>
+  <p *ngIf="studentCount >= 2">{{'Cedula de identidad: ' + studentList[1]?.userDNI}}</p>
+  <p *ngIf="studentCount >= 2">{{'Correo UCAB: ' + studentList[1]?.userEmail}}</p>
+  <p *ngIf="studentCount >= 2">{{'Número de teléfono: ' + studentList[1]?.userPhone }}</p>
 
   <p><strong>Datos del Trabajo de Grado</strong></p>
   <mat-divider></mat-divider>
-  <p>{{'Título: ' }}</p>
-  <p>{{'Tipo: ' }}</p>
-  <p>{{'Organización donde se realizará: ' }}</p>
-  <p>{{'Posible tutor academico: ' }}</p>
+  <p>{{'Título: ' + graduateWorkData?.graduateWorkTitle }}</p>
+  <p>{{'Tipo: ' + graduateWorkData?.graduateWorkType}}</p>
+  <p>{{'Organización donde se realizará: ' + enterpriseData?.enterpriseName}}</p>
 
   <h3><strong>Informe de Trabajo de Grado</strong></h3>
   <mat-divider></mat-divider>
@@ -28,5 +33,5 @@
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>Cancel</button>
-  <button mat-button style="background-color: rgb(245, 171, 21)" [mat-dialog-close]="true" cdkFocusInitial (click)="uploadRevision()">Reenviar</button>
+  <button mat-button style="background-color: rgb(245, 171, 21)" cdkFocusInitial (click)="uploadRevision()">Reenviar</button>
 </mat-dialog-actions>

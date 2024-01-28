@@ -3,7 +3,7 @@ import { LoginService } from '../../../../services/login.service';
 import { UsersService } from '../../../../services/users.service';
 import { StudentService} from '../../../../services/student.service'
 import { GraduateworkService } from '../../../../services/graduatework.service'
-import { forkJoin, of } from 'rxjs';
+import { Observable, forkJoin, of, switchMap } from 'rxjs';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog'
 import { DialogsComponent } from './dialogs/dialogs.component'
@@ -27,17 +27,53 @@ export class ProfessorReviewerComponent implements OnInit{
 
   proposal: any[] = [];
 
-  displayedColumns: string[] = ['graduateWorkId', 'graduateWorkTitle', 'studentDNI', 'symbol',"check"];
+  displayedColumns: string[] = ['graduateWorkId', 'graduateWorkTitle', 'studentDNI',"check"];
 
   graduateWorkData: any = null;
   userData: any = null;
 
-  constructor(private loginService: LoginService,private router: Router,private userService: UsersService, private graduateworkService: GraduateworkService, private dialog: MatDialog, private studentService: StudentService){}
+  coordinatorData: any = null;
+
+  constructor(private loginService: LoginService,private router: Router,private userService: UsersService, private graduateworkService: GraduateworkService, private dialog: MatDialog, private studentService: StudentService){
+
+  }
 
   ngOnInit(){
-    this.graduateworkService.getReviewersPending().subscribe({
+    this.graduateworkService.getReviewersPending().pipe(
+      switchMap(
+        (data) => {
+          this.reviewerData = data;
+          console.log(this.reviewerData)
+          const observables: Observable<any>[] = []
+          this.reviewerData.forEach( (proposal:any) => {
+            observables.push(this.graduateworkService.getGraduateWorkStudentData(proposal.graduateWorkId))
+          })
+          return forkJoin(observables)
+        }
+      ),
+      switchMap(
+        (data: any) => {
+          console.log(data)
+          this.reviewerData.forEach( (proposal:any,indexP: number) => {
+           let authors = ""; 
+           data[indexP].forEach( (author: any, index: number) => {
+            console.log(data[indexP])
+            if(index == 0){
+              authors = authors + author.userLastName.split(" ")[0]+ author.userFirstName.split(" ")[0] + "/";
+            }else{
+              authors = authors + author.userLastName.split(" ")[0]+ author.userFirstName.split(" ")[0];
+            } 
+            console.log(data[indexP][0])
+            this.reviewerData[indexP].studentDNI = data[indexP][0].userDNI;
+           })
+           this.reviewerData[indexP].authors = authors;
+          })
+          return of(this.reviewerData)
+        },
+      )
+    ).subscribe({
       next: (data) => {
-        this.reviewerData = data;
+        //this.reviewerData = data;
       }
     })
   
@@ -46,7 +82,7 @@ export class ProfessorReviewerComponent implements OnInit{
   openDialog(data: any) {
     console.log(data)
 
-    forkJoin([this.userService.getUserData(data.studentDNI),this.graduateworkService.getGraduateWorkById(data.graduateWorkId)])
+    forkJoin([this.graduateworkService.getGraduateWorkStudentData(data.graduateWorkId),this.graduateworkService.getGraduateWorkById(data.graduateWorkId)])
     .subscribe( ([userData,graduateWorkData]) => {
       this.userData = userData;
       this.graduateWorkData = graduateWorkData

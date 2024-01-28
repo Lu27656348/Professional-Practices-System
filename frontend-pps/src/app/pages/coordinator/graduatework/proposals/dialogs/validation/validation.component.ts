@@ -1,13 +1,17 @@
 import { Component, OnInit,Inject } from '@angular/core';
-import { forkJoin, of } from 'rxjs';
+import { forkJoin, of, switchMap } from 'rxjs';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog'
 
 import { GraduateworkService } from '../../../../../../services/graduatework.service';
 import { StudentService } from '../../../../../../services/student.service';
 import { UsersService } from '../../../../../../services//users.service';
 import { EnterpriseService } from '../../../../../../services/enterprise.service'
+import { environment  } from 'src/environments/environment';
+import { ResubmittionComponent } from '../resubmittion/resubmittion.component';
 
-import { PlanillaPropuestaTEG } from '../../../../../../form-generator/classes/planillaPropuestaTEG'
+//import { PlanillaPropuestaTEG } from '../../../../../../form-generator/classes/planillaPropuestaTEG'
+import { TegFormService } from 'src/app/form-generator/services/teg-form.service';
 
 // Interface for the request body
 interface ValidateFileNameRequest {
@@ -19,14 +23,19 @@ interface ResponseBlob<T> extends Response {
   blob(): Promise<Blob>;
 }
 
-async function downloadFile(fileName: string) {
+async function downloadFile(fileName: string, studentDNI: string | null, userFirstName: string | null, userLastName: string | null) {
   try {
-    const response = await fetch('http://localhost:8082/download', {
+    const response = await fetch(`${environment.amazonS3}/download`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ fileName: fileName })
+      body: JSON.stringify({ 
+        fileName: fileName,
+        studentDNI: studentDNI,
+        userFirstName: userFirstName,
+        userLastName: userLastName
+      })
     } as RequestInit);
 
     const blob = await (response as ResponseBlob<Blob>).blob(); // Type assertion for blobBody
@@ -51,15 +60,57 @@ export class ValidationComponent implements OnInit{
   proposalFileList: any = [];
   coordinatorData: any = {};
   enterpriseData: any = {};
+  isGrupal: boolean = false;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private graduateWorkService: GraduateworkService, private studentService: StudentService,private userService: UsersService, private enterpriseService: EnterpriseService){
-    
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private graduateWorkService: GraduateworkService, private studentService: StudentService,private userService: UsersService, private enterpriseService: EnterpriseService, private dialog: MatDialog, private tegFormService: TegFormService){
+
+    /*
+    this.planillaTEG = new PlanillaPropuestaTEG(
+      {
+        name: "Sidor",
+        address: "Direccion",
+        phone: "Inserte telefono"
+      },
+      {
+        creationDate: new Date().toLocaleDateString(),
+        confirmationDate: new Date().toLocaleDateString(),
+        title: "Sistema de Practicas Profesionales"
+      },
+      {
+        firstName: "Luis Carlos",
+        lastName: "Somoza Ledezma",
+        dni: "V-27656348",
+        cellPhone: "+58-4122155879",
+        emailUcab: "luiscarlossomoza@gmail.com",
+        profession: "Ing. Mecanico",
+        experience: 30,
+        rol: "Coordinador",
+        yearsGraduated: new Date().toLocaleDateString(),
+        schoolName: "Informatica",
+        isUcabProfessor: true
+      }
+    )
+
+    this.planillaTEG.addStudent(
+    {
+      firstName: "Wladimir",
+      lastName: "SanVincente",
+      dni: "V-26100300",
+      cellPhone: "+58-4122155879",
+      emailUcab: "luiscarlossomoza@gmail.com"
+    })
+    */
+
   }
   ngOnInit(){
     this.inputdata = this.data
-    console.log( this.inputdata)
+    console.log(this.inputdata)
+    console.log(this.inputdata.user.length)
+    if(this.inputdata.user.length > 1){
+      this.isGrupal = true;
+    }
 
-    this.studentService.getStudentCoordinator(this.inputdata.user.userDNI).subscribe({
+    this.studentService.getStudentCoordinator(this.inputdata.user[0].userDNI).subscribe({
       next: (data) => {
         console.log(data);
         this.userService.getUserData(data.professordni).subscribe({
@@ -82,18 +133,39 @@ export class ValidationComponent implements OnInit{
 
   obtenerPlanillaSolicitud(){
     console.log("obtenerPlanillaSolicitud()")
+    this.tegFormService.generateDocx({
+      fecha_envio: new Date() as Date,
+      titulo: "Sistema de Practicas Profesionales",
+      
+    });
   }
 
   obtenerInformePropuesta(){
-    const fileName: string = this.inputdata.user.userLastName.split(' ')[0]+this.inputdata.user.userFirstName.split(' ')[0]+' PTG.pdf';
+    let fileName: string = ""
+    if(this.inputdata.user.length > 1){
+      fileName = `${this.inputdata.user[0].userLastName.split(' ')[0]}${this.inputdata.user[0].userFirstName.split(' ')[0]} ${this.inputdata.user[1].userLastName.split(' ')[0]}${this.inputdata.user[1].userFirstName.split(' ')[0]} PTG.pdf`;
+    }else{
+      fileName = this.inputdata.user[0].userLastName.split(' ')[0]+this.inputdata.user[0].userFirstName.split(' ')[0]+' PTG.pdf';
+    }
+    
     console.log(fileName);
-    downloadFile(fileName);
+    downloadFile(fileName,this.inputdata.user[0].userDNI, this.inputdata.user[0].userFirstName.split(' ')[0],this.inputdata.user[0].userLastName.split(' ')[0]);
   }
 
   veredictoPropuesta(decision: string){
     console.log("veredictoPropuesta() -> " + decision)
     if(decision === 'aprobar'){
-      this.graduateWorkService.changeStatus(this.inputdata.proposal.graduateworkid,20).subscribe({
+      this.graduateWorkService.changeStatus(this.inputdata.proposal.graduateworkid,20)
+      .pipe(
+        switchMap(
+          (result) => {
+
+            return this.graduateWorkService.approveCoordinatorEvaluation(this.coordinatorData.userDNI,this.inputdata.proposal.graduateworkid)
+    
+          }
+        )
+      )
+      .subscribe({
         next: (data) => {
           console.log(data)
         },
@@ -118,6 +190,16 @@ export class ValidationComponent implements OnInit{
       })
     }else{
       console.log("Iniciar Funcion de Reenvio de Trabajo de Grado ()")
+      console.log(this.inputdata)
+      const dialogRef = this.dialog.open(ResubmittionComponent,{
+        width: '60%',
+        data: this.inputdata
+      })
+
+      dialogRef.afterClosed().subscribe(result => {
+        console.log(`Dialog result: ${result}`);
+      });
+
     }
   }
 } 

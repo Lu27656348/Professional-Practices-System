@@ -15,12 +15,14 @@ import { RegisterService } from '../../services/register.service'
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
+  hide = true;
+  formatSelected : string = "V-"
 
   dataBs: any;
   dataService$: Subscription = new Subscription();
 
   loginForm = this.formBuilder.group({
-    userDNI: ['',[Validators.required]],
+    userDNI: ['',[Validators.required,Validators.pattern(/^[0-9]+$/)]],
     password: ['',Validators.required]
   })
 
@@ -45,8 +47,13 @@ export class LoginComponent implements OnInit {
  login(){
 
     if(this.loginForm.valid){
-      const body = this.loginForm.value
-      this.LoginService.login(this.loginForm.value as LoginRequest).subscribe({
+      const body : LoginRequest = {
+        userDNI: this.formatSelected + this.loginForm.value.userDNI as string,
+        password: this.loginForm.value.password as string
+      }
+      console.log(body)
+      
+      this.LoginService.login(body as LoginRequest).subscribe({
         next: (userData) => {
           console.log(userData)
           if(userData){
@@ -85,7 +92,7 @@ export class LoginComponent implements OnInit {
           console.log("login completo")
         }
       })
-
+      
     }else{
       this.loginForm.markAllAsTouched();
       alert("Error al ingresar los datos");

@@ -1,55 +1,63 @@
 <app-navbar></app-navbar>
-    <div class = "container" *ngIf="!isProcessActive && hasGraduateWork === false">
+    <div class = "container" *ngIf="!isProcessActive && hasGraduateWork === false && isCulminated == false">
         <button mat-fab color="primary" aria-label="Example icon button with a delete icon" (click)="register()">
             <mat-icon>library_add</mat-icon>
         </button>
         <h2>Realizar Propuesta de Trabajo de Grado</h2>
     </div>
-    <div *ngIf="isProcessActive && hasGraduateWork === false ">
-        <button mat-raised-button (click)="isLinear = !isLinear" id="toggle-linear">
-            {{!isLinear ? 'Enable linear mode' : 'Disable linear mode'}}
-          </button>
+    <div *ngIf="isProcessActive && hasGraduateWork === false && isCharging == false" >
+
           <!-- ********************************************************************** -->
           <mat-stepper [linear]="isLinear" #stepper labelPosition="bottom">
             <mat-step [stepControl]="firstFormGroup">
-                <form [formGroup]="firstFormGroup" style="height: 50vh; display: flex; flex-direction: column;">
+                <form [formGroup]="firstFormGroup" style="height: 65vh; display: flex; flex-direction: column;">
                   <ng-template matStepLabel>Seleccione modelo de propuesta</ng-template>
-                  <div style="display: flex; align-items: center; justify-content: center;">
-                    <mat-form-field>
-                        <mat-label>Name</mat-label>
+                  <div style="display: flex; align-items: center; justify-content: center; height: 100%; flex-direction: column;">
+                    
+                    <mat-form-field style="display: flex; align-items: center; justify-content: center; width: 40%;">
+                        <mat-label>Seleccione el tipo de propuesta</mat-label>
                         <mat-select [(value)]="selectedValue" (selectionChange)="onSelectionChange()">
                             <mat-option value="Experimental">Experimental</mat-option>
                             <mat-option value="Instrumental">Instrumental</mat-option>
                         </mat-select>
-                      </mat-form-field>
-                  </div>
-                  <!--
-                  <div style="background-color: aliceblue; display: flex; justify-content: center; gap: 30vh" *ngIf="selectedValue!=''">
-                    <div style="width: 30%;">
-                        <mat-form-field style="width: 100%;">
-                            <mat-label>Titulo de la propuesta</mat-label>
-                            <input matInput placeholder="" required>
-                        </mat-form-field>
+                    </mat-form-field>
+
+                    <mat-form-field style="display: flex; align-items: center; justify-content: center; width: 40%;">
+                      <mat-label>Modo de Trabajo de Grado</mat-label>
+                      <mat-select [(value)]="graduateWorkMode">
+                          <mat-option value="Individual">Individual</mat-option>
+                          <mat-option value="Grupal">Grupal</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field style="display: flex; align-items: center; justify-content: center; width: 40%;" *ngIf="graduateWorkMode === 'Grupal'">
+                      <mat-label>Seleccione a su compañero</mat-label>
+                      <mat-select [(value)]="partnerSelected">
+                        <mat-option *ngFor="let student of studentList" [value]="student.userDNI">
+                          {{ student.userLastName + ', ' + student.userFirstName + ' / ' + student.userDNI}} 
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+
+                    <div style="display: flex; justify-content: flex-end; bottom: 0; width: 100%;">
+                      <button mat-raised-button matStepperNext  color="primary" style="width: 10vw; height: 5vh;">Siguiente</button>
                     </div>
-                  </div>
-                  -->
-                  <div style="display: flex; justify-content: flex-end; margin-top: auto;">
-                    <button mat-button matStepperNext>Next</button>
+
                   </div>
                 </form>
             </mat-step>
              <!-- ********************************************************************** -->
               <!-- ********************************************************************** -->
             <mat-step [stepControl]="secondFormGroup" label="Ingrese datos de la propuesta">
-                <form [formGroup]="secondFormGroup" style = "display: flex; flex-direction: column; height: 70vh">
+                <form [formGroup]="secondFormGroup" style = "display: flex; flex-direction: column; height: 40%">
 
                   <mat-form-field>
                     <mat-label>Titulo de la propuesta</mat-label>
                     <input matInput formControlName="proposalTitle" placeholder="" required>
                   </mat-form-field>
 
-                  <mat-form-field >
-                    <mat-label>Posible Tutor Academico</mat-label>
+                  <mat-form-field style="margin-bottom: 0; margin-top: 0;">
+                    <mat-label>Tutor Academico</mat-label>
                         <mat-select [(value)]="academicTutor" (selectionChange)="onSelectionChange()">
                             <mat-option *ngFor="let professor of professorList" [value]="professor.userDNI">
                                 {{ professor.userlastname + ', ' + professor.userfirstname }} 
@@ -57,38 +65,50 @@
                         </mat-select>
                   </mat-form-field>
 
-                  <mat-form-field >
+                  <mat-form-field style="margin-bottom: 0; margin-top: 0;">
                     <mat-label>Seleccion la empresa asociada:</mat-label>
-                        <mat-select [(value)]="selectedEnterpriseValue" (selectionChange)="onSelectionChange()">
+                        <mat-select [(value)]="selectedEnterpriseValue" (selectionChange)="enterpriseSelected()">
                             <mat-option *ngFor="let enterprise of enterprisesData" [value]="enterprise.enterpriseid">
                                 {{ enterprise.enterpriseName }} 
                             </mat-option>
                         </mat-select>
                   </mat-form-field>
 
-                  <mat-form-field *ngIf="selectedValue == 'Instrumental'">
+                  <mat-form-field *ngIf="selectedValue == 'Instrumental' && isEnterpriseSelected && selectedEnterpriseValue != '1'" style="margin-bottom: 0; margin-top: 0;">
                     <mat-label>Seleccion un Tutor Empresarial:</mat-label>
                     <mat-select [(value)]="selectedInCompanyTutor" (selectionChange)="onSelectionChange()">
-                        <mat-option *ngFor="let tutor of inTutorList" [value]="tutor.userDNI">
-                            {{ tutor.userlastname + ', ' + tutor.userfirstname }} 
+                        <mat-option *ngFor="let tutor of externalDataList" [value]="tutor.userDNI">
+                            {{ tutor.userLastName + ', ' + tutor.userFirstName }} 
                         </mat-option>
                     </mat-select>
                   </mat-form-field>
 
-                  <div style="display: flex; justify-content: flex-end; ">
-                    <button mat-button matStepperPrevious>Back</button>
-                    <button mat-button matStepperNext>next</button>
+                  <mat-form-field *ngIf="selectedValue == 'Instrumental' && isEnterpriseSelected && selectedEnterpriseValue == '1'" style="margin-bottom: 0; margin-top: 0;">
+                    <mat-label>Seleccion un Tutor Empresarial:</mat-label>
+                    <mat-select [(value)]="selectedInCompanyTutor" (selectionChange)="onSelectionChange()">
+                      <mat-option *ngFor="let professor of professorList" [value]="professor.userDNI">
+                          {{ professor.userlastname + ', ' + professor.userfirstname }} 
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <div style="display: flex; justify-content: flex-end; bottom: 0; gap: 30px; margin-top: 0;">
+                    <button mat-raised-button matStepperPrevious  color="primary" style="width: 10vw; height: 5vh;">Atras</button>
+                    <button mat-raised-button matStepperNext  color="primary" style="width: 10vw; height: 5vh;">Siguiente</button>
                   </div>
                 </form>
             </mat-step>
              <!-- ********************************************************************** -->
               <!-- ********************************************************************** -->
             <mat-step [stepControl]="form" label="Cargue su propuesta">
-                <form [formGroup]="form">
-                  <input type="file" formControlName="file" id = "fileInput" name="fileInput" (change)="onFileSelected($event)">
-                  <div style="display: flex; justify-content: flex-end; margin-top: auto;">
-                    <button mat-button matStepperPrevious>Back</button>
-                    <button mat-button matStepperNext>Next</button>
+                <form [formGroup]="form" style = "display: flex; flex-direction: column; height: 70%;" enctype="multipart/form-data">
+                  <div style="height: 50%;">
+                    <input type="file" formControlName="file" id = "fileInput" name="fileInput" (change)="onFileSelected($event)">
+                  </div>
+                  
+                  <div style="display: flex; justify-content: flex-end; margin-top: auto; gap: 30px;">
+                    <button mat-raised-button matStepperPrevious  color="primary" style="width: 10vw; height: 5vh;">Atras</button>
+                    <button mat-raised-button matStepperNext  color="primary" style="width: 10vw; height: 5vh;">Siguiente</button>
                   </div>
                 </form>
             </mat-step>
@@ -96,34 +116,49 @@
               <!-- ********************************************************************** -->
             <mat-step>
                 
-              <ng-template matStepLabel>Done</ng-template>
-              <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                <p>You are now done.</p>
-                <div style="display: flex; align-items: center; justify-content: center;">
-                  <button mat-button matStepperPrevious>Back</button>
-                  <button mat-raised-button color="primary" (click)="createGraduteWorkProposal()">Send Proposal</button>
+              <ng-template matStepLabel>Finalizar</ng-template>
+              <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 50vh;">
+                <p>Todos los datos han sido cargados</p>
+                <div style="display: flex; align-items: center; justify-content: center; gap: 30px;">
+                  <button mat-button matStepperPrevious>Regresar</button>
+                  <button mat-raised-button color="primary" (click)="createGraduteWorkProposal()">Enviar Propuesta Trabajo De Grado</button>
                 </div>
               </div>
             </mat-step>
           </mat-stepper>
           
     </div>
-    <div *ngIf="hasGraduateWork && graduateWorkList?.graduateWorkEstatusCode != 50 && isFinalSubmittion == false" style="background-color: antiquewhite; height: 81%; display: flex; align-items: center; justify-content: center;">
-      <h1>Tiene un trabajo de grado pendiente por revision</h1>
+    <!-- Cambio de pantallas -->
+    <div *ngIf="hasGraduateWork && graduateWorkList?.graduateWorkStatusCode == 10 || graduateWorkList?.graduateWorkStatusCode == 12" style="background-color: antiquewhite; height: 81%; display: flex; align-items: center; justify-content: center;">
+      <h1>Tiene un trabajo de grado pendiente por Revision de Coordinador</h1>
     </div>
 
-    <div *ngIf="hasGraduateWork && graduateWorkList?.graduateWorkEstatusCode == 50 && isFinalSubmittion == false " style="height: 81%; display: flex; flex-direction: column;">
+    <div *ngIf="hasGraduateWork && graduateWorkList?.graduateWorkStatusCode == 20" style="background-color: antiquewhite; height: 81%; display: flex; align-items: center; justify-content: center;">
+      <h1>Propuesta de Trabajo de Grado Pendiente por Revisión de Comité de Trabajo de Grado </h1>
+    </div>
+
+    <div *ngIf="hasGraduateWork && graduateWorkList?.graduateWorkStatusCode == 30" style="background-color: antiquewhite; height: 81%; display: flex; align-items: center; justify-content: center;">
+      <h1>Propuesta de Trabajo de Grado Pendiente por Revisiones de Profesor Revisor </h1>
+    </div>
+
+    <div *ngIf="hasGraduateWork && graduateWorkList?.graduateWorkStatusCode == 40" style="background-color: antiquewhite; height: 81%; display: flex; align-items: center; justify-content: center;">
+      <h1>Propuesta de Trabajo de Grado Pendiente por Revisión de Consejo de Escuela </h1>
+    </div>
+    <!-- Entrega de Revisiones para tutor academico -->
+    <div *ngIf="hasGraduateWork && graduateWorkList?.graduateWorkStatusCode == 50 || graduateWorkList?.graduateWorkStatusCode == 51 && isFinalSubmittion == false " style="height: 81%; display: flex; flex-direction: column;">
       
       <mat-card class="example-card">
         <mat-card-content>
           <h2 style="display: flex; justify-content: center;">Tiempo restante para entrega</h2>
       
           <section class="example-section">
+            <p>Ha transcurrido {{((150 - daysRemaining)*100/150).toFixed(2)}}%  del tiempo para la entrega final le quedan {{daysRemaining}} dias</p>
             <mat-progress-bar
                 class="example-margin"
                 color="primary"
                 mode="determinate"
-                [value]="150 - daysRemaining">
+                
+                [value]="(150 - daysRemaining)*100/150">
             </mat-progress-bar>
           </section>
 
@@ -158,9 +193,6 @@
 
         </mat-card>
 
-
-
-
         <mat-card style="width: 30vw;">
           <mat-card-header>
             <mat-card-title>Correciones de Tutor</mat-card-title>
@@ -176,28 +208,61 @@
             </section>
           </mat-card-content>
           <mat-card-actions style="display: flex; justify-content: flex-end;">
-            <button mat-raised-button>Descargar Archivo</button>
+            <button mat-raised-button (click)="downloadLastRevision()">Descargar Archivo</button>
           </mat-card-actions>
         </mat-card>
       </div>
     </div>
-    <div *ngIf="isFinalSubmittion && !hasFinalSubmitted" style="display: flex; align-items: center; justify-content: center; flex-direction: column; height: 82%;">
+
+    <!---->
+    <div *ngIf="graduateWorkList?.graduateWorkStatusCode == 11" style="display: flex; align-items: center; justify-content: center; height: 82%;">
+      <div style="display: flex; align-items: center; justify-content: center; flex-direction: column;">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 10vw;">
+          <div style="height: 30vh; display: flex; align-items: center; justify-content: center; flex-direction: column; width: 30vw; border-style: solid; border-width: 4px 4px 4px 4px; border-color: blanchedalmond; border-radius: 0.3rem;">
+            <h1>Cargue las Correciones</h1>
+            <input type="file" (change) = "fileHandler($event)"/>
+          </div>
+          <div style="height: 30vh; display: flex; align-items: center; justify-content: center; flex-direction: column; width: 30vw; border-style: solid; border-width: 4px 4px 4px 4px; border-color: blanchedalmond; border-radius: 0.3rem;">
+            <h1>El Coordinador le ha enviado una revision</h1>
+            <button mat-raised-button color = "primary" (click)="downloadProposalEvaluationFile()" style="margin-top: 15px;">Descargar</button>
+          </div>
+        </div>
+        <button mat-raised-button color = "primary" (click)="uploadProposalEvaluationFile()" style="margin-top: 15px;">Entregar</button>
+      </div>
+   
+    </div>
+
+    <div *ngIf="graduateWorkList?.graduateWorkStatusCode == 52" style="display: flex; align-items: center; justify-content: center; flex-direction: column; height: 82%;">
       <h1>Hora de entregar</h1>
       <input type="file" (change) = "fileHandler($event)"/>
       <button mat-raised-button color = "primary" (click)="uploadFinalDocument()" style="margin-top: 15px;">Entregar</button>
     </div>
 
-    <div *ngIf="hasFinalSubmitted && !hasCulminated && termination == false" style="display: flex; align-items: center; justify-content: center; flex-direction: column; height: 82%;">
+    <div *ngIf="graduateWorkList?.graduateWorkStatusCode == 60" style="display: flex; align-items: center; justify-content: center; flex-direction: column; height: 82%;">
       <h1>Pendiente por Asignacion de Jurado</h1>
     </div>
 
-    <div *ngIf="hasFinalSubmitted && hasCulminated && termination == false" style="display: flex; align-items: center; justify-content: center; flex-direction: column; height: 82%;">
+    <div *ngIf="graduateWorkList?.graduateWorkStatusCode == 70" style="display: flex; align-items: center; justify-content: center; flex-direction: column; height: 82%;">
+      <h1>Pendiente por Asignacion de Fecha de Defensa</h1>
+    </div>
+
+
+    <div *ngIf="graduateWorkList?.graduateWorkStatusCode == 80" style="display: flex; align-items: center; justify-content: center; flex-direction: column; height: 82%;">
+      <h1>Su jurado ha sido asignado y la defensa tomara lugar en {{this.currentGraduateWork.graduateWorkDefenseLocation}}</h1>
+      <h1>La Fecha designada es: {{defenseDate.toUTCString()}}</h1>
+    </div>
+
+    <div *ngIf="graduateWorkList?.graduateWorkStatusCode == 81" style="display: flex; align-items: center; justify-content: center; flex-direction: column; height: 82%;">
+      <h1>El Jurado esta deliberado su Trabajo de Grado</h1>
+    </div>
+
+    <div *ngIf="graduateWorkList?.graduateWorkStatusCode == 90" style="display: flex; align-items: center; justify-content: center; flex-direction: column; height: 82%;">
       <h1>Cargue el resumen para terminar</h1>
       <input type="file" (change) = "fileHandler($event)"/>
       <button mat-raised-button color = "primary" (click)="uploadCulmination()" style="margin-top: 15px;">Entregar</button>
     </div>
 
-    <div *ngIf="termination" style="display: flex; align-items: center; justify-content: center; flex-direction: column; height: 82%;">
+    <div *ngIf="graduateWorkList?.graduateWorkStatusCode == 100" style="display: flex; align-items: center; justify-content: center; flex-direction: column; height: 82%;">
       <h1>Usted ha culminado su proceso de trabajo de grado</h1>
       <h2>Aqui termina tu viaje Ing.</h2>
     </div>

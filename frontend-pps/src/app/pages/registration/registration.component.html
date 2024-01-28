@@ -1,32 +1,72 @@
-<div style="display: flex; width: 100%; height: 100%; align-items: center; justify-content: center;" >
+<div style="display: flex; width: 100%; height: 100%; align-items: center; flex-direction: column; justify-content: center;" class="div">
+
     <!-- -------------------------------------------------------------------------------------------------------------------- -->
     <form [formGroup]="registerForm" class="container" *ngIf="!isNextStep">
-        <h1><strong>Registrar nuevo usuario</strong></h1>
+        <h1 style="margin-top: 10px;"><strong>Registrar nuevo usuario</strong></h1>
         <img src="../../../assets/Logo_UCAB_2.webp" alt="Logo Ucab">
-        <mat-form-field class="full-width input-margin">
-            <mat-label>Ingrese su cédula:</mat-label>
-            <input formControlName = "userDNI" matInput placeholder="V-27656348" value = "">
-        </mat-form-field>
-        <mat-form-field class="full-width input-margin">
-            <mat-label>Ingrese su contraseña:</mat-label>
-            <input formControlName = "password" matInput placeholder="12345678" value = "">
-        </mat-form-field>
-        <mat-form-field class="full-width input-margin">
-            <mat-label>Confirme su contraseña:</mat-label>
-            <input matInput placeholder="12345678" value = "">
-        </mat-form-field>
+        <!-- Zona de la cedula -->
+        <div style="width: 100%; display: flex;">
+            <mat-form-field class="input-margin" style="width: 10vw;">
+                <mat-select [(value)]="formatSelected" [disabled]="true">
+                    <mat-option value="V-" [disabled]="true">
+                      V-
+                    </mat-option>
+                  </mat-select>
+            </mat-form-field>
+            <mat-form-field class="input-margin" style="width: 10vw; flex-grow: 1;">
+                <mat-label>Ingrese su cédula:</mat-label>
+                <input formControlName = "userDNI" matInput placeholder="27656348" value = "">
+            </mat-form-field>
+        </div>
+
+        <div style="width: 100%; display: flex;">
+            <mat-form-field style="flex: 1;">
+                <mat-label>Ingrese su contraseña:</mat-label>
+                <input formControlName = "password" matInput placeholder="12345678" [type]="hide ? 'password' : 'text'" value = "">
+                <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Ocultar contraseña'" [attr.aria-pressed]="hide">
+                    <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+            </mat-form-field>
+            <mat-form-field style="flex: 1;">
+                <mat-label>Confirme su contraseña:</mat-label>
+                <input matInput formControlName = "passwordConfirmation" [type]="hideConfirmation ? 'password' : 'text'" placeholder="12345678" value = "">
+                <button mat-icon-button matSuffix (click)="hideConfirmation = !hideConfirmation" [attr.aria-label]="'Ocultar contraseña'" [attr.aria-pressed]="hideConfirmation">
+                    <mat-icon>{{hideConfirmation ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+            </mat-form-field>
+        </div>
+        
         <mat-form-field class="full-width input-margin">
             <mat-label>Ingrese su nombre completo:</mat-label>
             <input formControlName = "userfirstname" matInput placeholder="Luis Carlos" value = "">
         </mat-form-field>
+    
         <mat-form-field class="full-width input-margin">
             <mat-label>Ingrese sus apellidos:</mat-label>
             <input formControlName = "userlastname" matInput placeholder="Somoza Ledezma" value = "">
         </mat-form-field>
         <mat-form-field class="full-width input-margin">
-            <mat-label>Ingrese su correo ucab:</mat-label>
-            <input formControlName = "useremailucab" matInput placeholder="lcsomoza.19@est.ucab.edu.ve" value = "">
+            <mat-label>Ingrese su número de teléfono:</mat-label>
+            <input formControlName = "userphone" matInput placeholder="+58-4122155879" value = "">
         </mat-form-field>
+        <div style="width: 100%; display: flex;">
+            <mat-form-field class="full-width input-margin">
+                <mat-label>Ingrese su correo principal:</mat-label>
+                <input formControlName = "useremailucab" matInput placeholder="lcsomoza.19@est.ucab.edu.ve" value = "" #tooltip="matTooltip"
+                matTooltip="Nota: Si su correo no pertenece al dominio UCAB (ejemplo: exampledomain@gmail.com), usted será registrado como personal externo"
+                matTooltipPosition="above"
+                matTooltipHideDelay="100000">
+            </mat-form-field>
+            <mat-form-field class="full-width input-margin">
+                <mat-select [(value)]="emailFormatSelected" >
+                    <mat-option value="@est.ucab.edu.ve"> @est.ucab.edu.ve </mat-option>
+                    <mat-option value="@ucab.edu.ve"> @ucab.edu.ve </mat-option>
+                    <mat-option value="@gmail.com"> @gmail.com </mat-option>
+                </mat-select>
+            </mat-form-field>
+            
+        </div>
+        
 
         <button mat-raised-button color = "primary" class="full-width" (click)="nextStep()" type="submit">Continuar</button>
     </form>
@@ -72,8 +112,55 @@
     </form>
     <!-- -------------------------------------------------------------------------------------------------------------------- -->
     <!-- -------------------------------------------------------------------------------------------------------------------- -->
-    <form [formGroup]="studentForm" class="container" *ngIf="isNextStep && formCase === 'Student' ">
+    <form [formGroup]="externalForm" class="container" *ngIf="isNextStep && formCase === 'External' ">
         <h1><strong>Registrar nuevo foraneo</strong></h1>
+        <img src="../../../assets/Logo_UCAB_2.webp" alt="Logo Ucab">
+
+        <mat-form-field style="width: 100%;">
+            <mat-label>Seleccione la empresa a la que pertenece</mat-label>
+            <mat-select [(value)]="enterpriseSelected" formControlName = "externalPersonnelEnterpriseId">
+              <mat-option *ngFor="let enterprise of enterpriseList" [value]="enterprise.enterpriseid">
+                {{ enterprise.enterpriseName }}
+              </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="full-width input-margin">
+            <mat-label>Ingrese su direccion:</mat-label>
+            <input matInput placeholder="Villa Antillana, Calle Surinam" value = "" formControlName = "externalPersonnelAddress">
+        </mat-form-field>
+
+        <mat-form-field class="full-width input-margin">
+            <mat-label>Ingrese su profesión:</mat-label>
+            <input matInput placeholder="ing. Mecánico" value = "" formControlName = "externalPersonnelProfession">
+        </mat-form-field>
+
+        <mat-form-field style="width: 100%;" [formGroup]="myForm">
+            <mat-label>Ingrese su fecha de graduacion</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="date" (dateChange)="selectedDate($event)">
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field class="full-width input-margin">
+            <mat-label>Ingrese sus años de experiencia:</mat-label>
+            <input matInput placeholder="7" value = "" formControlName = "externalPersonnelWorkExperience">
+        </mat-form-field>
+
+        <mat-form-field class="full-width input-margin">
+            <mat-label>Ingrese telefono de Oficina (Opcional):</mat-label>
+            <input formControlName = "externalPersonnelOffice" matInput placeholder="+58-4122155879" value = "">
+        </mat-form-field>
+
+        <button mat-raised-button color = "primary" class="full-width" (click)="registerExternal()" type="submit">Registrar Externo</button>
+    </form>
+    <!-- -------------------------------------------------------------------------------------------------------------------- -->
+    <!-- -------------------------------------------------------------------------------------------------------------------- -->
+    <!-- -------------------------------------------------------------------------------------------------------------------- -->
+    <!-- -------------------------------------------------------------------------------------------------------------------- -->
+    <form [formGroup]="studentForm" class="container" *ngIf="isNextStep && formCase === 'Student' ">
+        <h1><strong>Registrar nuevo estudiante</strong></h1>
         <img src="../../../assets/Logo_UCAB_2.webp" alt="Logo Ucab">
 
         <mat-form-field style="width: 100%;">
@@ -86,7 +173,7 @@
         </mat-form-field>
 
         <mat-form-field style="width: 100%;">
-            <mat-label>Seleccione el semestre al que pertenece</mat-label>
+            <mat-label>Seleccione su semestre</mat-label>
             <mat-select [(value)]="semesterSelected" formControlName = "studentSemester">
               <mat-option *ngFor="let semester of semesterList" [value]="semester">
                 {{ semester }}
@@ -95,51 +182,15 @@
         </mat-form-field>
 
         <mat-form-field class="full-width input-margin">
-            <mat-label>Ingrese su direccion:</mat-label>
-            <input matInput placeholder="12345678" value = "" formControlName = "studentAddress">
+            <mat-label>Ingrese una direccion:</mat-label>
+            <input matInput placeholder="Villa Alianza, Avenida Surinam" value = "" formControlName = "studentAddress">
         </mat-form-field>
 
         <mat-form-field class="full-width input-margin">
-            <mat-label>Ingrese telefono de Oficina (Opcional):</mat-label>
-            <input formControlName = "studentOffice" matInput placeholder="+58-4122155879" value = "">
+            <mat-label>Ingrese un teléfono de oficina:</mat-label>
+            <input matInput placeholder="+58-4122155879" value = "" formControlName = "studentOffice">
         </mat-form-field>
 
         <button mat-raised-button color = "primary" class="full-width" (click)="registerStudent()" type="submit">Registrar Estudiante</button>
     </form>
-    <!-- -------------------------------------------------------------------------------------------------------------------- -->
-    <!-- -------------------------------------------------------------------------------------------------------------------- -->
-    <form [formGroup]="studentForm" class="container" *ngIf="isNextStep && formCase === 'External' ">
-        <h1><strong>Registrar nuevo profesor</strong></h1>
-        <img src="../../../assets/Logo_UCAB_2.webp" alt="Logo Ucab">
-        <!--
-        <mat-form-field class="full-width input-margin">
-            <mat-label>Ingrese su cédula:</mat-label>
-            <input formControlName = "userDNI" matInput placeholder="V-27656348" value = "">
-        </mat-form-field>
-        <mat-form-field class="full-width input-margin">
-            <mat-label>Ingrese su contraseña:</mat-label>
-            <input formControlName = "password" matInput placeholder="12345678" value = "">
-        </mat-form-field>
-        <mat-form-field class="full-width input-margin">
-            <mat-label>Confirme su contraseña:</mat-label>
-            <input matInput placeholder="12345678" value = "">
-        </mat-form-field>
-        <mat-form-field class="full-width input-margin">
-            <mat-label>Ingrese su nombre completo:</mat-label>
-            <input formControlName = "userfirstname" matInput placeholder="Luis Carlos" value = "">
-        </mat-form-field>
-        <mat-form-field class="full-width input-margin">
-            <mat-label>Ingrese sus apellidos:</mat-label>
-            <input formControlName = "userlastname" matInput placeholder="Somoza Ledezma" value = "">
-        </mat-form-field>
-        <mat-form-field class="full-width input-margin">
-            <mat-label>Ingrese su correo ucab:</mat-label>
-            <input formControlName = "useremailucab" matInput placeholder="lcsomoza.19@est.ucab.edu.ve" value = "">
-        </mat-form-field>
-
-        <button mat-raised-button color = "primary" class="full-width" (click)="nextStep()" type="submit">Continuar</button>
-        -->
-    </form>
-    <!-- -------------------------------------------------------------------------------------------------------------------- -->
-    <!-- -------------------------------------------------------------------------------------------------------------------- -->
 </div>

@@ -1,16 +1,37 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { Router } from '@angular/router';
 
 
 @Injectable({
   providedIn: 'root'
 })
-export class NavbarService {
+export class NavbarService implements OnInit{
 
   behaviorSubject = new BehaviorSubject<boolean>(false);
   roleSubject = new BehaviorSubject<string>('');
+  pathSubject = new BehaviorSubject<string>('');
+  previousPathSubject = new BehaviorSubject<string>('');
+  isDashBoardSubject = new BehaviorSubject<boolean>(true);
 
-  constructor() { }
+  isRoleSelected: boolean = false;
+
+  roleSelectedNavBar: string | null = null; 
+
+  constructor(private router: Router) { 
+
+  }
+
+  changeIsDashBoard() {
+    this.isDashBoardSubject.next(false)
+  }
+
+  getIsDashBoard(){
+    return this.isDashBoardSubject.asObservable();
+  }
+
+  ngOnInit() : void {
+  }
 
   setRole(data: string){
     this.roleSubject.next(data);
@@ -26,5 +47,21 @@ export class NavbarService {
 
   getData(){
     return this.behaviorSubject.asObservable();
+  }
+
+  setPath(data: string){
+    this.pathSubject.next(data);
+  }
+
+  getPath(){
+    return this.pathSubject.asObservable();
+  }
+
+  setPreviousPath(data: string){
+    this.previousPathSubject.next(data);
+  }
+
+  getPreviousPath(){
+    return this.previousPathSubject.asObservable();
   }
 }

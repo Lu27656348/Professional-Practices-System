@@ -1,20 +1,28 @@
 import { Component, OnInit,Inject } from '@angular/core';
-import { forkJoin, of } from 'rxjs';
+
+import { forkJoin, of, switchMap } from 'rxjs';
+
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog'
 
 import { GraduateworkService } from '../../../../../services/graduatework.service'
 import { StudentService } from '../../../../../services/student.service'
 
 import { ResponseBlob } from '../../../../../interfaces/ResponseBlob'
+import { environment } from 'src/environments/environment';
 
-async function downloadFile(fileName: string) {
+import { EvaluationDialogComponent } from './evaluation-dialog/evaluation-dialog.component';
+import { UsersService } from 'src/app/services/users.service';
+import { EnterpriseService } from 'src/app/services/enterprise.service';
+
+async function downloadFile(fileName: string,studentDNI: string, userFirstName: string, userLastName: string) {
   try {
-    const response = await fetch('http://localhost:8082/download', {
+    const response = await fetch(`${environment.amazonS3}/download`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ fileName: fileName })
+      body: JSON.stringify({ fileName: fileName,studentDNI: studentDNI, userFirstName: userFirstName, userLastName: userLastName})
     } as RequestInit);
 
     const blob = await (response as ResponseBlob<Blob>).blob(); // Type assertion for blobBody
@@ -37,14 +45,53 @@ async function downloadFile(fileName: string) {
 export class DialogsComponent {
   inputdata: any;
   coordinatorData: any = {};
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private graduateWorkService: GraduateworkService, private studentService: StudentService){
-    
-    
+  studentCount: number = 0;
+  academicTutorData: any = null;
+  enterpriseData: any = null;
+
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private graduateWorkService: GraduateworkService, private studentService: StudentService,private dialog: MatDialog, private userService: UsersService, private enterpriseService: EnterpriseService){
+    this.inputdata = this.data
+    this.studentCount = this.inputdata.user.length
+    console.log(this.inputdata)
+    console.log(this.studentCount)
+    this.studentService.getStudentCoordinator(this.inputdata.user[0].userDNI).pipe(
+      switchMap(
+        (result) => {
+          console.log(result)
+          return this.userService.getUserData(result.professordni)
+        }
+      ),
+      switchMap(
+        (result) => {
+          console.log(result)
+          this.coordinatorData = result;
+          return this.userService.getUserData(this.inputdata.graduatework.graduateWorkAcademicTutor)
+        }
+      ),
+      switchMap(
+        (result) => {
+
+          this.academicTutorData = result;
+          console.log(this.academicTutorData)
+          return of("hola")
+        }
+      ),
+    ).subscribe({
+      next: (result) => {
+        console.log(result)
+      }
+    });
 
   }
   ngOnInit(){
-    this.inputdata = this.data
-    console.log(this.inputdata)
+
+    this.enterpriseService.getEnterpriseById(this.inputdata.graduatework.graduateWorkEnterprise).subscribe({
+      next: (result) => {
+        this.enterpriseData = result
+        console.log(this.enterpriseData)
+      }
+    })
+  
   }
 
   obtenerPlanillaEvaluacion(){
@@ -52,9 +99,14 @@ export class DialogsComponent {
   }
 
   obtenerInformePropuesta(){
-    const fileName: string = this.inputdata.user.userLastName.split(' ')+this.inputdata.user.userFirstName.split(' ')+' PTG.pdf';
+    let fileName;
+    if(this.studentCount > 1){
+      fileName = `${this.inputdata.user[0].userLastName.split(' ')[0]}${this.inputdata.user[0].userFirstName.split(' ')[0]} ${this.inputdata.user[1].userLastName.split(' ')[0]}${this.inputdata.user[1].userFirstName.split(' ')[0]} PTG.pdf`;
+    }else{
+      fileName = `${this.inputdata.user[0].userLastName.split(' ')[0]}${this.inputdata.user[0].userFirstName.split(' ')[0]} PTG.pdf`
+    }
     console.log(fileName);
-    downloadFile(fileName);
+    downloadFile(fileName,this.inputdata.user[0].userDNI,this.inputdata.user[0].userFirstName.split(" ")[0],this.inputdata.user[0].userLastName.split(" ")[0]);
   }
 
   veredictoPropuesta(decision: string){
@@ -73,5 +125,15 @@ export class DialogsComponent {
         }
       })
     }
+  }
+  openReviewerEvaluationDialog(){
+    const dialogRef = this.dialog.open(EvaluationDialogComponent,{
+      width: '60%',
+      data: this.inputdata
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+    });
   }
 }

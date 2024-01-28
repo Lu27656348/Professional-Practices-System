@@ -4,6 +4,7 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CouncilService } from '../../../../../services/council.service'
 import { GraduateworkService } from '../../../../../services/graduatework.service'
 import { FormGroup, FormControl,FormBuilder,Validators } from '@angular/forms';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-defense-dialog',
@@ -19,7 +20,9 @@ export class DefenseDialogComponent {
   councilSelected: any = null;
 
   myForm = new FormGroup({
-    date: new FormControl()
+    date: new FormControl(),
+    location: new FormControl(),
+    time: new FormControl()
   });
 
   constructor(private councilService: CouncilService,@Inject(MAT_DIALOG_DATA) public data: any, private graduateWorkService: GraduateworkService){}
@@ -37,18 +40,19 @@ export class DefenseDialogComponent {
   }
 
   setDefenseDate(){
-    this.graduateWorkService.setDefenseDate(this.selectedDateValue, this.inputdata.graduateWorkData.graduateworkid).subscribe({
-      next: (data) => {
-        console.log(data)
-      }
-    })
-    this.graduateWorkService.changeStatus(this.inputdata.graduateWorkData.graduateworkid,80).subscribe({
-      next: (data: any) => {
-        console.log(data);
+    console.log(this.myForm.value)
+    const time = (this.myForm.value.time)
+    console.log(time)
+    
+    forkJoin([this.graduateWorkService.setDefenseDate(this.myForm.value.time, this.myForm.value.location,this.inputdata.graduateWorkData.graduateworkid),this.graduateWorkService.changeStatus(this.inputdata.graduateWorkData.graduateworkid,80)])
+    .subscribe({
+      next: (result) => {
+        console.log(result)
       },
       complete: () => {
-        window.location.href = window.location.href;
+        window.location.href = window.location.href
       }
     })
+    
   }
 }

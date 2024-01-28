@@ -3,7 +3,7 @@ import { LoginService } from '../../../../services/login.service';
 import { UsersService } from '../../../../services/users.service';
 import { StudentService} from '../../../../services/student.service'
 import { GraduateworkService } from '../../../../services/graduatework.service'
-import { forkJoin, of } from 'rxjs';
+import { Observable, forkJoin, of, switchMap } from 'rxjs';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog'
 
@@ -59,6 +59,44 @@ export class ProfessorTutorComponent implements OnInit{
 
       console.log(this.localUser);
 
+      this.graduateworkService.getAcademicTutorGraduateWork(this.localUser.userDNI).pipe(
+        switchMap(
+          (data) => {
+            console.log(data)
+            this.reviewerData = data
+            const observables: Observable<any>[] = []
+            this.reviewerData.forEach( (proposal:any) => {
+              observables.push(this.graduateworkService.getGraduateWorkStudentData(proposal.graduateWorkId))
+            })
+            return forkJoin(observables)
+          }
+        ),
+        switchMap(
+          (data) => {
+            console.log(data)
+            this.reviewerData.forEach( (proposal:any,indexP: number) => {
+              let authors = ""; 
+              data[indexP].forEach( (author: any, index: number) => {
+               console.log(data[indexP])
+               if(index == 0){
+                 authors = authors + author.userLastName.split(" ")[0]+ author.userFirstName.split(" ")[0] + "/";
+               }else{
+                 authors = authors + author.userLastName.split(" ")[0]+ author.userFirstName.split(" ")[0];
+               } 
+               console.log(data[indexP][0])
+               this.reviewerData[indexP].studentDNI = data[indexP][0].userDNI;
+              })
+              this.reviewerData[indexP].authors = authors;
+             })
+             return of(this.reviewerData)
+          }
+        ),
+      ).subscribe({
+        next: (data) => {
+          console.log(data)
+          this.reviewerData = data
+        }
+      })
 
     }else{
       this.router.navigateByUrl("");
@@ -67,13 +105,7 @@ export class ProfessorTutorComponent implements OnInit{
 
   ngOnInit(){
 
-    this.graduateworkService.getAcademicTutorGraduateWork(this.localUser.userDNI).subscribe({
-      next: (data) => {
-        console.log(data)
-        this.reviewerData = data
-
-      }
-    })
+  
 
   }
   openDialog(data: any) {
@@ -81,7 +113,8 @@ export class ProfessorTutorComponent implements OnInit{
     const dialogRef = this.dialog.open(DialogTutorComponent,{
       width: '60%',
       data: {
-        revisionData: data
+        revisionData: data,
+        tutorData: this.localUser
       }
     })
 

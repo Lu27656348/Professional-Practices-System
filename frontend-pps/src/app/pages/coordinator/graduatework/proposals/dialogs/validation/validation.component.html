@@ -1,11 +1,17 @@
 <h2 mat-dialog-title>Datos asociados a la propuesta</h2>
 <mat-dialog-content class="mat-typography">
-  <p><strong>Datos del estudiante</strong></p>
+  <p *ngIf="!isGrupal"><strong>Datos del estudiante</strong></p>
+  <p *ngIf="isGrupal"><strong>Datos de los estudiantes</strong></p>
   <mat-divider></mat-divider>
-  <p>{{'Nombre completo: ' +  inputdata.user.userLastName + ', ' + inputdata.user.userFirstName}}</p>
-  <p>{{'Cedula de identidad: ' +  inputdata.user.userDNI}}</p>
-  <p>{{'Correo UCAB: ' +  inputdata.user.userEmailUcab}}</p>
-  <p>{{'Número de teléfono: ' +  inputdata.user.userPhone }}</p>
+  <p>{{'Nombre completo: ' +  inputdata.user[0].userLastName + ', ' + inputdata.user[0].userFirstName}}</p>
+  <p>{{'Cedula de identidad: ' +  inputdata.user[0].userDNI}}</p>
+  <p>{{'Correo UCAB: ' +  inputdata.user[0].userEmail}}</p>
+  <p>{{'Número de teléfono: ' +  inputdata.user[0].userPhone }}</p>
+  <mat-divider *ngIf="isGrupal"></mat-divider>
+  <p *ngIf="isGrupal">{{'Nombre completo: ' +  inputdata.user[1].userLastName + ', ' + inputdata.user[1].userFirstName}}</p>
+  <p *ngIf="isGrupal">{{'Cedula de identidad: ' +  inputdata.user[1].userDNI}}</p>
+  <p *ngIf="isGrupal">{{'Correo UCAB: ' +  inputdata.user[1].userEmail}}</p>
+  <p *ngIf="isGrupal">{{'Número de teléfono: ' +  inputdata.user[1].userPhone }}</p>
 
   <p><strong>Datos del Trabajo de Grado</strong></p>
   <mat-divider></mat-divider>

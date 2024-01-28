@@ -13,12 +13,15 @@ import { CompletionComponent } from './pages/coordinator/graduatework/completion
 import { DefenseComponent } from './pages/coordinator/graduatework/defense/defense.component';
 import { ReviewersComponent } from './pages/coordinator/graduatework/reviewers/reviewers.component';
 import { CouncilComponent } from './pages/coordinator/graduatework/council/council.component'
+import { FilesComponent } from './pages/coordinator/graduatework/files/files.component';
 
 
 import { ProfessorGWComponent } from './pages/professor/professor-gw/professor-gw.component'
 import { ProfessorReviewerComponent } from './pages/professor/graduatework/professor-reviewer/professor-reviewer.component'
 import { ProfessorJuryComponent } from './pages/professor/graduatework/professor-jury/professor-jury.component'
 import { ProfessorTutorComponent } from './pages/professor/graduatework/professor-tutor/professor-tutor.component'
+import { OutsiderComponent } from './pages/outsider/outsider.component';
+import { ExternalJuryComponent } from './pages/outsider/graduatework/external-jury/external-jury.component';
 
 
 const routes: Routes = [
@@ -84,8 +87,20 @@ const routes: Routes = [
     component: CompletionComponent
   },
   {
+    path: "graduate-work/files",
+    component: FilesComponent
+  },
+  {
     path: "graduate-work/defenses",
     component: DefenseComponent
+  },
+  {
+    path: "graduate-work/outsider",
+    component: OutsiderComponent
+  },
+  {
+    path: "graduate-work/outsider/jury",
+    component: ExternalJuryComponent
   },
   {
     path: "**",

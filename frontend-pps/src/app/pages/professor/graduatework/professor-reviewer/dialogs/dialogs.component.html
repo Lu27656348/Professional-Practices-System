@@ -1,18 +1,23 @@
 <h2 mat-dialog-title>Datos asociados a la propuesta</h2>
 <mat-dialog-content class="mat-typography">
-  <p><strong>Datos del estudiante</strong></p>
+  <p *ngIf="studentCount < 2"><strong>Datos del estudiante</strong></p>
+  <p *ngIf="studentCount >= 2"><strong>Datos de los estudiantes </strong></p>
   <mat-divider></mat-divider>
-  <p>{{'Nombre completo: ' + inputdata.user.userLastName + ', ' + inputdata.user.userFirstName }}</p>
-  <p>{{'Cedula de identidad: ' + inputdata.user.userDNI }}</p>
-  <p>{{'Correo UCAB: ' + inputdata.user.userEmailUcab }}</p>
-  <p>{{'Número de teléfono: ' + inputdata.user.userPhone }}</p>
-
+  <p >{{'Nombre completo: ' + inputdata.user[0].userLastName + ', ' + inputdata.user[0].userFirstName }}</p>
+  <p >{{'Cedula de identidad: ' + inputdata.user[0].userDNI }}</p>
+  <p >{{'Correo UCAB: ' + inputdata.user[0].userEmail }}</p>
+  <p >{{'Número de teléfono: ' + inputdata.user[0].userPhone }}</p>
+  <mat-divider *ngIf="studentCount >= 2"></mat-divider>
+  <p *ngIf="studentCount >= 2">{{'Nombre completo: ' + inputdata.user[1].userLastName + ', ' + inputdata.user[1].userFirstName }}</p>
+  <p *ngIf="studentCount >= 2">{{'Cedula de identidad: ' + inputdata.user[1].userDNI }}</p>
+  <p *ngIf="studentCount >= 2">{{'Correo UCAB: ' + inputdata.user[1].userEmail }}</p>
+  <p *ngIf="studentCount >= 2">{{'Número de teléfono: ' + inputdata.user[1].userPhone }}</p>
   <p><strong>Datos del Trabajo de Grado</strong></p>
   <mat-divider></mat-divider>
   <p>{{'Título: ' + inputdata.graduatework.graduateWorkTitle }}</p>
   <p>{{'Tipo: ' + inputdata.graduatework.graduateWorkType }}</p>
-  <p>{{'Organización donde se realizará: UCAB' }}</p>
-  <p>{{'Posible tutor academico: Medina, Luz E.'}}</p>
+  <p>{{'Organización donde se realizará: ' + enterpriseData?.enterpriseName }}</p>
+  <p>{{'Posible tutor academico: ' + academicTutorData?.userLastName + ", " + academicTutorData?.userFirstName}}</p>
 
   <h3><strong>Planilla de Evaluacion de Trabajo de Grado</strong></h3>
   <mat-divider></mat-divider>
@@ -29,7 +34,5 @@
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>Cancel</button>
-  <button mat-button style="background-color: rgb(245, 171, 21)" [mat-dialog-close]="true" cdkFocusInitial (click)="veredictoPropuesta('reenviar')">Reenviar</button>
-  <button mat-button style="background-color: red;"  [mat-dialog-close]="true" cdkFocusInitial (click)="veredictoPropuesta('rechazar')">Rechazar</button>
-  <button mat-button style="background-color: green;"  [mat-dialog-close]="true" cdkFocusInitial (click)="veredictoPropuesta('aprobar')">Aprobar</button>
+  <button mat-button color="primary" [mat-dialog-close]="true" cdkFocusInitial (click)="openReviewerEvaluationDialog()">Evaluar Propuesta</button>
 </mat-dialog-actions>

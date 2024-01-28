@@ -1,10 +1,10 @@
 .container {
     background-color:#eae6e5;
-    width: 700px;
-    height: 650px;
+    width: 65%;
+    height: 100%;
     position: relative;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 10px 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -39,7 +39,7 @@ h1 {
     margin-bottom: 0;
 }
 
-div {
+.div {
     background-image: url("../../../assets/UCAB_Guayana.webp");
     background-repeat: no-repeat;
     background-size: 100% 100%;

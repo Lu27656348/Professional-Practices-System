@@ -1,0 +1,18 @@
+<h2 mat-dialog-title>Evaluacion de Profesor Revisor</h2>
+<mat-dialog-content class="mat-typography">
+    <p><strong>Seleccione los Criterios de Evaluación</strong></p>
+    <p>Nota: Para que una propuesta sea aprobada, esta debe cumplir con todos los criterios de evaluacion designados</p>
+    <p>En el caso que un criterio no sea marcado, automaticamente se reprueba</p>
+    <mat-divider></mat-divider>
+    <section [formGroup] = "criteriaForm" style="display: flex; flex-direction: column;">
+      <p></p>
+      <mat-selection-list (selectionChange)="printSelectedCriteria($event)">
+        <mat-list-option *ngFor="let criteria of criteriaList" [value]="criteria.reviewerCriteriaId">{{ criteria.reviewerCriteriaDescription }}</mat-list-option>
+      </mat-selection-list>      
+      <p></p>
+    </section> 
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="true" cdkFocusInitial (click)="submitEvaluation()">Evaluar Propuesta</button>
+</mat-dialog-actions>

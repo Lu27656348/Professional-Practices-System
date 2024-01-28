@@ -120,6 +120,30 @@ public class S3Controller {
         }
     }
 
+    @PostMapping("/download/root")
+    public ResponseEntity<InputStreamResource> downloadFromRoot(@RequestBody ValidateFileNameRequest fileName) throws IOException {
+        try {
+            // Obtener el objeto del archivo de S3
+            S3Object object = s3Client.getObject("bucket-gw-storage", fileName.getFileName());
+            S3ObjectInputStream s3is = object.getObjectContent();
+            // Configurar las cabeceras de la respuesta
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            ContentDisposition contentDisposition = ContentDisposition.attachment()
+                    .filename(fileName.getFileName())
+                    .build();
+            headers.setContentDisposition(contentDisposition);
+            headers.setContentLength(object.getObjectMetadata().getContentLength());
+
+
+            return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_PDF).body(new InputStreamResource(s3is));
+
+        } catch (Exception e) {
+            // Manejar la excepción
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
     @GetMapping("/list")
     public List<String > getAllObjects() throws IOException {
         return s3Service.listFiles();

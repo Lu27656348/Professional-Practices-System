@@ -1,7 +1,8 @@
 <mat-toolbar>
-    <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
-      <mat-icon>menu</mat-icon>
+    <button mat-icon-button (click) = "goBack()" class="example-icon" aria-label="Example icon-button with menu icon" *ngIf="!isDashboard">
+      <mat-icon>keyboard_backspace</mat-icon>
     </button>
+    <img src="../../../assets//i9W7A4Mb_400x400.png" alt="Logo UCAB" style = "width: 50px; height: 50px; margin-right: 10px;"> 
     <span>Sistema de Practicas Profesionales</span>
     <span class="example-spacer"></span>
     <mat-form-field>
@@ -13,5 +14,6 @@
         </mat-select>
     </mat-form-field>
     <button mat-button *ngIf="user != null">{{user.userFirstName + ' ' + user.userLastName}}</button>
+    <img src="../../../assets/Goldo.PNG" alt="Foto de perfil" class="avatar">
     <button mat-button *ngIf="user != null" (click) = "logOut()"><mat-icon>exit_to_app</mat-icon></button>
 </mat-toolbar>

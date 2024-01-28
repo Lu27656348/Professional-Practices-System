@@ -1,0 +1,25 @@
+.mdc-data-table__header-cell {
+    text-align: center;
+}
+
+.mat-column-0,
+.mat-column-1,
+.mat-column-2,
+.mat-column-3,
+.mat-column-4,
+.mat-column-5,
+.mat-column-6,
+.mat-column-7,
+.mat-column-8,
+.mat-column-9,
+.mat-column-10,
+.mat-column-11,
+.mat-column-12
+ {
+    width: 5px;
+    border: 1px solid currentColor;
+    text-align: center;
+}
+
+  
+

@@ -13,6 +13,9 @@ import { Subscription } from 'rxjs'
 
 export class NavbarComponent implements OnInit{
 
+  previousPath: string | null = null;
+  isDashboard: boolean = true;
+
   roleSelected: any;
   user: any = {};
   roles: string[] = [];
@@ -41,11 +44,27 @@ export class NavbarComponent implements OnInit{
   
 
   ngOnInit(){
-    this.loginService.setIsRoleSelected(false);
+
+    this.dataService.getIsDashBoard().subscribe({
+      next: (isDashboard) => {
+        this.isDashboard = isDashboard
+      }
+    })
+    this.dataService.getPreviousPath().subscribe({
+      next: (previousPath) => {
+        console.log("previousPath " + previousPath)
+        this.previousPath = previousPath;
+      }
+    });
     const userString = localStorage.getItem('user');
     const rolesString = localStorage.getItem('roles');
 
+    console.log("%cExtrayendo del localStorage", 'color: red')
+    console.log(userString)
+    console.log(rolesString)
+
     if(userString && rolesString){
+
       console.log("LOCAL STORAGE")
       this.localUser = JSON.parse(userString);
       this.userService.getUserData(this.localUser.userDNI).subscribe({
@@ -64,6 +83,14 @@ export class NavbarComponent implements OnInit{
       })
       const rolesRequest = JSON.parse(rolesString);
       console.log(rolesRequest)
+      if(this.localUser.mode){
+        console.log(`%c${this.localUser.mode}`, "color: green")
+        this.roleSelected = this.localUser.mode
+        this.dataService.setData(true);
+        this.dataService.setRole(this.roleSelected);
+      }else{
+        console.log(`%cEmpty String`, "color: green")
+      }
       for (let i = 0; i < rolesRequest.length; i++) {
         this.roles.push(rolesRequest[i]);
       }
@@ -79,9 +106,28 @@ export class NavbarComponent implements OnInit{
     this.dataService.setData(true);
     this.dataService.setRole(this.roleSelected);
     this.userService.setMode(this.roleSelected);
+
+    const userString = localStorage.getItem('user');
+    if(userString){
+      const userObject = JSON.parse(userString);
+      userObject.mode = this.roleSelected
+      console.log(userObject)
+      localStorage.setItem('user', JSON.stringify(userObject));
+    }
     console.log(this.roleSelected);
   }
 
+  goBack(){
+      this.dataService.getPreviousPath().subscribe({
+      next: (previousPath) => {
+        console.log(previousPath)
+        //window.location.href = previousPath
+        const fragment = previousPath.split("/")[3];
+        console.log(fragment)
+        this.router.navigateByUrl("/" + fragment)
+      }
+    })
+  }
   logOut(){
     this.roleSelected = '';
     this.isRoleSelected = false;

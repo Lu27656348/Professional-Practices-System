@@ -1,10 +1,13 @@
-//import { generarPlanillaPropuestaTEG } from '../generator/planilla_propuesta_TEG';
+import { generarPlanillaPropuestaTEG } from '../generator/planilla_propuesta_TEG';
 
 import { academicTutor } from '../interfaces/academicTutor';
 import { enterprise } from '../interfaces/enterprise';
 import { graduateWork } from '../interfaces/graduateWork';
 import { studentApplicant } from '../interfaces/studentApplicant';
 
+import { Injectable } from '@angular/core';
+
+@Injectable() // <-- Add this decorator
 export class PlanillaPropuestaTEG{
 
   private studentData: studentApplicant[] = [];
@@ -33,6 +36,6 @@ export class PlanillaPropuestaTEG{
   }
 
   public imprimir(){
-    //generarPlanillaPropuestaTEG( this );
+    generarPlanillaPropuestaTEG( this );
   }
 }

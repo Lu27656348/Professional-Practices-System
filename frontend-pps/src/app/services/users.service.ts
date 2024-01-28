@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient,HttpHeaders } from '@angular/common/http';
 import { Observable } from "rxjs";
 import { environment } from 'src/environments/environment';
+import { CreateUserRequest } from '../interfaces/requests/CreateUserRequest';
 @Injectable({
   providedIn: 'root'
 })
@@ -21,6 +22,12 @@ export class UsersService {
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
     return this.http.get(`${environment.apiUrl}/users/${userDNI}`,{headers});
+  }
+
+  createUser( userData: CreateUserRequest ){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.post(`${environment.apiUrl}/users/create`,userData,{headers});
   }
 
   getMode(){

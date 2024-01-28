@@ -4,6 +4,7 @@ import { LoginService } from '../../../services/login.service';
 import { UsersService } from '../../../services/users.service';
 import { Router } from '@angular/router';
 import { FooterComponent } from '../../../shared/footer/footer.component'
+import { NavbarService } from 'src/app/services/navbar.service';
 
 interface PeriodicElement {
   name: string;
@@ -47,7 +48,10 @@ export class GraduateworkComponent implements OnInit{
 
   
 
-  constructor(private loginService: LoginService,private router: Router,private userService: UsersService){}
+  constructor(private loginService: LoginService,private router: Router,private userService: UsersService, private navbarService: NavbarService){
+    this.navbarService.changeIsDashBoard();
+
+  }
 
   ngOnInit(){
 

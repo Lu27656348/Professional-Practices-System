@@ -19,7 +19,7 @@ export class NavbarService implements OnInit{
   roleSelectedNavBar: string | null = null; 
 
   constructor(private router: Router) { 
-
+  
   }
 
   changeIsDashBoard() {
@@ -34,6 +34,7 @@ export class NavbarService implements OnInit{
   }
 
   setRole(data: string){
+    console.log("Cambiando rol en navbar")
     this.roleSubject.next(data);
   }
 

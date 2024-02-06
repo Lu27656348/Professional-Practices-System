@@ -37,4 +37,10 @@ export class UsersService {
   setMode(mode: string ){
     this.mode = mode;
   }
+
+  deleteUserById(userDNI: string) : Observable<any>{
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.delete(`${environment.apiUrl}/users/${userDNI}`,{headers});
+  }
 }

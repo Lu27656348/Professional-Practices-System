@@ -3,17 +3,12 @@
       <mat-icon>keyboard_backspace</mat-icon>
     </button>
     <img src="../../../assets//i9W7A4Mb_400x400.png" alt="Logo UCAB" style = "width: 50px; height: 50px; margin-right: 10px;"> 
-    <span>Sistema de Practicas Profesionales</span>
+    <button mat-button><span style="font-size: medium;" routerLink="/dashboard">Sistema de Practicas Profesionales</span></button>
+    <button mat-button *ngIf="roleSelected == 'Coordinator'" routerLink="/catalogos" style="margin-left: 25px;">Catálogos</button>
+    <button mat-button *ngIf="roleSelected == 'Coordinator'" routerLink="/archivos" style="margin-left: 10px;">Archivos</button>
     <span class="example-spacer"></span>
-    <mat-form-field>
-        <mat-label>Select Role</mat-label>
-        <mat-select [(value)]="roleSelected" (selectionChange)="onSelectionChange()">
-          <mat-option *ngFor="let role of roles" [value]="role">
-            {{role}}
-          </mat-option>
-        </mat-select>
-    </mat-form-field>
-    <button mat-button *ngIf="user != null">{{user.userFirstName + ' ' + user.userLastName}}</button>
+    <button mat-raised-button *ngIf="user != null">{{(roleSelected == "Student") ? 'Estudiante' : 'Coordinador'}}</button>
+    <button mat-button *ngIf="user != null" routerLink="/perfil">{{user.userFirstName + ' ' + user.userLastName}}</button>
     <img src="../../../assets/Goldo.PNG" alt="Foto de perfil" class="avatar">
     <button mat-button *ngIf="user != null" (click) = "logOut()"><mat-icon>exit_to_app</mat-icon></button>
 </mat-toolbar>

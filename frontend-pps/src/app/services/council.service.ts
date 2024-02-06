@@ -16,5 +16,11 @@ export class CouncilService {
     return this.http.get(`${environment.apiUrl}/councils`,{headers});
   }
 
+  getCouncilById( schoolCouncilId: string ) :Observable<any> {
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`${environment.apiUrl}/councils/${schoolCouncilId}`,{headers});
+  }
+
 
 }

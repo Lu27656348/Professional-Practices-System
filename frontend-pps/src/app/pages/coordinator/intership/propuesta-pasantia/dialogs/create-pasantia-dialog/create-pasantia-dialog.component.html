@@ -1,0 +1,67 @@
+<h2 mat-dialog-title>Cargar Propuesta de Pasantia</h2>
+<mat-dialog-content class="mat-typography">
+    <h3>Cargue los datos de la propuesta</h3>
+    <mat-divider></mat-divider>
+    <form [formGroup]="pasantiaForm">
+        
+        <mat-form-field style="width: 100%;">
+            <mat-label>Titulo</mat-label>
+            <input matInput formControlName = 'titulo'>
+        </mat-form-field>
+
+        <mat-form-field style="width: 100%;">
+            <mat-label>Estudiante</mat-label>
+            <mat-select [(value)]="studentSelected" formControlName = "estudiante">
+            <mat-option *ngFor="let student of studentList" [value]="student.userDNI">
+                {{ student.userLastName + ', ' + student.userFirstName }} 
+            </mat-option>
+        </mat-select>
+        </mat-form-field>
+
+        <mat-form-field style="width: 100%;">
+            <mat-label>Empresa</mat-label>
+            <mat-select [(value)]="enterpriseSelected" (selectionChange)="onSelectionChange()" formControlName = "empresa">
+            <mat-option *ngFor="let enterprise of enterpriseList" [value]="enterprise.enterpriseid">
+                {{ enterprise.enterpriseName }} 
+            </mat-option>
+        </mat-select>
+        </mat-form-field>
+
+        <mat-form-field style="width: 100%;" *ngIf= "enterpriseSelected">
+            <mat-label>Tutor Empresarial</mat-label>
+            <mat-select [(value)]="externalSelected" formControlName = "tutorEmpresarial">
+            <mat-option *ngFor="let external of externalList" [value]="external.userDNI">
+                {{  external.userLastName + ", " + external.userFirstName  + "/ " + external.userDNI}} 
+            </mat-option>
+        </mat-select>
+        </mat-form-field>
+
+        <mat-form-field style="width: 100%;">
+            <mat-label>Ingrese la fecha en la que comenzara y terminara la pasantía</mat-label>
+            <mat-date-range-input [rangePicker]="picker">
+                <input matStartDate formControlName="fechaInicio" placeholder="Fecha de Inicio">
+                <input matEndDate formControlName="fechaFin" placeholder="Fecha de Culminacion">
+              </mat-date-range-input>
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-date-range-picker #picker></mat-date-range-picker>
+            <mat-error *ngIf="pasantiaForm.get('fechaFin').errors?.fechaFinInvalida">
+                La fecha de fin debe ser entre 6 y 8 semanas mayor que la fecha de inicio.
+              </mat-error>
+        </mat-form-field>
+
+        
+
+        <div style="height: 50%;">
+            <h3 style="margin-top: 15px;">Cargue el archivo de la propuesta</h3>
+            <mat-divider></mat-divider>
+            <input style = "margin-top:  10px;" type="file" formControlName="file" id = "fileInput" name="fileInput" (change)="onFileSelected($event)">
+        </div>
+
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-raised-button color="primary" (click)="cargarPropuesta()">Siguiente</button>
+</mat-dialog-actions>
+

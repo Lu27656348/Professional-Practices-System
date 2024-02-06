@@ -1,13 +1,12 @@
 <div class="full-width full-height">
     <app-navbar></app-navbar>
-    <mat-drawer-container class="navbar-height" *ngIf="isRoleSelected">
+    <mat-drawer-container class="navbar-height">
         <mat-drawer mode="side" opened = false style="width: 300px;">Drawer content</mat-drawer>
         <mat-drawer-content style="display: flex; align-items: center; justify-content: center;">
 
             <mat-card class="example-card" style="margin: 10px 25px; min-height: 400px;">
                 <mat-card-header>
                   <mat-card-title style="font-size: 1.2em;"> Trabajos de Grado</mat-card-title>
-                  <mat-card-subtitle >Estatus: Propuesta</mat-card-subtitle>
                 </mat-card-header>
                 <mat-card-content>
                   <p>
@@ -17,9 +16,6 @@
                   </p>
                 </mat-card-content>
                 <mat-card-actions style="display: flex; flex-direction: row-reverse;">
-                    <button mat-button style="position: absolute; bottom: 20px; right: 50px;" >
-                      <mat-icon>notification_important</mat-icon>
-                    </button>
                     <button mat-button style="position: absolute; bottom: 20px;" (click) = "navigateToGraduateWork()">
                       <mat-icon>arrow_right_alt</mat-icon>
                     </button>
@@ -29,7 +25,6 @@
               <mat-card class="example-card" style="margin: 10px 25px; min-height: 400px;" >
                 <mat-card-header>
                   <mat-card-title>Pasantia</mat-card-title>
-                  <mat-card-subtitle>Estatus: Completada</mat-card-subtitle>
                 </mat-card-header>
                 <mat-card-content>
                   <p>
@@ -39,34 +34,10 @@
                   </p>
                 </mat-card-content>
                 <mat-card-actions style="display: flex; flex-direction: row-reverse;">
-                    <button mat-button style="position: absolute; bottom: 20px; right: 50px;">
-                      <mat-icon>notification_important</mat-icon>
-                    </button>
-                    <button mat-button style="position: absolute; bottom: 20px;">
+                    <button mat-button style="position: absolute; bottom: 20px;" (click)="navigateToPasantia()">
                       <mat-icon>arrow_right_alt</mat-icon>
                     </button>
                   </mat-card-actions>
-              </mat-card>
-
-              <mat-card class="example-card" style="margin: 10px 25px; min-height: 400px;">
-                <mat-card-header>
-                  <mat-card-title style="font-size: 1em;">Servicio Comunitario</mat-card-title>
-                  <mat-card-subtitle>Estatus: 20 horas restantes</mat-card-subtitle>
-                </mat-card-header>
-                <mat-card-content>
-                  <p>
-                    El servicio comunitario es un conjunto de servicios donado, o actividad que es hecha por alguien o
-                    por un grupo de personas para beneficio del público o sus instituciones.​
-                  </p>
-                </mat-card-content>
-                <mat-card-actions style="display: flex; flex-direction: row-reverse;">
-                  <button mat-button style="position: absolute; bottom: 20px; right: 50px;">
-                    <mat-icon>notification_important</mat-icon>
-                  </button>
-                  <button mat-button style="position: absolute; bottom: 20px;">
-                    <mat-icon>arrow_right_alt</mat-icon>
-                  </button>
-                </mat-card-actions>
               </mat-card>
         
 

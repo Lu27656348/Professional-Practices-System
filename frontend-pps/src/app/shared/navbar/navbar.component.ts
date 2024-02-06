@@ -16,7 +16,7 @@ export class NavbarComponent implements OnInit{
   previousPath: string | null = null;
   isDashboard: boolean = true;
 
-  roleSelected: any;
+  roleSelected: any = "Coordinator";
   user: any = {};
   roles: string[] = [];
   localUser: any;
@@ -29,6 +29,13 @@ export class NavbarComponent implements OnInit{
   dataService$: Subscription = new Subscription();
 
   constructor(private loginService: LoginService,private router: Router,private userService: UsersService,private dataService: NavbarService){
+    const localUserRoles = localStorage.getItem('roles')
+    if(localUserRoles){
+      const roles = JSON.parse(localUserRoles);
+      console.log(roles)
+      this.dataService.setRole(roles);
+    }
+    
     this.dataService.getData().subscribe({
       next: (data: any) => {
         this.dataBs = data;
@@ -83,18 +90,12 @@ export class NavbarComponent implements OnInit{
       })
       const rolesRequest = JSON.parse(rolesString);
       console.log(rolesRequest)
-      if(this.localUser.mode){
-        console.log(`%c${this.localUser.mode}`, "color: green")
-        this.roleSelected = this.localUser.mode
-        this.dataService.setData(true);
-        this.dataService.setRole(this.roleSelected);
-      }else{
-        console.log(`%cEmpty String`, "color: green")
-      }
+
+      this.roleSelected = rolesRequest[0]
+
       for (let i = 0; i < rolesRequest.length; i++) {
         this.roles.push(rolesRequest[i]);
       }
-      console.log(this.localUser.userDNI);
     }else{
       this.router.navigateByUrl("");
     }

@@ -63,7 +63,34 @@ import { EvaluationDialogComponent } from './pages/professor/graduatework/profes
 import {MatExpansionModule} from '@angular/material/expansion';
 import { OutsiderComponent } from './pages/outsider/outsider.component';
 import { ExternalJuryComponent } from './pages/outsider/graduatework/external-jury/external-jury.component';
-import { ExternalTutorComponent } from './pages/outsider/graduatework/external-tutor/external-tutor.component'; 
+import { ExternalTutorComponent } from './pages/outsider/graduatework/external-tutor/external-tutor.component';
+import { NotificacionTutorAcademicoComponent } from './pages/generator/pasantia/notificacion-tutor-academico/notificacion-tutor-academico.component';
+import { NotificacionTutorEmpresarialComponent } from './pages/generator/pasantia/notificacion-tutor-empresarial/notificacion-tutor-empresarial.component';
+import { PlanillaEvaluacionTutorEmpresarialComponent } from './pages/generator/pasantia/planilla-evaluacion-tutor-empresarial/planilla-evaluacion-tutor-empresarial.component';
+import { PlanillaEvaluacionTutorAcademicoComponent } from './pages/generator/pasantia/planilla-evaluacion-tutor-academico/planilla-evaluacion-tutor-academico.component';
+import { PropuestaPasantiaComponent } from './pages/coordinator/intership/propuesta-pasantia/propuesta-pasantia.component';
+import { SidebarComponent } from './shared/sidebar/sidebar.component';
+import { CorporativeTutorCriteriaComponent } from './pages/coordinator/intership/corporative-tutor-criteria/corporative-tutor-criteria.component';
+import { EditCorporativeTutorCriteriaComponent } from './pages/coordinator/intership/corporative-tutor-criteria/dialogs/edit-corporative-tutor-criteria/edit-corporative-tutor-criteria.component';
+import { EditCorporativeTutorSeccionComponent } from './pages/coordinator/intership/corporative-tutor-criteria/dialogs/edit-corporative-tutor-seccion/edit-corporative-tutor-seccion.component';
+import { CreatePasantiaDialogComponent } from './pages/coordinator/intership/propuesta-pasantia/dialogs/create-pasantia-dialog/create-pasantia-dialog.component';
+import { EvaluatePasantiaDialogComponent } from './pages/coordinator/intership/propuesta-pasantia/dialogs/evaluate-pasantia-dialog/evaluate-pasantia-dialog.component';
+import { EvaluacionTutoresComponent } from './pages/coordinator/intership/evaluacion-tutores/evaluacion-tutores.component';
+import { EntregaInformeFinalComponent } from './pages/coordinator/intership/entrega-informe-final/entrega-informe-final.component';
+import { PasantiaCompletadaComponent } from './pages/coordinator/intership/pasantia-completada/pasantia-completada.component';
+import { CargarEvaluacionesDialogComponent } from './pages/coordinator/intership/evaluacion-tutores/dialogs/cargar-evaluaciones-dialog/cargar-evaluaciones-dialog.component';
+import { EntregaInformeDialogComponent } from './pages/coordinator/intership/entrega-informe-final/dialogs/entrega-informe-dialog/entrega-informe-dialog.component';
+import { DesarrolloPasantiaComponent } from './pages/coordinator/intership/desarrollo-pasantia/desarrollo-pasantia.component';
+import { StudentPasantiaComponent } from './pages/student/student-pasantia/student-pasantia.component';
+import { CatalogComponent } from './pages/coordinator/general/catalog/catalog.component';
+import { GeneralFilesComponent } from './pages/coordinator/general/general-files/general-files.component';
+import { ProfesorCatalogComponent } from './pages/coordinator/general/catalog/profesor-catalog/profesor-catalog.component';
+import { EmpresaCatalogComponent } from './pages/coordinator/general/catalog/empresa-catalog/empresa-catalog.component';
+import { ComiteCatalogComponent } from './pages/coordinator/general/catalog/comite-catalog/comite-catalog.component';
+import { ConsejoCatalogComponent } from './pages/coordinator/general/catalog/consejo-catalog/consejo-catalog.component';
+import { ProfesionalCatalogComponent } from './pages/coordinator/general/catalog/profesional-catalog/profesional-catalog.component';
+import { ProfesorDialogComponent } from './pages/coordinator/general/catalog/profesor-catalog/dialogs/profesor-dialog/profesor-dialog.component'; 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -97,7 +124,33 @@ import { ExternalTutorComponent } from './pages/outsider/graduatework/external-t
     EvaluationDialogComponent,
     OutsiderComponent,
     ExternalJuryComponent,
-    ExternalTutorComponent
+    ExternalTutorComponent,
+    NotificacionTutorAcademicoComponent,
+    NotificacionTutorEmpresarialComponent,
+    PlanillaEvaluacionTutorEmpresarialComponent,
+    PlanillaEvaluacionTutorAcademicoComponent,
+    PropuestaPasantiaComponent,
+    SidebarComponent,
+    CorporativeTutorCriteriaComponent,
+    EditCorporativeTutorCriteriaComponent,
+    EditCorporativeTutorSeccionComponent,
+    CreatePasantiaDialogComponent,
+    EvaluatePasantiaDialogComponent,
+    EvaluacionTutoresComponent,
+    EntregaInformeFinalComponent,
+    PasantiaCompletadaComponent,
+    CargarEvaluacionesDialogComponent,
+    EntregaInformeDialogComponent,
+    DesarrolloPasantiaComponent,
+    StudentPasantiaComponent,
+    CatalogComponent,
+    GeneralFilesComponent,
+    ProfesorCatalogComponent,
+    EmpresaCatalogComponent,
+    ComiteCatalogComponent,
+    ConsejoCatalogComponent,
+    ProfesionalCatalogComponent,
+    ProfesorDialogComponent
   ],
   imports: [
     BrowserModule,

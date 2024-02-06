@@ -1,0 +1,56 @@
+<h2 mat-dialog-title>Editar criterios de sección</h2>
+<mat-dialog-content class="mat-typography">
+
+  <table mat-table [dataSource]="criteriaList" class="mat-elevation-z8" *ngIf="!isCriteriaSelected">
+
+    <!--- Note that these columns can be defined in any order.
+          The actual rendered columns are set as a property on the row definition" -->
+  
+    <!-- Position Column -->
+    <ng-container matColumnDef="criteriaId">
+      <th mat-header-cell *matHeaderCellDef> ID - Criterio </th>
+      <td mat-cell *matCellDef="let element"> {{element.criteriaId}} </td>
+    </ng-container>
+  
+    <!-- Name Column -->
+    <ng-container matColumnDef="criteriaName">
+      <th mat-header-cell *matHeaderCellDef> Nombre </th>
+      <td mat-cell *matCellDef="let element"> {{element.criteriaName}} </td>
+    </ng-container>
+  
+    <!-- Weight Column -->
+    <ng-container matColumnDef="maxNote">
+      <th mat-header-cell *matHeaderCellDef> Nota maxima</th>
+      <td mat-cell *matCellDef="let element"> {{element.maxNote}} </td>
+    </ng-container>
+
+
+    <ng-container matColumnDef="check">
+      <th mat-header-cell *matHeaderCellDef> Check </th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-raised-button color="primary" (click)="editarCriterio(element)">
+          <mat-icon> keyboard_arrow_right</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+  
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  
+  <form [formGroup]="criteriaForm" style="width: 100%; padding-right: 20px;" *ngIf="isCriteriaSelected"> 
+    <mat-form-field style="width: 100%; margin-left: 10px;">
+        <mat-label>Nombre del criterio:</mat-label>
+        <input formControlName = "criteriaName" matInput placeholder="Luis Carlos">
+    </mat-form-field>
+    <mat-form-field style="width: 100%; margin-left: 10px;">
+      <mat-label>Seleccione la nota máxima:</mat-label>
+      <input type = "number" formControlName = "maxNote" matInput placeholder="4">
+  </mat-form-field>
+  </form>
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-button *ngIf="isCriteriaSelected" (click) = "guardarCambios()">Guardar Cambios</button>
+</mat-dialog-actions>

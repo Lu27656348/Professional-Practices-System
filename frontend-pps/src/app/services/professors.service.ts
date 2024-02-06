@@ -22,4 +22,16 @@ export class ProfessorsService {
     headers.append('Access-Control-Allow-Origin', '*');
     return this.http.post(`${environment.apiUrl}/professors`,createProfessorRequest,{headers});
   }
+
+  getProfessorsData():Observable<any>{
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`${environment.apiUrl}/professors/data/all`,{headers});
+  }
+
+  deleteProfessorById(professorDNI: string) : Observable<any>{
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.delete(`${environment.apiUrl}/professors/${professorDNI}`,{headers});
+  }
 }

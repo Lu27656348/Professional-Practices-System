@@ -7,6 +7,7 @@ import { LoginRequest } from '../../interfaces/LoginRequest'
 import { LoginService } from '../../services/login.service'
 import { UsersService } from '../../services/users.service'
 import { RegisterService } from '../../services/register.service'
+import { NavbarService } from 'src/app/services/navbar.service';
 
 
 @Component({
@@ -28,12 +29,13 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  constructor(private formBuilder: FormBuilder, private router: Router, private LoginService: LoginService, private UserService: UsersService, private registerService: RegisterService){
+  constructor(private formBuilder: FormBuilder, private router: Router, private LoginService: LoginService, private UserService: UsersService, private registerService: RegisterService, private navbarService: NavbarService){
     this.LoginService.getWelcomeData().subscribe({
       next: (welcomeData) => {
         console.log(welcomeData)
       }
     })
+    
   }
 
   get userDNI(){
@@ -63,12 +65,25 @@ export class LoginComponent implements OnInit {
             })
             this.UserService.getUserRoles(body.userDNI as string).subscribe({
               next: (userData) => {
-
+                console.log(userData)
+                if(userData[0].length > 1){
+                  if(userData[0].indexOf('Coordinator')){
+                    console.log("%cEL PROFESOR ES COORDINADOR", "color: red")
+                    this.navbarService.setRole("Coordinator")
+                    let data: any = this.LoginService.getLoginData();
+                    localStorage.setItem('user', JSON.stringify(data));
+                    localStorage.setItem('roles', JSON.stringify(['Coordinator']));
+                    this.router.navigateByUrl("dashboard");
+                    this.loginForm.reset();
+                    return;
+                  }
+                }
                 let data: any = this.LoginService.getLoginData();
                 const dataRequest = this.LoginService.getLoginData();
+                this.navbarService.setRole(userData[0])
                 localStorage.setItem('user', JSON.stringify(data));
                 localStorage.setItem('roles', JSON.stringify(userData[0]));
-                this.router.navigateByUrl("dashboard");
+                
                 this.loginForm.reset();
               },
               error: (errorData) => {
@@ -77,6 +92,7 @@ export class LoginComponent implements OnInit {
               },
               complete: () => {
                 console.log("login completo")
+                this.router.navigateByUrl("dashboard");
               }
             })
           }else{

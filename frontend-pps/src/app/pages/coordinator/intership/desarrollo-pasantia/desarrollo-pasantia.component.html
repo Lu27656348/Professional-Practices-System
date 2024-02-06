@@ -1,0 +1,79 @@
+<div style="width: 100%; height: 100%;">
+    <app-navbar></app-navbar>
+
+    <mat-drawer-container style="width: 100%; background-color: antiquewhite; margin: 0px 0 px; border: 1px solid #555; height: 77%;">
+        <mat-drawer mode="side" opened style="width: 20%;">
+            
+            
+            <mat-list role="list">
+                <div mat-subheader><strong>Procesos de Pasantía</strong></div>
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/intership/coordinator">Propuestas</button></mat-list-item>
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/intership/process">En Desarrollo</button></mat-list-item>
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/intership/tutors">Evaluacion de Tutores</button></mat-list-item>
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/intership/completion">Entrega de Informe Final</button></mat-list-item>
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/intership/final">Completadas</button></mat-list-item>
+            </mat-list>
+    
+            <mat-divider style="width: 100%;"></mat-divider>
+    
+            <mat-list role="list">
+                <div mat-subheader><strong>Criterios</strong></div>
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/intership/criteria/corporative/tutor">Tutor Empresarial</button></mat-list-item>
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/intership/criteria/academic/tutor">Tutor Académico</button></mat-list-item>
+            </mat-list>
+
+            <mat-divider style="width: 100%;"></mat-divider>
+
+            <mat-list role="list">
+                <div mat-subheader><strong>Generadores</strong></div>
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/intership/generator/corporative/tutor/notification">Notificación Tutor Empresarial</button></mat-list-item>
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/intership/generator/academic/tutor/notification">Notificación Tutor Académico</button></mat-list-item>
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/intership/generator/corporative/tutor/evaluation">Evaluación Tutor Empresarial</button></mat-list-item>
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/intership/generator/academic/tutor/evaluation">Evaluación Tutor Académico</button></mat-list-item>
+            </mat-list>
+        
+        </mat-drawer>
+        <mat-drawer-content> 
+            <table mat-table [dataSource]="intershipData" class="mat-elevation-z8">
+
+                <ng-container matColumnDef="intershipId">
+                    <th mat-header-cell *matHeaderCellDef> ID </th>
+                    <td mat-cell *matCellDef="let element"> {{element.intershipId}} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="intershipTitle">
+                    <th mat-header-cell *matHeaderCellDef> Titulo </th>
+                    <td mat-cell *matCellDef="let element"> {{element.intershipTitle}} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="author">
+                    <th mat-header-cell *matHeaderCellDef> Author </th>
+                    <td mat-cell *matCellDef="let element"> {{element.author}} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="startDate">
+                    <th mat-header-cell *matHeaderCellDef> Fecha de Inicio </th>
+                    <td mat-cell *matCellDef="let element"> {{element.intershipStartDate}} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="endDate">
+                    <th mat-header-cell *matHeaderCellDef> Fecha de Finalización </th>
+                    <td mat-cell *matCellDef="let element"> {{element.intershipCompletionDate}} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="check">
+                    <th mat-header-cell *matHeaderCellDef> Tiempo Restante (días) </th>
+                    <td mat-cell *matCellDef="let element">
+                        <button mat-raised-button color="primary" *ngIf="element.diferencia > 0">
+                            {{element.diferencia}}
+                        </button>
+                        <button mat-raised-button color="primary" *ngIf="element.diferencia <= 0" (click) = "enviarPlanillas(element)">
+                          enviar planillas
+                      </button>
+                    </td>
+                  </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+              
+        
+        </mat-drawer-content>
+    </mat-drawer-container>
+
+    <app-footer></app-footer>
+</div>

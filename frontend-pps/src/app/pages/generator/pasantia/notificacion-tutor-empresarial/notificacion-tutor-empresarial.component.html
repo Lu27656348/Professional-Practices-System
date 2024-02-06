@@ -1,0 +1,46 @@
+<div style="width: 100%; height: 100%;">
+    <app-navbar></app-navbar>
+
+    <mat-drawer-container style="width: 100%; margin: 0px 0 px; border: 1px solid #555; height: 77%;">
+        <mat-drawer mode="side" opened style="width: 20%;">
+            
+            
+            <mat-list role="list">
+                <div mat-subheader><strong>Procesos de Pasantía</strong></div>
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/intership/coordinator">Propuestas</button></mat-list-item>
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/intership/tutors">Evaluacion de Tutores</button></mat-list-item>
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/intership/completion">Entrega de Informe Final</button></mat-list-item>
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/intership/final">Completadas</button></mat-list-item>
+            </mat-list>
+    
+            <mat-divider style="width: 100%;"></mat-divider>
+    
+            <mat-list role="list">
+                <div mat-subheader><strong>Criterios</strong></div>
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/intership/criteria/corporative/tutor">Tutor Empresarial</button></mat-list-item>
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/intership/criteria/academic/tutor">Tutor Académico</button></mat-list-item>
+            </mat-list>
+
+            <mat-divider style="width: 100%;"></mat-divider>
+
+            <mat-list role="list">
+                <div mat-subheader><strong>Generadores</strong></div>
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/intership/generator/corporative/tutor/notification">Notificación Tutor Empresarial</button></mat-list-item>
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/intership/generator/academic/tutor/notification">Notificación Tutor Académico</button></mat-list-item>
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/intership/generator/corporative/tutor/evaluation">Evaluación Tutor Empresarial</button></mat-list-item>
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/intership/generator/academic/tutor/evaluation">Evaluación Tutor Académico</button></mat-list-item>
+            </mat-list>
+        
+        </mat-drawer>
+        <mat-drawer-content>
+            
+            <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                <button mat-raised-button (click)="generarNotificacionTutorEmpresarial()">Generar Notificacion de Tutor Empresarial</button>
+            </div>
+              
+        
+        </mat-drawer-content>
+    </mat-drawer-container>
+
+    <app-footer></app-footer>
+</div>

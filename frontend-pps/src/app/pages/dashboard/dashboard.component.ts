@@ -19,10 +19,9 @@ interface Role {
 export class DashboardComponent implements OnInit {
 
   showFiller = false;
-  baseUrl: string = "http://localhost:4200";
   isRoleSelected: boolean = false;
   panelOpenState = false;
-  roleSelected: string = '';
+  roleSelected: string = "Coordinator";
   isCoordinatorSelected: boolean = false;
 
   dataBs: any;
@@ -34,18 +33,10 @@ export class DashboardComponent implements OnInit {
     this.dataService.setPath(window.location.href as string);
     this.dataService.setPreviousPath(window.location.href as string);
 
-    this.dataService.getData().subscribe({
-      next: (data: any) => {
-        this.isRoleSelected = data;
-        console.log(data)
-      },
-      error: (error: any) => {
-        console.log("error")
-      }
+    //this.roleSelected = "Coordinator";
+    //this.isCoordinatorSelected = true;
 
-      });
-
-      this.dataService.getRole().subscribe({
+    this.dataService.getRole().subscribe({
         next: (data: any) => {
           console.log(data);
           this.roleSelected = data;
@@ -53,7 +44,7 @@ export class DashboardComponent implements OnInit {
         error: (error: any) => {
           console.log("error")
         }
-      });
+    });
 
       if (this.roleSelected == '' ){
         console.log("No se ha selecccionado un rol")
@@ -68,12 +59,6 @@ export class DashboardComponent implements OnInit {
         next: (data: any) => {
           console.log(data);
           this.roleSelected = data;
-          if(this.roleSelected == "Coordinator"){
-            console.log("es coordinador")
-            this.isCoordinatorSelected = true;
-          }else{
-            this.isCoordinatorSelected = false;
-          }
         },
         error: (error: any) => {
           console.log("error")
@@ -83,7 +68,12 @@ export class DashboardComponent implements OnInit {
 
     navigateToGraduateWork(){
       console.log(this.roleSelected)
-      this.router.navigateByUrl(`graduate-work/${this.roleSelected.toLowerCase()}`);
+      this.router.navigateByUrl(`graduate-work/` + this.roleSelected[0].toLowerCase());
+    }
+
+    navigateToPasantia(){
+      console.log(this.roleSelected)
+      this.router.navigateByUrl(`intership/` + this.roleSelected[0].toLowerCase());
     }
     
 }

@@ -22,7 +22,26 @@ import { ProfessorJuryComponent } from './pages/professor/graduatework/professor
 import { ProfessorTutorComponent } from './pages/professor/graduatework/professor-tutor/professor-tutor.component'
 import { OutsiderComponent } from './pages/outsider/outsider.component';
 import { ExternalJuryComponent } from './pages/outsider/graduatework/external-jury/external-jury.component';
+import { PlanillaEvaluacionTutorEmpresarialComponent } from './pages/generator/pasantia/planilla-evaluacion-tutor-empresarial/planilla-evaluacion-tutor-empresarial.component';
 
+
+import { PropuestaPasantiaComponent } from './pages/coordinator/intership/propuesta-pasantia/propuesta-pasantia.component';
+import { CorporativeTutorCriteriaComponent } from './pages/coordinator/intership/corporative-tutor-criteria/corporative-tutor-criteria.component';
+import { PasantiaCompletadaComponent } from './pages/coordinator/intership/pasantia-completada/pasantia-completada.component';
+import { EvaluacionTutoresComponent } from './pages/coordinator/intership/evaluacion-tutores/evaluacion-tutores.component';
+import { EntregaInformeFinalComponent } from './pages/coordinator/intership/entrega-informe-final/entrega-informe-final.component';
+import { NotificacionTutorEmpresarialComponent } from './pages/generator/pasantia/notificacion-tutor-empresarial/notificacion-tutor-empresarial.component';
+import { NotificacionTutorAcademicoComponent } from './pages/generator/pasantia/notificacion-tutor-academico/notificacion-tutor-academico.component';
+import { DesarrolloPasantiaComponent } from './pages/coordinator/intership/desarrollo-pasantia/desarrollo-pasantia.component';
+import { PlanillaEvaluacionTutorAcademicoComponent } from './pages/generator/pasantia/planilla-evaluacion-tutor-academico/planilla-evaluacion-tutor-academico.component';
+import { StudentPasantiaComponent } from './pages/student/student-pasantia/student-pasantia.component';
+import { CatalogComponent } from './pages/coordinator/general/catalog/catalog.component';
+import { GeneralFilesComponent } from './pages/coordinator/general/general-files/general-files.component';
+import { ProfesorCatalogComponent } from './pages/coordinator/general/catalog/profesor-catalog/profesor-catalog.component';
+import { EmpresaCatalogComponent } from './pages/coordinator/general/catalog/empresa-catalog/empresa-catalog.component';
+import { ProfesionalCatalogComponent } from './pages/coordinator/general/catalog/profesional-catalog/profesional-catalog.component';
+import { ConsejoCatalogComponent } from './pages/coordinator/general/catalog/consejo-catalog/consejo-catalog.component';
+import { ComiteCatalogComponent } from './pages/coordinator/general/catalog/comite-catalog/comite-catalog.component';
 
 const routes: Routes = [
   {
@@ -101,6 +120,85 @@ const routes: Routes = [
   {
     path: "graduate-work/outsider/jury",
     component: ExternalJuryComponent
+  },
+  /* Rutas para el proceso de pasantía  */
+  {
+    path: "intership/coordinator",
+    component: PropuestaPasantiaComponent
+  },
+  {
+    path: "intership/process",
+    component: DesarrolloPasantiaComponent
+  },
+  {
+    path: "intership/tutors",
+    component: EvaluacionTutoresComponent
+  },
+  {
+    path: "intership/completion",
+    component: EntregaInformeFinalComponent
+  },
+  {
+    path: "intership/final",
+    component: PasantiaCompletadaComponent
+  },
+  {
+    path: "intership/criteria/corporative/tutor",
+    component: CorporativeTutorCriteriaComponent
+  },
+  {
+    path: "intership/criteria/academic/tutor",
+    component: CorporativeTutorCriteriaComponent
+  },
+  {
+    path: "intership/generator/corporative/tutor/notification",
+    component: NotificacionTutorEmpresarialComponent
+  },
+  {
+    path: "intership/generator/academic/tutor/notification",
+    component: NotificacionTutorAcademicoComponent
+  },
+  {
+    path: "intership/generator/corporative/tutor/evaluation",
+    component: PlanillaEvaluacionTutorEmpresarialComponent
+  },
+  {
+    path: "intership/generator/academic/tutor/evaluation",
+    component: PlanillaEvaluacionTutorAcademicoComponent
+  },
+  /* Pasantia Estudiante */
+  {
+    path: "intership/student",
+    component: StudentPasantiaComponent
+  },
+  /* Sección General */
+  {
+    path: "catalogos",
+    component: CatalogComponent
+  },
+  {
+    path: "catalogos/profesores",
+    component: ProfesorCatalogComponent
+  },
+  {
+    path: "catalogos/empresas",
+    component: EmpresaCatalogComponent
+  },
+  {
+    path: "catalogos/profesionales",
+    component: ProfesionalCatalogComponent
+  },
+  {
+    path: "catalogos/consejos",
+    component: ConsejoCatalogComponent
+  },
+  {
+    path: "catalogos/comites",
+    component: ComiteCatalogComponent
+  },
+  {
+    path: "archivos",
+    component: GeneralFilesComponent
   },
   {
     path: "**",

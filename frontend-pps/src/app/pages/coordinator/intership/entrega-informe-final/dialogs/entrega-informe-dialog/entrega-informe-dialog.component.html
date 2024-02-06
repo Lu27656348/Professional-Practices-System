@@ -1,0 +1,14 @@
+<h2 mat-dialog-title>Evaluación de Tutores Empresarial y Académico</h2>
+<mat-dialog-content class="mat-typography">
+      
+    <h3><strong>Cargue El Informe Final de Pasantía</strong></h3>
+
+    <div style="height: 50%; margin-top: 15px; margin-bottom: 10px;">
+        <input style = "margin-top:  10px;" type="file" id = "fileInput" name="fileInput" (change)="onFileSelected($event)">
+    </div>
+      
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-raised-button color="primary" (click)="cargarEvaluacionFinal()">Cargar Informe Final</button>
+</mat-dialog-actions>

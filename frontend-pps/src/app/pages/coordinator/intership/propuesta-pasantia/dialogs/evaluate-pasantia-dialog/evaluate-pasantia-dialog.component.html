@@ -1,0 +1,45 @@
+<h2 mat-dialog-title>Evaluación en Consejo de Escuela</h2>
+<mat-dialog-content class="mat-typography">
+    <h3><strong>Datos de la pasantía</strong></h3>
+    <mat-divider></mat-divider>
+    <p><strong>Titulo de la pasantía: </strong> {{inputdata.pasantia.intershipTitle}}</p>
+    <p><strong>Estudiante:</strong> {{studentData?.userLastName + ", " + studentData?.userFirstName}}</p>
+    <p><strong>Organización donde se realizará:</strong> {{enterpriseData?.enterpriseName}}</p>
+    <p><strong>Tutor Empresarial:</strong> {{corporateTutorData?.userLastName + ", " + corporateTutorData?.userFirstName}}</p>
+    <p><strong>Fecha de Inicio:</strong> {{this.inputdata.pasantia.intershipStartDate}}</p>
+    <p><strong>Fecha de Culminación:</strong> {{this.inputdata.pasantia.intershipCompletionDate}}</p>
+    <h3><strong>Descargar propuesta de pasantía</strong></h3>
+    <mat-divider></mat-divider>
+    <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 10px;">
+      <button mat-raised-button style="padding-top: 10px; padding-bottom: 10px;" (click)="descargarPropuestaPasantiaAlumno()">Descargar Propuesta de Pasantía</button>
+    </div>
+    
+    <form [formGroup]="pasantiaForm">
+      <h3 style="margin-top: 10px;"><strong>Seleccione un consejo de escuela</strong></h3>
+      <mat-divider></mat-divider>
+      <mat-form-field style="width: 100%;">
+        <mat-label>Consejo de Escuela</mat-label>
+        <mat-select formControlName = "consejoEscuela">
+          <mat-option *ngFor="let council of councilList" [value]="council.schoolCouncilId">
+              {{ council.schoolCouncilId }} 
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <h3><strong>Seleccione un Tutor Académico</strong></h3>
+      <mat-divider></mat-divider>
+      <mat-form-field style="width: 100%;">
+        <mat-label>Tutor Académico</mat-label>
+          <mat-select formControlName = "tutorAcademico">
+            <mat-option *ngFor="let professor of professorList" [value]="professor.userDNI">
+                {{ professor.userLastName + ', ' + professor.userFirstName }} 
+            </mat-option>
+          </mat-select>
+      </mat-form-field>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-raised-button color="warn" (click)="rechazarPropuestaPasantia()">Rechazar</button>
+  <button mat-raised-button color="primary" (click)="aprobarPropuestaPasantia()">Aprobar</button>
+</mat-dialog-actions>

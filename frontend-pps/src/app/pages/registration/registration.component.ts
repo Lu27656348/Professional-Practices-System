@@ -300,6 +300,8 @@ export class RegistrationComponent implements OnInit {
       console.log(body);
       if(body.useremailucab){
         console.log(body.useremailucab+this.emailFormatSelected)
+        this.formCase = 'Student'
+        /*
         switch (this.validateEmail(body.useremailucab+this.emailFormatSelected)) {
           case 'gmail.com':
             console.log("crear usuario foraneo")
@@ -317,6 +319,7 @@ export class RegistrationComponent implements OnInit {
             console.log("Error en tipo de usuario")
             break;
         }
+        */
          
       }
       

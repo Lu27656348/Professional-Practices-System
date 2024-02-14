@@ -1,0 +1,19 @@
+<h2 mat-dialog-title>Cargar Los Archivos Finales</h2>
+<mat-dialog-content class="mat-typography">
+
+    <form [formGroup]="graduateWorkForm"> 
+        
+        
+        <div style="height: 50%;">
+            <h3 style="margin-top: 15px;">Cargue El Resumen del Trabajo de Grado</h3>
+            <mat-divider></mat-divider>
+            <input style = "margin-top:  10px;" type="file" formControlName="file" id = "fileInput" name="fileInput" (change)="onFileSelected($event)">
+        </div>
+
+    </form>
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-raised-button color="primary" (click)="culminarTrabajoDeGrado()">Finalizar</button>
+</mat-dialog-actions>

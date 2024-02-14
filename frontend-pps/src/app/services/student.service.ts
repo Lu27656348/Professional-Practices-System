@@ -74,7 +74,7 @@ export class StudentService {
 
 
       if(file.type === "application/pdf"){
-        if(studentDNI2 === null){
+        if(studentDNI2 === null || studentDNI2 == ''){
           return this.userService.getUserData(studentDNI).pipe(
             switchMap(
               (data: any) => {
@@ -152,86 +152,64 @@ export class StudentService {
       }else{
         return throwError( () => new Error("El archivo debe ser en formato PDF"))
       }
-      /*
-      if(studentDNI2 === null){
-        
-        return of(null);
-      }else{
-        return throwError( () => new Error("Modo con dos estudiantes no implementado"))
-      }
-      */
     }else{
       return throwError( () => new Error("No cargo un archivo"))
     }
 
+  }
 
-    
-   /*
-    if(file.type === "application/pdf"){
-      const headers = new HttpHeaders();
-      headers.append('Access-Control-Allow-Origin', '*');
-
-      if(studentDNI2 === null){
-
-        this.userService.getUserData(studentDNI).pipe(
-
-          switchMap((data: any) => {
-            const formattedFileName = `${data.userLastName.split(" ")[0]}${data.userFirstName.split(" ")[0]} PTG.pdf`;
-            console.log(formattedFileName)
-            return this.documentService.copyFileAndRename(file,formattedFileName);
-
-          }),
-          switchMap((newFile: any) => {
-            console.log(newFile)
-            
-            const formData = new FormData();
-            formData.append('file', newFile);
-            return this.http.post(`${environment.amazonS3}/upload`, formData, { headers });
-            
-          }),
-          catchError((error) => {
-            return throwError( () => new Error("No pudo obtener la informacion de usuario"))
-          })
-
-        );
-
-      }else{
-        return of(null)
-      }
-      
-
-
-    }else{
-      return throwError( () => new Error("El formato del archivo debe ser PDF"))
+  cargarArchivoPropuesta(
+    file: File,
+    studentData: {
+      userDNI: string,
+      userFirstName: string,
+      userLastName: string
     }
-    */
-    /*
-    
-    */
-    /*
-    let formattedFileName;
-    let firstStudent : any;
-    return this.userService.getUserData(studentDNI).pipe(
-      switchMap((data: any) => {
-        firstStudent = data
-        return this.userService.getUserData(studentDNI2)
-      }),
-      switchMap((data: any) => {
-        let secondStudent = data;
-        formattedFileName = `${firstStudent.userLastName.split(" ")[0]}${firstStudent.userFirstName.split(" ")[0]} ${secondStudent.userLastName.split(" ")[0]}${secondStudent.userFirstName.split(" ")[0]} PTG.pdf`;
-        console.log(formattedFileName)
-        if (file.name === formattedFileName && this.validateProposalFileName(file.name)) {
-            return this.http.post(`${environment.amazonS3}/upload`, formData, { headers });
-        } else {
-          alert("EL ARCHIVO No cumple con el nombre requerido...");
-          return throwError(new Error("No cumple con el nombre requerido..."));
-        }
-      }),
-      catchError((error) => {
-        return throwError(new Error("No se pudo obtener la información del usuario"));
-      })
-    );
-    */
+  ) : Observable<any>{
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('userData', JSON.stringify({
+      studentDNI: studentData.userDNI,
+      userFirstName: studentData.userFirstName,
+      userLastName: studentData.userLastName
+    }));
+
+    formData.append('file', file);
+    return this.http.post(`${environment.amazonS3}/upload`, formData, { headers: headers});
+
+  }
+
+  cargarArchivoPropuestaDoble(
+    file: File,
+    studentData: {
+      userDNI: string,
+      userFirstName: string,
+      userLastName: string
+    }[]
+  ) : Observable<any>{
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('userData', JSON.stringify(
+      [
+        {
+          studentDNI: studentData[0].userDNI,
+          userFirstName: studentData[0].userFirstName,
+          userLastName: studentData[0].userLastName
+        },
+        {
+          studentDNI: studentData[1].userDNI,
+          userFirstName: studentData[1].userFirstName,
+          userLastName: studentData[1].userLastName
+        },
+      ]
+    ));
+
+    formData.append('file', file);
+    return this.http.post(`${environment.amazonS3}/upload`, formData, { headers: headers});
 
   }
 

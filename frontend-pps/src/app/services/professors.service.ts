@@ -17,6 +17,12 @@ export class ProfessorsService {
     return this.http.get(`${environment.apiUrl}/professors/data`,{headers});
   }
 
+  getProfessorById( professorDNI: string):Observable<any>{
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`${environment.apiUrl}/professors/${professorDNI}`,{headers});
+  }
+
   createProfessors(createProfessorRequest: createProfessorRequest) : Observable<any> {
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');

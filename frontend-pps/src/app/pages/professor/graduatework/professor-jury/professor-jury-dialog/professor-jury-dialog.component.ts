@@ -268,7 +268,7 @@ export class ProfessorJuryDialogComponent implements OnInit{
                 }
               })
         
-              this.graduateWorkService.getJuryOraltExperimentalCriteria().subscribe({
+              this.graduateWorkService.getJuryOralExperimentalCriteria().subscribe({
                 next: (oralCriteriaExperimentalList : any ) => {
                   console.log(oralCriteriaExperimentalList)
                   oralCriteriaExperimentalList.forEach( (element: any,index: number) => {

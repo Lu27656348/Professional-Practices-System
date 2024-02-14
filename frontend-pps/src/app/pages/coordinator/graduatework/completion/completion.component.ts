@@ -3,9 +3,10 @@ import { LoginService } from '../../../../services/login.service';
 import { UsersService } from '../../../../services/users.service';
 import { StudentService} from '../../../../services/student.service'
 import { GraduateworkService } from '../../../../services/graduatework.service'
-import { forkJoin, of } from 'rxjs';
+import { Observable, forkJoin, of, switchMap } from 'rxjs';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog'
+import { CompletionDialogComponent } from './completion-dialog/completion-dialog.component';
 
 @Component({
   selector: 'app-completion',
@@ -28,11 +29,36 @@ export class CompletionComponent {
   displayedColumns: string[] = ['graduateWorkId', 'graduateWorkTitle', 'studentDNI', 'symbol',"check"];
 
   constructor(private loginService: LoginService,private router: Router,private userService: UsersService, private graduateworkService: GraduateworkService, private dialog: MatDialog, private studentService: StudentService){
-    this.graduateworkService.getProposals().subscribe({
+    this.graduateworkService.getGraduateWorkByStatus(90)
+    .pipe(
+      switchMap(
+        (data: any) => {
+          console.log(data)
+          this.reviewerData = [...data]
+          const observables: Observable<any>[] = []
+          this.reviewerData.forEach( (proposal:any) => {
+            observables.push(this.graduateworkService.getGraduateWorkStudentData(proposal.graduateworkid))
+          })
+          return forkJoin(observables)
+        }
+      )
+    )
+    .subscribe({
       next: (data: any) => {
-        console.log(data)
-        this.reviewerData = [...data]
-        console.log(this.reviewerData)
+        this.reviewerData.forEach( (proposal:any,indexP: number) => {
+          let authors = ""; 
+          data[indexP].forEach( (author: any, index: number) => {
+           console.log(data[indexP])
+           if(index == 0){
+             authors = authors + author.userLastName.split(" ")[0]+ author.userFirstName.split(" ")[0] + "/";
+           }else{
+             authors = authors + author.userLastName.split(" ")[0]+ author.userFirstName.split(" ")[0];
+           } 
+           console.log(data[indexP][0])
+           this.reviewerData[indexP].studentDNI = data[indexP][0].userDNI;
+          })
+          this.reviewerData[indexP].authors = authors;
+         })
       },
       error: (error: any) => {
         console.log(error)
@@ -82,8 +108,8 @@ export class CompletionComponent {
       console.log(result1)
       console.log(result2)
       console.log(result3)
-      /*
-      const dialogRef = this.dialog.open(ValidationComponent,{
+      
+      const dialogRef = this.dialog.open(CompletionDialogComponent,{
         width: '60%',
         data: {
           user: result1,
@@ -91,47 +117,13 @@ export class CompletionComponent {
           graduatework: result3
         }
       })
-      */
-      /*
+      
+      
       dialogRef.afterClosed().subscribe(result => {
         console.log(`Dialog result: ${result}`);
       });
-      */
+      
       });
-  
-    this.userService.getUserData(data.studentDNI).subscribe({
-      next: (data) => {
-        studentData = {...data}
-        console.log(studentData)
-      }
-    })
-
-  this.studentService.getStudentGraduateWork(data.studentDNI).subscribe({
-    next: (data: any) => {
-      graduateWorkData = [...data]
-      this.proposal = graduateWorkData
-      console.log(graduateWorkData)
-      this.graduateworkService.getGraduateWorkById(graduateWorkData[0].graduateworkid).subscribe({
-        next: (data) => {
-          console.log(data)
-        }
-      })
-    }
-  })
-/*
-    const dialogRef = this.dialog.open(ValidationComponent,{
-      data: {
-        user: this.user,
-        proposal: this.proposal
-      }
-    });
-*/
-/*
-    dialogRef.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`);
-    });
-  }
-*/
   }
   ngOnInit(){
 

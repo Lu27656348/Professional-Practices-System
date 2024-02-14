@@ -1,0 +1,32 @@
+<h2 mat-dialog-title>Ingrese los datos del Profesional Externos</h2>
+<mat-dialog-content class="mat-typography">
+    <form [formGroup]="councilForm" style="display: flex; flex-direction: column;">
+
+        
+        <mat-form-field class="full-width input-margin" *ngIf="!isEditMode">
+            <mat-label>Ingrese el código de Consejo de Escuela:</mat-label>
+            <input formControlName = "schoolCouncilId" matInput placeholder="CE O 001-2024-2025" value = "">
+        </mat-form-field>
+        <mat-form-field style="width: 100%;">
+            <mat-label>Ingrese la fecha de Consejo</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="schoolCouncilDate">
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field style="width: 100%;">
+            <mat-label>Seleccione el tipo de Consejo de Escuela</mat-label>
+            <mat-select formControlName = "schoolCouncilType">
+              <mat-option  value="ORDINARIO">Ordinario</mat-option>
+              <mat-option  value="EXTRAORDINARIO">Extraordinario</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+      
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-raised-button color="primary" (click)="agregarConsejo()" *ngIf="data == null">Agregar Consejo</button>
+  <button mat-raised-button color="primary" (click)="modificarConsejo()" *ngIf="data != null && data.mode == 'EDITAR'">Modificar Consejo</button>
+</mat-dialog-actions>

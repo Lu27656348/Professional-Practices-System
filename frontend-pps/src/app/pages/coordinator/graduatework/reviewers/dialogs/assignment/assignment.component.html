@@ -6,7 +6,7 @@
   <form [formGroup]="reviewerForm">
     <mat-form-field style="width: 100%;">
         <mat-label>Profesor Revisor</mat-label>
-        <mat-select [(value)]="reviewerSelected" (selectionChange)="onSelectionChange()">
+        <mat-select [value]="reviewerSelected" formControlName = "reviewer" (selectionChange)="onSelectionChange()">
             <mat-option *ngFor="let professor of professorsList" [value]="professor.userDNI">
                 {{ professor.userlastname + ', ' + professor.userfirstname }} 
             </mat-option>
@@ -16,10 +16,10 @@
 
   <p><strong>Seleccione el Cómite de Trabajo de Grado</strong></p>
   <mat-divider></mat-divider>
-  <form>
+  <form [formGroup]="committeeForm">
     <mat-form-field style="width: 100%;">
         <mat-label>Comite de Trabajo de Grado</mat-label>
-        <mat-select [(value)]="committeeSelected" (selectionChange)="onSelectionChange()">
+        <mat-select [value]="committeeSelected" formControlName = "committeeId" (selectionChange)="onSelectionChange()">
             <mat-option *ngFor="let committee of committeeList" [value]="committee.committeeId">
                 {{  
                     committee.committeeId
@@ -38,9 +38,6 @@
         <input matInput placeholder="001-2023-2024" value= "" formControlName = "committeeId">
       </mat-form-field>
     </form>
-    <button mat-raised-button style="background-color: rgb(0, 162, 255); height: 56px; width: 56px;" (click)="addCommittee()" *ngIf="isCreateNewCommittee">
-      <mat-icon>check</mat-icon>
-    </button>
   </div>
   <p><strong>Seleccione los Criterios de Evaluación</strong></p>
   <p></p>
@@ -64,14 +61,12 @@
       <mat-icon>check</mat-icon>
     </button>
   </div>
-  <p><strong>Generar vista previa de Planilla de Evaluación de Profesor Revisor</strong></p>
-  <button mat-button (click)="obtenerPlanillaEvaluacion()">Descargar</button>
-  <p></p>
-  <mat-divider></mat-divider>
 
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>Cancel</button>
   <button mat-button style="background-color: red;"  [mat-dialog-close]="true" cdkFocusInitial (click)="veredictoPropuesta('rechazar')">Rechazar</button>
-  <button mat-button style="background-color: green;"  [mat-dialog-close]="true" cdkFocusInitial (click)="veredictoPropuesta('aprobar')">Enviar a Profesor Revisor</button>
+  <button mat-button style="background-color: green;" cdkFocusInitial (click)="veredictoPropuesta('aprobar')">Enviar a Profesor Revisor</button>
+  <button mat-button style="background-color: green;" cdkFocusInitial (click)="obtenerInformePropuesta()">Obtener Informe</button>
+
 </mat-dialog-actions>

@@ -1,0 +1,94 @@
+<h2 mat-dialog-title>Cargar Propuesta de Trabajo de Grado</h2>
+<mat-dialog-content class="mat-typography">
+
+    <form [formGroup]="graduateWorkForm" *ngIf="!nextStep && !uploadProposal">
+        
+        <mat-form-field style="width: 100%;">
+            <mat-label>Titulo</mat-label>
+            <input matInput formControlName = 'titulo'>
+        </mat-form-field>
+
+        <mat-form-field style="width: 100%;">
+            <mat-label>Modalidad</mat-label>
+            <mat-select [(value)]="typeSelected" formControlName = "tipo">
+            <mat-option value="EXPERIMENTAL">Experimental</mat-option>
+            <mat-option value="INSTRUMENTAL">Instrumental</mat-option>
+        </mat-select>
+        </mat-form-field>
+
+        <mat-form-field style="width: 100%;">
+            <mat-label>Empresa</mat-label>
+            <mat-select [(value)]="enterpriseSelected" formControlName = "empresa" (selectionChange)="onSelectionChange()">
+            <mat-option *ngFor="let enterprise of enterpriseList" [value]="enterprise.enterpriseid">
+                {{ enterprise.enterpriseName }} 
+            </mat-option>
+        </mat-select>
+        </mat-form-field>
+
+        <mat-form-field style="width: 100%;" *ngIf= "typeSelected == 'INSTRUMENTAL' && enterpriseSelected">
+            <mat-label>Tutor Empresarial</mat-label>
+            <mat-select [(value)]="externalSelected" formControlName = "tutor">
+            <mat-option *ngFor="let external of externalList" [value]="external.userDNI">
+                {{  external.userLastName + ", " + external.userFirstName  + "/ " + external.userDNI}} 
+            </mat-option>
+        </mat-select>
+        </mat-form-field>   
+
+        <mat-form-field style="width: 100%;" *ngIf= "typeSelected == 'EXPERIMENTAL' && enterpriseSelected">
+            <mat-label>Posible Tutor Académico</mat-label>
+            <mat-select [(value)]="externalSelected" formControlName = "tutor">
+            <mat-option *ngFor="let professor of professorList" [value]="professor.userDNI">
+                {{  professor.userLastName + ", " + professor.userFirstName  + "/ " + professor.userDNI}} 
+            </mat-option>
+        </mat-select>
+        </mat-form-field>   
+
+    </form>
+
+    <form [formGroup]="graduateWorkForm" *ngIf="nextStep && !uploadProposal">
+        <mat-form-field style="width: 100%;">
+            <mat-label>tipo</mat-label>
+            <mat-select [(value)]="groupSelected">
+            <mat-option value="INDIVIDUAL">Individual</mat-option>
+            <mat-option value="GRUPAL">Grupal</mat-option>
+        </mat-select>
+        </mat-form-field>
+
+        <mat-form-field style="width: 100%;">
+            <mat-label>Estudiante</mat-label>
+            <mat-select [(value)]="studentSelected" formControlName = "estudiante" >
+            <mat-option *ngFor="let student of studentList" [value]="student.userDNI">
+                {{ student.userLastName + ', ' + student.userFirstName }} 
+            </mat-option>
+        </mat-select>
+        </mat-form-field>
+
+        <mat-form-field style="width: 100%;" *ngIf="groupSelected == 'GRUPAL'">
+            <mat-label>Estudiante Adicional</mat-label>
+            <mat-select [(value)]="partnerSelected" formControlName = "partner">
+            <mat-option *ngFor="let student of studentList" [value]="student.userDNI">
+                {{ student.userLastName + ', ' + student.userFirstName }} 
+            </mat-option>
+        </mat-select>
+        </mat-form-field>
+    </form>
+
+    <form [formGroup]="graduateWorkForm" *ngIf="nextStep && uploadProposal"> 
+        
+        
+        <div style="height: 50%;">
+            <h3 style="margin-top: 15px;">Cargue el archivo de la propuesta</h3>
+            <mat-divider></mat-divider>
+            <input style = "margin-top:  10px;" type="file" formControlName="file" id = "fileInput" name="fileInput" (change)="onFileSelected($event)">
+        </div>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-raised-button color="primary" (click)="cargarDatosAlumno()" *ngIf="!nextStep">Siguiente</button>
+  <button mat-raised-button color="primary" (click)="regresarDatosPropuesta()" *ngIf="nextStep && !uploadProposal">Atras</button>
+  <button mat-raised-button color="primary" (click)="cargarArchivoPropuesta()" *ngIf="nextStep && !uploadProposal">Siguiente</button>
+  <button mat-raised-button color="primary" (click)="regresarDatosAlumno()" *ngIf="nextStep && uploadProposal">Atras</button>
+  <button mat-raised-button color="primary" (click)="cargarPropuesta()" *ngIf="nextStep && uploadProposal">Cargar Propuesta</button>
+</mat-dialog-actions>
+

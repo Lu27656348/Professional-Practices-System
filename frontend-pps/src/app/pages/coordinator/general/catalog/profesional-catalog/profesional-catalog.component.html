@@ -15,11 +15,49 @@
         
         </mat-drawer>
         <mat-drawer-content>
-     
-              
-        
-        </mat-drawer-content>
-    </mat-drawer-container>
+
+                        <div style="width: 100%; display: flex;">
+                            <button mat-raised-button (click)="openCreateDialog()">
+                                <mat-icon>library_add</mat-icon> Agregar Profesional Externo
+                            </button>
+                        </div>    
+                        <table mat-table [dataSource]="externalDataList">
+            
+                            <ng-container matColumnDef="externalPersonnelDNI">
+                                <th mat-header-cell *matHeaderCellDef> ID </th>
+                                <td mat-cell *matCellDef="let element"> {{element.userDNI}} </td>
+                              </ng-container>
+                              <ng-container matColumnDef="userName">
+                                <th mat-header-cell *matHeaderCellDef> Nombre </th>
+                                <td mat-cell *matCellDef="let element"> {{element.userLastName + ", " + element.userFirstName}}  </td>
+                              </ng-container>
+                              <ng-container matColumnDef="schoolName">
+                                <th mat-header-cell *matHeaderCellDef> Empresa </th>
+                                <td mat-cell *matCellDef="let element"> {{ element?.enterpriseData?.enterpriseName }} </td>
+                              </ng-container>
+                              <ng-container matColumnDef="professorProfession">
+                                <th mat-header-cell *matHeaderCellDef> Profesion </th>
+                                <td mat-cell *matCellDef="let element">  {{element.externalData.externalPersonnelProfession}} </td>
+                              </ng-container>
+                              <ng-container matColumnDef="check">
+                                <th mat-header-cell *matHeaderCellDef> Acciones </th>
+                                <td mat-cell *matCellDef="let element">
+                                    
+                                    <button mat-raised-button style="background-color: #faf314;" (click)="editarRegistro(element)">
+                                        <mat-icon>edit</mat-icon>
+                                    </button>
+                                    <button mat-raised-button color="warn" (click)="eliminarRegistro(element)">
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+                            
+                                </td>
+                              </ng-container>
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        </table>
+                    
+                    </mat-drawer-content>
+                </mat-drawer-container>
 
     <app-footer></app-footer>
 </div>

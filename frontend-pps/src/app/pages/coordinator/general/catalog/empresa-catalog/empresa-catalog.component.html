@@ -16,7 +16,45 @@
         </mat-drawer>
         <mat-drawer-content>
      
-              
+            <div style="width: 100%; display: flex;">
+                <button mat-raised-button (click)="openCreateDialog()">
+                    <mat-icon>library_add</mat-icon> Agregar Empresa
+                </button>
+            </div>    
+            <table mat-table [dataSource]="enterpriseList">
+
+                <ng-container matColumnDef="enterpriseId">
+                    <th mat-header-cell *matHeaderCellDef> ID </th>
+                    <td mat-cell *matCellDef="let element"> {{element.enterpriseid}} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="enterpriseName">
+                    <th mat-header-cell *matHeaderCellDef> Nombre </th>
+                    <td mat-cell *matCellDef="let element"> {{element.enterpriseName }} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="enterpriseDescription">
+                    <th mat-header-cell *matHeaderCellDef> Descripción </th>
+                    <td mat-cell *matCellDef="let element"> {{element.enterpriseDescription}} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="enterpriseAddress">
+                    <th mat-header-cell *matHeaderCellDef> Dirección </th>
+                    <td mat-cell *matCellDef="let element"> {{element.enterpriseAddress}} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="check">
+                    <th mat-header-cell *matHeaderCellDef> Acciones </th>
+                    <td mat-cell *matCellDef="let element">
+                        
+                        <button mat-raised-button style="background-color: #faf314;" (click)="editarRegistro(element)">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        <button mat-raised-button color="warn" (click)="eliminarRegistro(element)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                
+                    </td>
+                  </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
         
         </mat-drawer-content>
     </mat-drawer-container>

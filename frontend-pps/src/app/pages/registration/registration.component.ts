@@ -254,7 +254,6 @@ export class RegistrationComponent implements OnInit {
         externalPersonnelEnterpriseId: parseInt(externalBody.externalPersonnelEnterpriseId as string),
         externalPersonnelProfession: externalBody.externalPersonnelProfession as string,
         externalPersonnelOffice: externalBody.externalPersonnelOffice as string,
-        externalPersonnelAddress: externalBody.externalPersonnelAddress as string,
         externalPersonnelGraduationYear: this.myForm.value.date as string,
         externalPersonnelWorkExperience: externalBody.externalPersonnelWorkExperience as string
       }

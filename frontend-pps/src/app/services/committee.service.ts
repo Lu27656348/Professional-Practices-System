@@ -22,4 +22,16 @@ export class CommitteeService {
     headers.append('Access-Control-Allow-Origin', '*');
     return this.http.post(`${environment.apiUrl}/committees`,committeeData,{headers});
   }
+
+  updateCommittee(committeeId: string ,committeeData: CreateCommitteeRequest){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.put(`${environment.apiUrl}/committees/${committeeId}`,committeeData,{headers});
+  }
+
+  deleteCommittee(committeeId: string){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.delete(`${environment.apiUrl}/committees/${committeeId}`,{headers});
+  }
 }

@@ -1,0 +1,26 @@
+<h2 mat-dialog-title>Ingrese los datos del Profesional Externos</h2>
+<mat-dialog-content class="mat-typography">
+    <form [formGroup]="enterpriseForm" style="display: flex; flex-direction: column;" *ngIf="nextStep == false">
+
+        
+        <mat-form-field class="full-width input-margin">
+            <mat-label>Ingrese su nombre completo:</mat-label>
+            <input formControlName = "enterpriseName" matInput placeholder="Venalum C.A" value = "">
+        </mat-form-field>
+        <mat-form-field class="full-width input-margin">
+            <mat-label>Ingrese sus apellidos:</mat-label>
+            <input formControlName = "enterpriseDescription" matInput placeholder="..." value = "">
+        </mat-form-field>
+        <mat-form-field class="full-width input-margin">
+            <mat-label>Ingrese su número de teléfono:</mat-label>
+            <input formControlName = "enterpriseAddress" matInput placeholder="..." value = "">
+        </mat-form-field>
+
+      
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-raised-button color="primary" (click)="agregarEmpresa()" *ngIf="data == null">Agregar Empresa</button>
+  <button mat-raised-button color="primary" (click)="modificarEmpresa()" *ngIf="data != null && data.mode == 'EDITAR'">Modificar Empresa</button>
+</mat-dialog-actions>

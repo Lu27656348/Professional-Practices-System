@@ -6,15 +6,35 @@
     
             <mat-list role="list">
                 <div mat-subheader><strong>Archivos</strong></div>
-                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="">Trabajos de Grado</button></mat-list-item>
-                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="">Pasantías</button></mat-list-item>
-                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="">Actas de Consejo</button></mat-list-item>
             </mat-list>
         
         </mat-drawer>
         <mat-drawer-content>
      
-              
+            <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+                <!-- This is the tree node template for leaf nodes -->
+                <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding >
+                  <!-- use a disabled button to provide padding for tree leaf -->
+                  <div *ngIf="hasPdfExtension(node.name)">
+                    <button mat-icon-button disabled></button>
+                    {{node.name}}
+                    <button mat-mini-fab aria-label="Example icon button with a home icon" style="margin-left: 10px;" (click)="descargarInforme(node)">
+                        <mat-icon>cloud_download</mat-icon>
+                    </button>
+                  </div>
+            
+                </mat-tree-node>
+                <!-- This is the tree node template for expandable nodes -->
+                <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
+                  <button mat-icon-button matTreeNodeToggle
+                          [attr.aria-label]="'Toggle ' + node.name">
+                    <mat-icon class="mat-icon-rtl-mirror">
+                      {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                    </mat-icon>
+                  </button>
+                  {{node.name}}
+                </mat-tree-node>
+              </mat-tree>
         
         </mat-drawer-content>
     </mat-drawer-container>

@@ -100,16 +100,24 @@ export class ReviewersComponent implements OnInit{
 
   openDialog(data: any) {
     console.log(data)
-    const dialogRef = this.dialog.open(AssignmentComponent,{
-      width: '60%',
-      data: {
-        gw: data
+    this.graduateworkService.getGraduateWorkStudentData(data.graduateWorkId).subscribe({
+      next: (studentData) => {
+        console.log(studentData)
+        const dialogRef = this.dialog.open(AssignmentComponent,{
+          width: '60%',
+          data: {
+            gw: data,
+            administrator: this.localUser,
+            user: studentData
+          }
+        })
+    
+        dialogRef.afterClosed().subscribe(result => {
+          console.log(`Dialog result: ${result}`);
+        });
       }
     })
-
-    dialogRef.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`);
-    });
+    
      
   }
   ngOnInit(){

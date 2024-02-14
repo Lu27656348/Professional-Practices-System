@@ -89,7 +89,19 @@ import { EmpresaCatalogComponent } from './pages/coordinator/general/catalog/emp
 import { ComiteCatalogComponent } from './pages/coordinator/general/catalog/comite-catalog/comite-catalog.component';
 import { ConsejoCatalogComponent } from './pages/coordinator/general/catalog/consejo-catalog/consejo-catalog.component';
 import { ProfesionalCatalogComponent } from './pages/coordinator/general/catalog/profesional-catalog/profesional-catalog.component';
-import { ProfesorDialogComponent } from './pages/coordinator/general/catalog/profesor-catalog/dialogs/profesor-dialog/profesor-dialog.component'; 
+import { ProfesorDialogComponent } from './pages/coordinator/general/catalog/profesor-catalog/dialogs/profesor-dialog/profesor-dialog.component';
+import { ProfesionalDialogComponent } from './pages/coordinator/general/catalog/profesional-catalog/dialogs/profesional-dialog/profesional-dialog.component';
+import { EmpresaDialogComponent } from './pages/coordinator/general/catalog/empresa-catalog/dialogs/empresa-dialog/empresa-dialog.component';
+import { ComiteDialogComponent } from './pages/coordinator/general/catalog/comite-catalog/dialogs/comite-dialog/comite-dialog.component';
+import { ConsejoDialogComponent } from './pages/coordinator/general/catalog/consejo-catalog/dialogs/consejo-dialog/consejo-dialog.component';
+import { CrearPropuestaTGDialogComponent } from './pages/coordinator/graduatework/proposals/dialogs/crear-propuesta-tgdialog/crear-propuesta-tgdialog.component';
+import { ReviewerEvaluationComponent } from './pages/coordinator/graduatework/reviewer-evaluation/reviewer-evaluation.component';
+import { ReviewerEvaluationDialogComponent } from './pages/coordinator/graduatework/reviewer-evaluation/reviewer-evaluation-dialog/reviewer-evaluation-dialog.component';
+import { DesarrolloTGComponent } from './pages/coordinator/graduatework/desarrollo-tg/desarrollo-tg.component';
+import { DesarrolloTgDialogComponent } from './pages/coordinator/graduatework/desarrollo-tg/desarrollo-tg-dialog/desarrollo-tg-dialog.component';
+import { PresentacionComponent } from './pages/coordinator/graduatework/presentacion/presentacion.component';
+import { PresentacionDialogComponent } from './pages/coordinator/graduatework/presentacion/presentacion-dialog/presentacion-dialog.component';
+import { CompletionDialogComponent } from './pages/coordinator/graduatework/completion/completion-dialog/completion-dialog.component';
 
 @NgModule({
   declarations: [
@@ -150,7 +162,19 @@ import { ProfesorDialogComponent } from './pages/coordinator/general/catalog/pro
     ComiteCatalogComponent,
     ConsejoCatalogComponent,
     ProfesionalCatalogComponent,
-    ProfesorDialogComponent
+    ProfesorDialogComponent,
+    ProfesionalDialogComponent,
+    EmpresaDialogComponent,
+    ComiteDialogComponent,
+    ConsejoDialogComponent,
+    CrearPropuestaTGDialogComponent,
+    ReviewerEvaluationComponent,
+    ReviewerEvaluationDialogComponent,
+    DesarrolloTGComponent,
+    DesarrolloTgDialogComponent,
+    PresentacionComponent,
+    PresentacionDialogComponent,
+    CompletionDialogComponent
   ],
   imports: [
     BrowserModule,

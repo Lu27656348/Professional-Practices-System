@@ -7,6 +7,8 @@ import { MatDialog } from '@angular/material/dialog'
 import { ValidationComponent } from './dialogs/validation/validation.component'
 import { StudentService} from '../../../../services/student.service'
 import { Observable, forkJoin, of, switchMap } from 'rxjs';
+import { CrearPropuestaTGDialogComponent } from './dialogs/crear-propuesta-tgdialog/crear-propuesta-tgdialog.component';
+
 interface PeriodicElement {
   name: string;
   position: number;
@@ -45,10 +47,18 @@ export class ProposalsComponent implements OnInit{
 
   proposal: any[] = [];
 
+
+
   displayedColumns: string[] = ['graduateWorkId', 'graduateWorkTitle', 'studentDNI', 'symbol',"check"];
   dataSource = ELEMENT_DATA;
 
-  constructor(private loginService: LoginService,private router: Router,private userService: UsersService, private graduateworkService: GraduateworkService, private dialog: MatDialog, private studentService: StudentService){
+  constructor(
+    private router: Router,
+    private userService: UsersService, 
+    private graduateworkService: GraduateworkService,
+    private dialog: MatDialog,
+    private studentService: StudentService
+  ){
     this.graduateworkService.getProposals().pipe(
       switchMap(
         (proposalData) => {
@@ -168,4 +178,14 @@ export class ProposalsComponent implements OnInit{
 
   }
 
+  openCreateDialog(){
+    console.log("openCreateDialog()")
+    const dialogRef = this.dialog.open(CrearPropuestaTGDialogComponent,{
+      width: '60%'
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+    });
+  }
 }

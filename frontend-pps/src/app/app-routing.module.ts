@@ -15,13 +15,6 @@ import { ReviewersComponent } from './pages/coordinator/graduatework/reviewers/r
 import { CouncilComponent } from './pages/coordinator/graduatework/council/council.component'
 import { FilesComponent } from './pages/coordinator/graduatework/files/files.component';
 
-
-import { ProfessorGWComponent } from './pages/professor/professor-gw/professor-gw.component'
-import { ProfessorReviewerComponent } from './pages/professor/graduatework/professor-reviewer/professor-reviewer.component'
-import { ProfessorJuryComponent } from './pages/professor/graduatework/professor-jury/professor-jury.component'
-import { ProfessorTutorComponent } from './pages/professor/graduatework/professor-tutor/professor-tutor.component'
-import { OutsiderComponent } from './pages/outsider/outsider.component';
-import { ExternalJuryComponent } from './pages/outsider/graduatework/external-jury/external-jury.component';
 import { PlanillaEvaluacionTutorEmpresarialComponent } from './pages/generator/pasantia/planilla-evaluacion-tutor-empresarial/planilla-evaluacion-tutor-empresarial.component';
 
 
@@ -42,6 +35,9 @@ import { EmpresaCatalogComponent } from './pages/coordinator/general/catalog/emp
 import { ProfesionalCatalogComponent } from './pages/coordinator/general/catalog/profesional-catalog/profesional-catalog.component';
 import { ConsejoCatalogComponent } from './pages/coordinator/general/catalog/consejo-catalog/consejo-catalog.component';
 import { ComiteCatalogComponent } from './pages/coordinator/general/catalog/comite-catalog/comite-catalog.component';
+import { ReviewerEvaluationComponent } from './pages/coordinator/graduatework/reviewer-evaluation/reviewer-evaluation.component';
+import { DesarrolloTGComponent } from './pages/coordinator/graduatework/desarrollo-tg/desarrollo-tg.component';
+import { PresentacionComponent } from './pages/coordinator/graduatework/presentacion/presentacion.component';
 
 const routes: Routes = [
   {
@@ -70,22 +66,6 @@ const routes: Routes = [
     component: StudentGWComponent 
   },
   {
-    path: "graduate-work/professor",
-    component: ProfessorGWComponent 
-  },
-  {
-    path: "graduate-work/professorReviewer",
-    component: ProfessorReviewerComponent 
-  },
-  {
-    path: "graduate-work/tutor",
-    component: ProfessorTutorComponent 
-  },
-  {
-    path: "graduate-work/jury",
-    component: ProfessorJuryComponent 
-  },
-  {
     path: "graduate-work/proposals",
     component: ProposalsComponent
   },
@@ -94,12 +74,28 @@ const routes: Routes = [
     component: ReviewersComponent
   },
   {
+    path: "graduate-work/reviewers-evaluation",
+    component: ReviewerEvaluationComponent
+  },
+  {
     path: "graduate-work/council",
     component: CouncilComponent
   },
   {
+    path: "graduate-work/process",
+    component: DesarrolloTGComponent
+  },
+  {
     path: "graduate-work/juries",
     component: JuryComponent
+  },
+  {
+    path: "graduate-work/defenses",
+    component: DefenseComponent
+  },
+  {
+    path: "graduate-work/presentacion",
+    component: PresentacionComponent
   },
   {
     path: "graduate-work/completion",
@@ -108,18 +104,6 @@ const routes: Routes = [
   {
     path: "graduate-work/files",
     component: FilesComponent
-  },
-  {
-    path: "graduate-work/defenses",
-    component: DefenseComponent
-  },
-  {
-    path: "graduate-work/outsider",
-    component: OutsiderComponent
-  },
-  {
-    path: "graduate-work/outsider/jury",
-    component: ExternalJuryComponent
   },
   /* Rutas para el proceso de pasantía  */
   {

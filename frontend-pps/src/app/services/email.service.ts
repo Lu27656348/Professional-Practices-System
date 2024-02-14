@@ -15,8 +15,18 @@ export class EmailService {
     headers.append('Access-Control-Allow-Origin', '*');
     const formData = new FormData()
     formData.append('file', file)
-    formData.append('from', from)
-    formData.append('to', to)
+    formData.append('emailFrom', from)
+    formData.append('emailTo', to)
     return this.http.post(`${environment.emailAPI}/email/send/file`,formData,{headers});
+  }
+
+  sendMultipleEmail(file:File[],from: string, to: string): Observable<any>{
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    const formData = new FormData()
+    file.forEach(archivo => formData.append('file', archivo));
+    formData.append('emailFrom', from)
+    formData.append('emailTo', to)
+    return this.http.post(`${environment.emailAPI}/email/send/multiple/file`,formData,{headers});
   }
 }

@@ -95,7 +95,7 @@ export class ProfesorDialogComponent {
         userEmailAlt: null
       }
       const professorData: createProfessorRequest = {
-        professorDNI: this.userForm.value.cedula,
+        professorDNI: "V-" + this.userForm.value.cedula,
         professorSchoolName: this.professorForm.value.escuela,
         professorProfession: this.professorForm.value.profesion,
         professorOffice: this.professorForm.value.oficina,

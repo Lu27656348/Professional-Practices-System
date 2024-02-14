@@ -19,12 +19,6 @@
   <p>{{'Tipo: ' +  inputdata.graduatework.graduateWorkType}}</p>
   <p>{{'Organización donde se realizará: ' + this.enterpriseData.enterpriseName}}</p>
   <p>{{'Posible tutor academico: ' + this.coordinatorData.userLastName + ', ' + this.coordinatorData.userFirstName }}</p>
-
-  <h3><strong>Planilla de Solicitud de Propuesta de Trabajo de Grado</strong></h3>
-  <mat-divider></mat-divider>
-  <p>Para descargar la Planilla de Solicitud de Propuesta de Trabajo de Grado haga, click en descargar:</p>
-  <button mat-button (click)="obtenerPlanillaSolicitud()">Descargar</button>
-  <p></p>
   
   <h3><strong>Informe de Propuesta de Trabajo de Grado</strong></h3>
   <mat-divider></mat-divider>
@@ -35,7 +29,6 @@
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>Cancel</button>
-  <button mat-button style="background-color: rgb(245, 171, 21)" [mat-dialog-close]="true" cdkFocusInitial (click)="veredictoPropuesta('reenviar')">Reenviar</button>
   <button mat-button style="background-color: red;"  [mat-dialog-close]="true" cdkFocusInitial (click)="veredictoPropuesta('rechazar')">Rechazar</button>
   <button mat-button style="background-color: green;"  [mat-dialog-close]="true" cdkFocusInitial (click)="veredictoPropuesta('aprobar')">Aprobar</button>
 </mat-dialog-actions>

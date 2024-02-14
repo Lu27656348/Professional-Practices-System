@@ -16,7 +16,37 @@
         </mat-drawer>
         <mat-drawer-content>
      
-              
+            <div style="width: 100%; display: flex;">
+                <button mat-raised-button (click)="openCreateDialog()">
+                    <mat-icon>library_add</mat-icon> Agregar Comite de Trabajo de Grado
+                </button>
+            </div>    
+            <table mat-table [dataSource]="comiteList">
+
+                <ng-container matColumnDef="comiteId">
+                    <th mat-header-cell *matHeaderCellDef> ID </th>
+                    <td mat-cell *matCellDef="let element"> {{element.committeeId}} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="fechaComite">
+                    <th mat-header-cell *matHeaderCellDef> Fecha de Comite </th>
+                    <td mat-cell *matCellDef="let element"> {{element.committeeDateFormatted }} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="check">
+                    <th mat-header-cell *matHeaderCellDef> Acciones </th>
+                    <td mat-cell *matCellDef="let element">
+                        
+                        <button mat-raised-button style="background-color: #faf314;" (click)="editarRegistro(element)">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        <button mat-raised-button color="warn" (click)="eliminarRegistro(element)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                
+                    </td>
+                  </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
         
         </mat-drawer-content>
     </mat-drawer-container>

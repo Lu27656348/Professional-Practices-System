@@ -1,0 +1,19 @@
+<h2 mat-dialog-title>Datos asociados a la presentación</h2>
+<mat-dialog-content class="mat-typography">
+
+    <form [formGroup]="graduateWorkForm"> 
+        
+        
+        <div style="height: 50%;">
+            <h3 style="margin-top: 15px;">Cargue El Acta de Trabajo de Grado</h3>
+            <mat-divider></mat-divider>
+            <input style = "margin-top:  10px;" type="file" formControlName="file" id = "fileInput" name="fileInput" (change)="onFileSelected($event)">
+        </div>
+
+    </form>
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-raised-button color = "primary" cdkFocusInitial (click)="cargarActaEstudiante()">Cargar Acta de Trabajo de Grado</button>
+</mat-dialog-actions>

@@ -17,6 +17,18 @@ export class ExternalPersonnelService {
     return this.http.get(`${environment.apiUrl}/graduate-work/company/tutors`,{headers});
   }
 
+  getAllExternal():Observable<any>{
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`${environment.apiUrl}/external`,{headers});
+  }
+
+  getExternalById(externalPersonnelDNI: string):Observable<any>{
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`${environment.apiUrl}/external/${externalPersonnelDNI}`,{headers});
+  }
+
   getExternalPersonnelByEnterpriseId(enterpriseId: number) : Observable<any> {
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');

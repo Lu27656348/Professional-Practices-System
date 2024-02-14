@@ -1,0 +1,25 @@
+<h2 mat-dialog-title>Ingrese los datos del Profesional Externos</h2>
+<mat-dialog-content class="mat-typography">
+    <form [formGroup]="comiteForm" style="display: flex; flex-direction: column;">
+
+        
+        <mat-form-field class="full-width input-margin" *ngIf="!isEditMode">
+            <mat-label>Ingrese el código del Comite de Trabajo de Grado:</mat-label>
+            <input formControlName = "committeeId" matInput placeholder="001-2024-2025" value = "" >
+        </mat-form-field>
+        <mat-form-field style="width: 100%;">
+            <mat-label>Ingrese la fecha de Comite</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="committeeDate">
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+      
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-raised-button color="primary" (click)="agregarComite()" *ngIf="data == null">Agregar Consejo</button>
+  <button mat-raised-button color="primary" (click)="modificarComite()" *ngIf="data != null && data.mode == 'EDITAR'">Modificar Consejo</button>
+</mat-dialog-actions>

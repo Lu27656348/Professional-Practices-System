@@ -1,0 +1,87 @@
+<h2 mat-dialog-title>Ingrese los datos del Profesional Externos</h2>
+<mat-dialog-content class="mat-typography">
+    <form [formGroup]="userForm" style="display: flex; flex-direction: column;" *ngIf="nextStep == false">
+        <div style="width: 100%; display: flex;">
+            <mat-form-field class="input-margin" style="width: 10vw;">
+                <mat-select value="V-" [disabled]="true">
+                    <mat-option value="V-" [disabled]="true">
+                      V-
+                    </mat-option>
+                  </mat-select>
+            </mat-form-field>
+            <mat-form-field class="input-margin" style="width: 10vw; flex-grow: 1;">
+                <mat-label>Ingrese su cédula:</mat-label>
+                <input formControlName = "cedula" matInput placeholder="27656348" value = "">
+            </mat-form-field>
+        </div>
+        
+        <mat-form-field class="full-width input-margin">
+            <mat-label>Ingrese su nombre completo:</mat-label>
+            <input formControlName = "nombres" matInput placeholder="Luis Carlos" value = "">
+        </mat-form-field>
+    
+        <mat-form-field class="full-width input-margin">
+            <mat-label>Ingrese sus apellidos:</mat-label>
+            <input formControlName = "apellidos" matInput placeholder="Somoza Ledezma" value = "">
+        </mat-form-field>
+        <mat-form-field class="full-width input-margin">
+            <mat-label>Ingrese su número de teléfono:</mat-label>
+            <input formControlName = "telefono" matInput placeholder="+58-4122155879" value = "">
+        </mat-form-field>
+        <div style="width: 100%; display: flex;">
+            <mat-form-field class="full-width input-margin" style="flex-grow: 1;">
+                <mat-label>Ingrese su correo principal:</mat-label>
+                <input formControlName = "correoElectronico" matInput placeholder="lcsomoza.19@est.ucab.edu.ve" value = "" #tooltip="matTooltip"
+                matTooltip="Nota: Si su correo no pertenece al dominio UCAB (ejemplo: exampledomain@gmail.com), usted será registrado como personal externo"
+                matTooltipPosition="above"
+                matTooltipHideDelay="100000">
+            </mat-form-field>
+            <mat-form-field class="full-width input-margin" style="flex-grow: 0.5;">
+                <mat-select [(value)]="emailFormatSelected" >
+                    <mat-option value="@est.ucab.edu.ve"> @est.ucab.edu.ve </mat-option>
+                    <mat-option value="@ucab.edu.ve"> @ucab.edu.ve </mat-option>
+                    <mat-option value="@gmail.com"> @gmail.com </mat-option>
+                </mat-select>
+            </mat-form-field>
+            
+        </div>
+    </form>
+    <form [formGroup]="externalForm" *ngIf="nextStep" style="display: flex; flex-direction: column;">
+        <mat-form-field style="width: 100%;">
+            <mat-label>Seleccione la empresa a la que pertenece</mat-label>
+            <mat-select formControlName = "empresa">
+              <mat-option *ngFor="let school of enterpriseList" [value]="school.enterpriseid">
+                {{ school.enterpriseName }}
+              </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field style="width: 100%;">
+            <mat-label>Ingrese la cantidad de años de experiencia:</mat-label>
+            <input matInput placeholder="7" value = "" formControlName = "experiencia">
+        </mat-form-field>
+
+        <mat-form-field style="width: 100%;" >
+            <mat-label>Ingrese su fecha de graduacion</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="graduacion">
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field style="width: 100%;">
+            <mat-label>Ingrese una profesion:</mat-label>
+            <input matInput placeholder="Ing. Civil" value = "" formControlName = "profesion">
+        </mat-form-field>
+
+        <mat-form-field style="width: 100%;">
+            <mat-label>Ingrese un teléfono de oficina:</mat-label>
+            <input matInput placeholder="+58-4122155879" value = "" formControlName = "oficina">
+        </mat-form-field>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-raised-button color="primary" (click)="siguientePagina()" *ngIf="nextStep == false">Siguiente</button>
+  <button mat-raised-button color="primary" (click)="agregarProfesional()" *ngIf="nextStep == true && data == null">Agregar Profesional</button>
+  <button mat-raised-button color="primary" (click)="modificarProfesional()" *ngIf="nextStep == true && data != null && data.mode == 'EDITAR'">Modificar Profesional</button>
+</mat-dialog-actions>

@@ -36,7 +36,7 @@ export class CriteriosTutorAcademicoService {
     return this.http.put(`${environment.apiUrlPasantia}/pasantia/secciones/academico/put/${seccionId}`,seccion,{headers});
   }
 
-  changeEnterpriseTutorCriteria(criteriaId: number, criteria: CriteriaRequest){
+  changeAcademicTutorCriteria(criteriaId: number, criteria: CriteriaRequest){
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
     return this.http.put(`${environment.apiUrlPasantia}/pasantia/criterios/academico/put/${criteriaId}`,criteria,{headers});

@@ -35,6 +35,8 @@ const ELEMENT_DATA: PeriodicElement[] = [
 
 export class GraduateworkComponent implements OnInit{
 
+  panelOpenState = false;
+  
   roleSelected: any;
   localUser: any;
   data: any = null;

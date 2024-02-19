@@ -33,6 +33,9 @@ const ELEMENT_DATA: PeriodicElement[] = [
   styleUrls: ['./proposals.component.css']
 })
 export class ProposalsComponent implements OnInit{
+
+  panelOpenState = false;
+
   roleSelected: any;
   localUser: any;
   data: any = null;

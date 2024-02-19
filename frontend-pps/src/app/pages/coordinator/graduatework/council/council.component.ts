@@ -15,6 +15,9 @@ import { DialogCouncilComponent } from './dialog-council/dialog-council.componen
   styleUrls: ['./council.component.css']
 })
 export class CouncilComponent implements OnInit{
+
+  panelOpenState = false;
+  
   roleSelected: any;
   localUser: any;
   data: any = null;

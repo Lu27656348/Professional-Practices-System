@@ -64,6 +64,8 @@ function downloadFile(fileName: string, studentDNI: string | null, userFirstName
 })
 export class DialogCouncilComponent implements OnInit{
 
+  cargadoArchivos: boolean = false;
+
   inputdata: any = null;
   councilList: any = []
 
@@ -115,6 +117,7 @@ export class DialogCouncilComponent implements OnInit{
   ){
 
     this.inputdata = this.data
+    console.log(this.inputdata)
 
     this.professorService.getProfessorsData()
     .pipe(
@@ -197,6 +200,7 @@ export class DialogCouncilComponent implements OnInit{
   veredictoPropuesta(decision: string){
     console.log("veredictoPropuesta() -> " + decision)
     if(decision === 'aprobar'){
+      this.cargadoArchivos = true
       if(this.councilForm.valid){
         console.log(this.councilForm.value)
 
@@ -242,7 +246,7 @@ export class DialogCouncilComponent implements OnInit{
                 consejoDeEscuela: this.councilData.schoolCouncilId,
                 fechaConsejo: new Date(this.councilData.schoolcouncildate),
                 studentData: studentDataFormatted,
-                tutorEmpresarial: this.corporateTutorData.userLastName + ", " + this.corporateTutorData.userFirstName,
+                tutorEmpresarial: (this.corporateTutorData) ? this.corporateTutorData.userLastName + ", " + this.corporateTutorData.userFirstName : "",
                 nombreCoordinador: `${this.coordinatorData.userFirstName.split(" ")[0]} ${this.coordinatorData.userLastName.split(" ")[0]}`,
                 fechaTope: new Date()
               }
@@ -251,25 +255,25 @@ export class DialogCouncilComponent implements OnInit{
           ),
           switchMap(
             (tutorNotificationBlob) => {
-              const file: File = new File([tutorNotificationBlob], "Designación Tutor Académico.docx", { type: tutorNotificationBlob.type });
+              const file: File = new File([tutorNotificationBlob], `${this.academicTutorData.userLastName.split(" ")[0]}${this.academicTutorData.userFirstName.split(" ")[0]} Designación Tutor Académico.docx`, { type: tutorNotificationBlob.type });
               console.log(file)
               let fileName: string = ""
-              if(this.inputdata.user.length > 1){
-                fileName = `${this.inputdata.user[0].userLastName.split(' ')[0]}${this.inputdata.user[0].userFirstName.split(' ')[0]} ${this.inputdata.user[1].userLastName.split(' ')[0]}${this.inputdata.user[1].userFirstName.split(' ')[0]} PTG.pdf`;
+              if(this.inputdata.userData.length > 1){
+                fileName = `${this.inputdata.userData[0].userLastName.split(' ')[0]}${this.inputdata.userData[0].userFirstName.split(' ')[0]} ${this.inputdata.userData[1].userLastName.split(' ')[0]}${this.inputdata.userData[1].userFirstName.split(' ')[0]} PTG.pdf`;
               }else{
-                fileName = this.inputdata.user[0].userLastName.split(' ')[0]+this.inputdata.user[0].userFirstName.split(' ')[0]+' PTG.pdf';
+                fileName = this.inputdata.userData[0].userLastName.split(' ')[0]+this.inputdata.userData[0].userFirstName.split(' ')[0]+' PTG.pdf';
               }
               this.fileArray.push(file)
-              return downloadFile(fileName,this.inputdata.user[0].userDNI, this.inputdata.user[0].userFirstName.split(' ')[0],this.inputdata.user[0].userLastName.split(' ')[0])
+              return downloadFile(fileName,this.inputdata.userData[0].userDNI, this.inputdata.userData[0].userFirstName.split(' ')[0],this.inputdata.userData[0].userLastName.split(' ')[0])
             }
           ),
           switchMap(
             (proposalBlob) => {
               let fileName: string = ""
-              if(this.inputdata.user.length > 1){
-                fileName = `${this.inputdata.user[0].userLastName.split(' ')[0]}${this.inputdata.user[0].userFirstName.split(' ')[0]} ${this.inputdata.user[1].userLastName.split(' ')[0]}${this.inputdata.user[1].userFirstName.split(' ')[0]} PTG.pdf`;
+              if(this.inputdata.userData.length > 1){
+                fileName = `${this.inputdata.userData[0].userLastName.split(' ')[0]}${this.inputdata.userData[0].userFirstName.split(' ')[0]} ${this.inputdata.userData[1].userLastName.split(' ')[0]}${this.inputdata.userData[1].userFirstName.split(' ')[0]} PTG.pdf`;
               }else{
-                fileName = this.inputdata.user[0].userLastName.split(' ')[0]+this.inputdata.user[0].userFirstName.split(' ')[0]+' PTG.pdf';
+                fileName = this.inputdata.userData[0].userLastName.split(' ')[0]+this.inputdata.userData[0].userFirstName.split(' ')[0]+' PTG.pdf';
               }
               const file: File = new File([proposalBlob], fileName, { type: proposalBlob.type });
               console.log(file)

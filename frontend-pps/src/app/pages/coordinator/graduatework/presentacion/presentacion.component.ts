@@ -15,6 +15,9 @@ import { PresentacionDialogComponent } from './presentacion-dialog/presentacion-
   styleUrls: ['./presentacion.component.css']
 })
 export class PresentacionComponent {
+
+  panelOpenState = false;
+  
   roleSelected: any;
   localUser: any;
   data: any = null;

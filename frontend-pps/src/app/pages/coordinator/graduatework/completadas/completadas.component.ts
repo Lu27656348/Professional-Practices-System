@@ -1,20 +1,19 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { Observable, forkJoin, switchMap } from 'rxjs';
+import { switchMap, Observable, forkJoin } from 'rxjs';
 import { GraduateworkService } from 'src/app/services/graduatework.service';
 import { LoginService } from 'src/app/services/login.service';
 import { StudentService } from 'src/app/services/student.service';
 import { UsersService } from 'src/app/services/users.service';
-import { AssignmentComponent } from '../reviewers/dialogs/assignment/assignment.component';
-import { ReviewerEvaluationDialogComponent } from './reviewer-evaluation-dialog/reviewer-evaluation-dialog.component';
+import { CompletionDialogComponent } from '../completion/completion-dialog/completion-dialog.component';
 
 @Component({
-  selector: 'app-reviewer-evaluation',
-  templateUrl: './reviewer-evaluation.component.html',
-  styleUrls: ['./reviewer-evaluation.component.css']
+  selector: 'app-completadas',
+  templateUrl: './completadas.component.html',
+  styleUrls: ['./completadas.component.css']
 })
-export class ReviewerEvaluationComponent {
+export class CompletadasComponent {
 
   panelOpenState = false;
   
@@ -32,31 +31,23 @@ export class ReviewerEvaluationComponent {
 
   displayedColumns: string[] = ['graduateWorkId', 'graduateWorkTitle', 'studentDNI', 'symbol',"check"];
 
-  constructor(
-    private loginService: LoginService,
-    private router: Router,
-    private userService: UsersService,
-    private graduateworkService: GraduateworkService,
-    private dialog: MatDialog,
-    private studentService: StudentService
-  ){
-    this.graduateworkService.getReviewersPending().pipe(
+  constructor(private loginService: LoginService,private router: Router,private userService: UsersService, private graduateworkService: GraduateworkService, private dialog: MatDialog, private studentService: StudentService){
+    this.graduateworkService.getGraduateWorkByStatus(100)
+    .pipe(
       switchMap(
-        (data) => {
+        (data: any) => {
+          console.log(data)
           this.reviewerData = [...data]
-          console.log(this.reviewerData)
           const observables: Observable<any>[] = []
           this.reviewerData.forEach( (proposal:any) => {
-            observables.push(this.graduateworkService.getGraduateWorkStudentData(proposal.graduateWorkId))
+            observables.push(this.graduateworkService.getGraduateWorkStudentData(proposal.graduateworkid))
           })
           return forkJoin(observables)
         }
       )
     )
-    
     .subscribe({
       next: (data: any) => {
-        console.log(data)
         this.reviewerData.forEach( (proposal:any,indexP: number) => {
           let authors = ""; 
           data[indexP].forEach( (author: any, index: number) => {
@@ -109,25 +100,19 @@ export class ReviewerEvaluationComponent {
   }
 
   openDialog(data: any) {
-    console.log(data)
-    this.graduateworkService.getGraduateWorkStudentData(data.graduateWorkId).subscribe({
-      next: (studentData) => {
-        const dialogRef = this.dialog.open(ReviewerEvaluationDialogComponent,{
-          width: '60%',
-          data: {
-            gw: data,
-            administrator: this.localUser,
-            user: studentData
-          }
-        })
-    
-        dialogRef.afterClosed().subscribe(result => {
-          console.log(`Dialog result: ${result}`);
-        });
-      }
-    })
-    
-     
+    console.log(this.user)
+    console.log(data);
+
+    let studentData;
+    let graduateWorkData;
+
+    forkJoin([ this.userService.getUserData(data.studentDNI),this.studentService.getStudentGraduateWork(data.studentDNI), this.graduateworkService.getGraduateWorkById(data.graduateWorkId)])
+    .subscribe(([result1,result2,result3]) => {
+      console.log(result1)
+      console.log(result2)
+      console.log(result3)
+      
+      });
   }
   ngOnInit(){
 

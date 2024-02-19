@@ -1,25 +1,29 @@
 <h2 mat-dialog-title>Datos asociados a la propuesta</h2>
 <mat-dialog-content class="mat-typography">
-  <p *ngIf="studentCount < 2"><strong>Datos del estudiante</strong></p>
-  <p *ngIf="studentCount >= 2"><strong>Datos de los estudiantes</strong></p>
-  <mat-divider></mat-divider>
-  <p>{{'Nombre completo: ' + inputdata.userData[0].userLastName + ', ' + inputdata.userData[0].userFirstName }}</p>
-  <p>{{'Cedula de identidad: ' + inputdata.userData[0].userDNI }}</p>
-  <p>{{'Correo UCAB: ' +inputdata.userData[0].userEmail}}</p>
-  <p>{{'Número de teléfono: ' + inputdata.userData[0].userPhone }}</p>
-  <mat-divider *ngIf="studentCount >= 2"></mat-divider>
-  <p *ngIf="studentCount >= 2">{{'Nombre completo: ' + inputdata.userData[1].userLastName + ', ' + inputdata.userData[1].userFirstName }}</p>
-  <p *ngIf="studentCount >= 2">{{'Cedula de identidad: ' + inputdata.userData[1].userDNI }}</p>
-  <p *ngIf="studentCount >= 2">{{'Correo UCAB: ' +inputdata.userData[1].userEmail}}</p>
-  <p *ngIf="studentCount >= 2">{{'Número de teléfono: ' + inputdata.userData[1].userPhone }}</p>
-  <p *ngIf="studentCount >= 2"><strong>Datos del Trabajo de Grado</strong></p>
-  <mat-divider></mat-divider>
-  <p>{{'Título: ' + inputdata.graduateWorkData.graduateWorkTitle }}</p>
-  <p>{{'Tipo: ' + inputdata.graduateWorkData.graduateWorkType }}</p>
-  <p>{{'Organización donde se realizará: ' + enterpriseData?.enterpriseName }}</p>
-  <p>{{'Posible tutor academico: ' + coordinatorData?.userLastName + ', ' + coordinatorData?.userFirstName }}</p>
+  <p *ngIf="studentCount < 2 && cargadoArchivos == false" ><strong>Datos del estudiante</strong></p>
+  <p *ngIf="studentCount >= 2 && cargadoArchivos == false"><strong>Datos de los estudiantes</strong></p>
 
-  <form [formGroup]="councilForm">
+  <mat-divider *ngIf="cargadoArchivos == false"></mat-divider>
+
+  <p *ngIf="cargadoArchivos == false">{{'Nombre completo: ' + inputdata.userData[0].userLastName + ', ' + inputdata.userData[0].userFirstName }}</p>
+  <p *ngIf="cargadoArchivos == false">{{'Cedula de identidad: ' + inputdata.userData[0].userDNI }}</p>
+  <p *ngIf="cargadoArchivos == false">{{'Correo UCAB: ' +inputdata.userData[0].userEmail}}</p>
+  <p *ngIf="cargadoArchivos == false">{{'Número de teléfono: ' + inputdata.userData[0].userPhone }}</p>
+
+  <mat-divider *ngIf="studentCount >= 2 && cargadoArchivos == false"></mat-divider>
+
+  <p *ngIf="studentCount >= 2 && cargadoArchivos == false">{{'Nombre completo: ' + inputdata.userData[1].userLastName + ', ' + inputdata.userData[1].userFirstName }}</p>
+  <p *ngIf="studentCount >= 2 && cargadoArchivos == false">{{'Cedula de identidad: ' + inputdata.userData[1].userDNI }}</p>
+  <p *ngIf="studentCount >= 2 && cargadoArchivos == false">{{'Correo UCAB: ' +inputdata.userData[1].userEmail}}</p>
+  <p *ngIf="studentCount >= 2 && cargadoArchivos == false">{{'Número de teléfono: ' + inputdata.userData[1].userPhone }}</p>
+  <p *ngIf="cargadoArchivos == false"><strong>Datos del Trabajo de Grado</strong></p>
+  <mat-divider *ngIf="cargadoArchivos == false"></mat-divider>
+  <p *ngIf="cargadoArchivos == false">{{'Título: ' + inputdata.graduateWorkData.graduateWorkTitle }}</p>
+  <p *ngIf="cargadoArchivos == false">{{'Tipo: ' + inputdata.graduateWorkData.graduateWorkType }}</p>
+  <p *ngIf="cargadoArchivos == false">{{'Organización donde se realizará: ' + enterpriseData?.enterpriseName }}</p>
+  <p *ngIf="cargadoArchivos == false"> {{'Posible tutor academico: ' + coordinatorData?.userLastName + ', ' + coordinatorData?.userFirstName }}</p>
+
+  <form [formGroup]="councilForm" *ngIf="cargadoArchivos == false">
     <p><strong>Seleccione el Consejo de Escuela</strong></p>
     <mat-divider></mat-divider>
     <mat-form-field style="width: 100%;">
@@ -41,14 +45,16 @@
       </mat-select>
     </mat-form-field>
   </form>
-  
+  <div style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">
+    <mat-spinner *ngIf="cargadoArchivos == true"></mat-spinner>
+  </div>
 
 
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>Cancel</button>
-  <button mat-button style="background-color: red;"  [mat-dialog-close]="true" cdkFocusInitial (click)="veredictoPropuesta('rechazar')">Rechazar</button>
-  <button mat-button style="background-color: green;" cdkFocusInitial (click)="veredictoPropuesta('aprobar')">Aprobar</button>
+  <button mat-button mat-dialog-close *ngIf="cargadoArchivos == false">Cancel</button>
+  <button mat-button style="background-color: red;" cdkFocusInitial (click)="veredictoPropuesta('rechazar')" *ngIf="cargadoArchivos == false">Rechazar</button>
+  <button mat-raised-button color="primary" cdkFocusInitial (click)="veredictoPropuesta('aprobar')" *ngIf="cargadoArchivos == false">Aprobar</button>
   <!-- <button mat-raised-button color = "primary" [mat-dialog-close]="true" cdkFocusInitial (click)="generarPlanillas()">Generar Planillas</button> -->
 
 </mat-dialog-actions>

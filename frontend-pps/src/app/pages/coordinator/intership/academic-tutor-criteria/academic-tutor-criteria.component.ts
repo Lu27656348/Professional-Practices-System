@@ -1,43 +1,37 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { of, switchMap } from 'rxjs';
-import { MatDialog } from '@angular/material/dialog'
-import { CriteriosTutorEmpresarialService } from 'src/app/services/pasantia/criterios-tutor-empresarial.service';
-import { EditCorporativeTutorCriteriaComponent } from './dialogs/edit-corporative-tutor-criteria/edit-corporative-tutor-criteria.component';
-import { EditCorporativeTutorSeccionComponent } from './dialogs/edit-corporative-tutor-seccion/edit-corporative-tutor-seccion.component';
+import { switchMap, of } from 'rxjs';
 import { Criteria } from 'src/app/form-generator/interfaces/criteria';
 import { EvaluationFormGeneratorService } from 'src/app/form-generator/services/evaluation-form-generator.service';
-import { Seccion } from 'src/app/form-generator/interfaces/seccion';
+import { SeccionInterface } from 'src/app/interfaces/SeccionRequest';
+import { CriteriosTutorEmpresarialService } from 'src/app/services/pasantia/criterios-tutor-empresarial.service';
+import { EditCorporativeTutorCriteriaComponent } from '../corporative-tutor-criteria/dialogs/edit-corporative-tutor-criteria/edit-corporative-tutor-criteria.component';
+import { EditCorporativeTutorSeccionComponent } from '../corporative-tutor-criteria/dialogs/edit-corporative-tutor-seccion/edit-corporative-tutor-seccion.component';
 import { CriteriosTutorAcademicoService } from 'src/app/services/pasantia/criterios-tutor-academico.service';
 
-interface SeccionInterface {
-  maxNote: number,
-  seccionId: number,
-  seccionName: string
-}
-
 @Component({
-  selector: 'app-corporative-tutor-criteria',
-  templateUrl: './corporative-tutor-criteria.component.html',
-  styleUrls: ['./corporative-tutor-criteria.component.css']
+  selector: 'app-academic-tutor-criteria',
+  templateUrl: './academic-tutor-criteria.component.html',
+  styleUrls: ['./academic-tutor-criteria.component.css']
 })
-export class CorporativeTutorCriteriaComponent implements OnInit{
+export class AcademicTutorCriteriaComponent {
   displayedColumns: string[] = ['seccionId', 'seccionName', 'maxNote','actions','criteria'];
   dataSource: any = null
 
   seccionList: SeccionInterface[] = []
   criteriaList: any[] = []
 
-  constructor(private corporateCriteriaService: CriteriosTutorEmpresarialService, private dialog: MatDialog,private formGenerator: EvaluationFormGeneratorService){
+  constructor(private corporateCriteriaService: CriteriosTutorAcademicoService, private dialog: MatDialog,private formGenerator: EvaluationFormGeneratorService){
 
-    this.corporateCriteriaService.getAllEnterpriseTutorSeccion()
+    this.corporateCriteriaService.getAllAcademicTutorSeccion()
     .pipe(
       switchMap(
         (seccionList) => {
           console.log(seccionList)
           this.seccionList = seccionList
           this.dataSource = new MatTableDataSource(seccionList)
-          return this.corporateCriteriaService.getAllEnterpriseTutorCriteria()
+          return this.corporateCriteriaService.getAllAcademicTutorCriteria()
         }
       )
     )
@@ -89,11 +83,11 @@ export class CorporativeTutorCriteriaComponent implements OnInit{
   }
 
   generarPlanilla(){
-    this.corporateCriteriaService.getAllEnterpriseTutorSeccion().pipe(
+    this.corporateCriteriaService.getAllAcademicTutorSeccion().pipe(
       switchMap( 
         (seccionList) => {
           this.seccionList = seccionList
-          return this.corporateCriteriaService.getAllEnterpriseTutorCriteria()
+          return this.corporateCriteriaService.getAllAcademicTutorCriteria()
         }
       ),
       switchMap( 
@@ -105,7 +99,7 @@ export class CorporativeTutorCriteriaComponent implements OnInit{
             empresa: "",
             nombreTutor: ""
           }
-          this.formGenerator.printEvaluationForm(this.formGenerator.generateIntershipCorporateTutorEvaluationForm(criteriaArray,this.seccionList,data))
+          this.formGenerator.printEvaluationForm(this.formGenerator.generateIntershipAcademicTutorEvaluationForm(criteriaArray,this.seccionList,data))
           return of("todo bien")
         }
       ),

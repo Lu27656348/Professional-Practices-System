@@ -14,6 +14,9 @@ import { CompletionDialogComponent } from './completion-dialog/completion-dialog
   styleUrls: ['./completion.component.css']
 })
 export class CompletionComponent {
+
+  panelOpenState = false;
+  
   roleSelected: any;
   localUser: any;
   data: any = null;

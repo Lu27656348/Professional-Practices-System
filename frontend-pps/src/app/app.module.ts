@@ -102,7 +102,13 @@ import { DesarrolloTgDialogComponent } from './pages/coordinator/graduatework/de
 import { PresentacionComponent } from './pages/coordinator/graduatework/presentacion/presentacion.component';
 import { PresentacionDialogComponent } from './pages/coordinator/graduatework/presentacion/presentacion-dialog/presentacion-dialog.component';
 import { CompletionDialogComponent } from './pages/coordinator/graduatework/completion/completion-dialog/completion-dialog.component';
-
+import { CompletadasComponent } from './pages/coordinator/graduatework/completadas/completadas.component';
+import { AcademicTutorCriteriaComponent } from './pages/coordinator/intership/academic-tutor-criteria/academic-tutor-criteria.component';
+import { EditAcademicTutorCriteriaComponent } from './pages/coordinator/intership/academic-tutor-criteria/dialogs/edit-academic-tutor-criteria/edit-academic-tutor-criteria.component';
+import { EditAcademicTutorSeccionComponent } from './pages/coordinator/intership/academic-tutor-criteria/dialogs/edit-academic-tutor-seccion/edit-academic-tutor-seccion.component';
+//import { AcademicTutorCriteriaComponent } from './pages/coordinator/intership/academic-tutor-criteria/academic-tutor-criteria.component';
+//import { EditAcademicTutorCriteriaComponent } from './pages/coordinator/intership/academic-tutor-criteria/edit-academic-tutor-criteria/edit-academic-tutor-criteria.component';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner'; 
 @NgModule({
   declarations: [
     AppComponent,
@@ -174,7 +180,11 @@ import { CompletionDialogComponent } from './pages/coordinator/graduatework/comp
     DesarrolloTgDialogComponent,
     PresentacionComponent,
     PresentacionDialogComponent,
-    CompletionDialogComponent
+    CompletionDialogComponent,
+    CompletadasComponent,
+    AcademicTutorCriteriaComponent,
+    EditAcademicTutorCriteriaComponent,
+    EditAcademicTutorSeccionComponent,
   ],
   imports: [
     BrowserModule,
@@ -205,7 +215,8 @@ import { CompletionDialogComponent } from './pages/coordinator/graduatework/comp
     MatTreeModule,
     MatSnackBarModule,
     MatExpansionModule,
-    MatTabsModule
+    MatTabsModule,
+    MatProgressSpinnerModule
   ],
   providers: [],
   bootstrap: [AppComponent]

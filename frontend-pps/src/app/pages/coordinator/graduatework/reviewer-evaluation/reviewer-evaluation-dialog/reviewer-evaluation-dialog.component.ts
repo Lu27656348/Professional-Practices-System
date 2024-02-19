@@ -49,6 +49,8 @@ export class ReviewerEvaluationDialogComponent {
   graduateWorkData: any = null
   reviewerData: any = null
 
+  cargadoArchivos: boolean = false;
+
   constructor(
     private formBuilder: FormBuilder,
     private externalService: ExternalPersonnelService,
@@ -154,6 +156,7 @@ export class ReviewerEvaluationDialogComponent {
   aprobarPropuesta(){
     console.log("aprobarPropuesta()")
     if(this.graduateWorkForm.valid){
+      this.cargadoArchivos = true;
       if(this.currentFile.type != "application/pdf"){
         this._snackBar.open("El archivo debe ser en formato PDF", "cerrar", {
           horizontalPosition: this.horizontalPosition,
@@ -212,6 +215,14 @@ export class ReviewerEvaluationDialogComponent {
         },
         complete: () => {
           window.location.href = window.location.href 
+        },
+        error: (error) => {
+          
+          this._snackBar.open("Ocurrio un error con la carga del archivo, refresque la pagina e intente de nuevo","cerrar",{
+            horizontalPosition: this.horizontalPosition,
+            verticalPosition: this.verticalPosition
+          })
+          throw new Error(error)
         }
       })
     

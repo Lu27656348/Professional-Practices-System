@@ -18,17 +18,17 @@ interface ResponseBlob<T> extends Response {
 
 function downloadFile(fileName: string, studentDNI: string | null, userFirstName: string | null, userLastName: string | null) : Observable<Blob> {
   return from(
-    fetch(`${environment.amazonS3}/download`, {
+    fetch(`${environment.amazonS3}/download/graduatework/report`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ 
+      body: JSON.stringify([{ 
         fileName: fileName,
         studentDNI: studentDNI,
         userFirstName: userFirstName,
         userLastName: userLastName
-      }),
+      }]),
       })
   )
   .pipe(
@@ -109,6 +109,10 @@ export class JuryDialogComponent implements OnInit {
   notificacionTutor: any = null;
   notificacionJurado: any = null;
   notificacionJurado2: any = null;
+
+  cargadoArchivos: boolean = false;
+
+  fileName: any = null
 
   constructor(
     
@@ -262,6 +266,7 @@ export class JuryDialogComponent implements OnInit {
     );
     
     if(areDifferent){
+      this.cargadoArchivos = true
       if(this.jurySelected !== null && this.jurySelected2 !== null && this.jurySelected3 !== null && this.jurySelected4 !== null){
         this.graduateworkService.getGraduateWorkStudentData(this.inputdata.graduateWorkData.graduateworkid).pipe(
           switchMap (
@@ -274,12 +279,22 @@ export class JuryDialogComponent implements OnInit {
               observables.push(this.graduateworkService.createJury(this.jurySelected2, this.councilSelected, this.inputdata.graduateWorkData.graduateworkid));
               /* Recordar agregar reemplazos de profesores en esta secccion */
               //return forkJoin(observables)
-              return of("Jurado Creados")
+              let fileName: string = ""
+              if(this.studentList.length > 1){
+                fileName = `${this.studentList[0].userLastName.split(' ')[0]}${this.studentList[0].userFirstName.split(' ')[0]} ${this.studentList[1].userLastName.split(' ')[0]}${this.studentList[1].userFirstName.split(' ')[0]} TG.pdf`;
+              }else{
+                fileName = this.studentList[0].userLastName.split(' ')[0]+this.studentList[0].userFirstName.split(' ')[0]+' TG.pdf';
+              }
+              this.fileName = fileName
+              return downloadFile(fileName,this.studentList[0].userDNI,this.studentList[0].userFirstName, this.studentList[0].userLastName)
             }
           ),
           switchMap(
             (result) =>{
               console.log(result)
+              const file: File = new File([result], this.fileName, { type: result.type });
+              console.log(file)
+              this.fileArray.push(file)
               return this.councilService.getCouncilById(this.councilSelected)
             }
           ),

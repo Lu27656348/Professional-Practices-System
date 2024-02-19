@@ -9,20 +9,73 @@
         <mat-drawer mode="side" opened style="width: 20%;">
             
             
-          <mat-list role="list">
-            <div mat-subheader><strong>Procesos de Trabajo de Grado</strong></div>
-            <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/proposals">Propuestas</button></mat-list-item>
-            <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/reviewers">Comité</button></mat-list-item>
-            <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/reviewers-evaluation">Evaluación de Revisor</button></mat-list-item>
-            <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/council">Consejo de Escuela</button></mat-list-item>
-            <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/process">En desarrollo</button></mat-list-item>
-            <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/juries">Asignación de Jurado</button></mat-list-item>
-            <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/defenses">Asignación de Defensa</button></mat-list-item>
-            <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/presentacion">Defensa</button></mat-list-item>
+          <!--
+        <mat-list role="list">
+          <div mat-subheader><strong>Procesos de Trabajo de Grado</strong></div>
+          <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/proposals">Propuestas</button></mat-list-item>
+          <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/reviewers">Comité</button></mat-list-item>
+          <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/reviewers-evaluation">Evaluación de Revisor</button></mat-list-item>
+          <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/council">Consejo de Escuela</button></mat-list-item>
+          <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/process">En desarrollo</button></mat-list-item>
+          <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/juries">Asignación de Jurado</button></mat-list-item>
+          <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/defenses">Asignación de Defensa</button></mat-list-item>
+          <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/presentacion">Defensa</button></mat-list-item>
+          <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/completion">Culminación</button></mat-list-item>
+          <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/complete">Completadas</button></mat-list-item>
+        </mat-list>
+        -->
+        <h3 style="margin-left: 25px; margin-top: 15px;"><strong>Procesos</strong></h3>
+        <mat-accordion>
+          <mat-expansion-panel (opened)="panelOpenState = true"
+                               (closed)="panelOpenState = false">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Etapa de Propuesta
+              </mat-panel-title>
+              <mat-panel-description>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <mat-list role="list">
+              <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/proposals">Propuestas</button></mat-list-item>
+              <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/reviewers">Comité</button></mat-list-item>
+              <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/reviewers-evaluation">Evaluación de Revisor</button></mat-list-item>
+              <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/council">Consejo de Escuela</button></mat-list-item>
+            </mat-list>
+          </mat-expansion-panel>
 
-            <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/intership/completion">Culminación</button></mat-list-item>
-            <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/">Completadas</button></mat-list-item>
-          </mat-list>
+          <mat-expansion-panel (opened)="panelOpenState = true"
+                               (closed)="panelOpenState = false">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Etapa de Desarrollo
+              </mat-panel-title>
+              <mat-panel-description>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <mat-list role="list">
+              <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/process">En desarrollo</button></mat-list-item>
+              <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/juries">Asignación de Jurado</button></mat-list-item>
+              <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/defenses">Asignación de Defensa</button></mat-list-item>
+            </mat-list>
+          </mat-expansion-panel>
+
+
+          <mat-expansion-panel (opened)="panelOpenState = true"
+                               (closed)="panelOpenState = false">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Etapa de Culminación
+              </mat-panel-title>
+              <mat-panel-description>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <mat-list role="list">
+              <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/presentacion">Defensa</button></mat-list-item>
+              <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/completion">Culminación</button></mat-list-item>
+              <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/complete">Completadas</button></mat-list-item>
+            </mat-list>
+          </mat-expansion-panel>
+        </mat-accordion>
   
           <mat-divider style="width: 100%;"></mat-divider>
   

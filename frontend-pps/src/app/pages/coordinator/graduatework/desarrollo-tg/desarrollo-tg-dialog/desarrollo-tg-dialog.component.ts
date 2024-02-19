@@ -18,6 +18,8 @@ export class DesarrolloTgDialogComponent {
 
   inputdata: any = null
   currentFile: any = null
+  cargadoArchivos: boolean = false;
+
   graduateWorkForm = this.formBuilder.group({
     file: ['',Validators.required]
   })
@@ -45,6 +47,7 @@ export class DesarrolloTgDialogComponent {
     
     console.log("cargarInformeFinal()")
     if(this.graduateWorkForm.valid){
+
       if(this.currentFile.type != "application/pdf"){
         this._snackBar.open("El archivo debe estar en formato PDF", "cerrar", {
           horizontalPosition: this.horizontalPosition,
@@ -58,6 +61,7 @@ export class DesarrolloTgDialogComponent {
     }else{
       formattedFileName = `${this.inputdata.userData[0].userLastName.split(" ")[0]}${this.inputdata.userData[0].userFirstName.split(" ")[0]} TG.pdf`
     }
+    this.cargadoArchivos = true
     this.documentService.copyFileAndRename(this.currentFile as File, formattedFileName).pipe(
       switchMap(
         (newFile) => {

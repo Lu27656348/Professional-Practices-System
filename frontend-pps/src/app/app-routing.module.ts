@@ -38,6 +38,9 @@ import { ComiteCatalogComponent } from './pages/coordinator/general/catalog/comi
 import { ReviewerEvaluationComponent } from './pages/coordinator/graduatework/reviewer-evaluation/reviewer-evaluation.component';
 import { DesarrolloTGComponent } from './pages/coordinator/graduatework/desarrollo-tg/desarrollo-tg.component';
 import { PresentacionComponent } from './pages/coordinator/graduatework/presentacion/presentacion.component';
+import { CompletadasComponent } from './pages/coordinator/graduatework/completadas/completadas.component';
+import { AcademicTutorCriteriaComponent } from './pages/coordinator/intership/academic-tutor-criteria/academic-tutor-criteria.component';
+//import { AcademicTutorCriteriaComponent } from './pages/coordinator/intership/academic-tutor-criteria/academic-tutor-criteria.component';
 
 const routes: Routes = [
   {
@@ -102,8 +105,20 @@ const routes: Routes = [
     component: CompletionComponent
   },
   {
+    path: "graduate-work/complete",
+    component: CompletadasComponent
+  },
+  {
     path: "graduate-work/files",
     component: FilesComponent
+  },
+  {
+    path: "graduate-work/criteria/corporative/tutor",
+    component: CorporativeTutorCriteriaComponent
+  },
+  {
+    path: "graduate-work/criteria/academic/tutor",
+    component: CorporativeTutorCriteriaComponent
   },
   /* Rutas para el proceso de pasantía  */
   {
@@ -130,10 +145,12 @@ const routes: Routes = [
     path: "intership/criteria/corporative/tutor",
     component: CorporativeTutorCriteriaComponent
   },
+  
   {
     path: "intership/criteria/academic/tutor",
-    component: CorporativeTutorCriteriaComponent
+    component: AcademicTutorCriteriaComponent
   },
+  
   {
     path: "intership/generator/corporative/tutor/notification",
     component: NotificacionTutorEmpresarialComponent

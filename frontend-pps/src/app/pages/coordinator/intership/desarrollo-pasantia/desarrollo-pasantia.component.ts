@@ -168,8 +168,12 @@ export class DesarrolloPasantiaComponent {
           const observables: Observable<any>[] = []
           console.log(this.academicTutorEvaluation)
           console.log(this.corporateTutorEvaluation)
-          observables.push(this.emailService.sendEmail(this.corporateTutorEvaluation as File,this.localUserData.userEmail,this.corporateTutorData.userEmail));
-          observables.push(this.emailService.sendEmail(this.academicTutorEvaluation as File,this.localUserData.userEmail,this.academicTutorData.userEmail))
+          let fileNotification: File = new File([this.academicTutorEvaluation], `${this.academicTutorData.userLastName.split(" ")[0]}${this.academicTutorData.userFirstName.split(" ")[0]} Evaluación Individual Pasantía – Tutor Académico.docx`, { type: this.academicTutorEvaluation.type });
+          console.log(fileNotification)
+          let fileNotification2: File = new File([this.corporateTutorEvaluation], `${this.corporateTutorData.userLastName.split(" ")[0]}${this.corporateTutorData.userFirstName.split(" ")[0]} Evaluación Individual Pasantía – Tutor Empresarial.docx`, { type: this.corporateTutorEvaluation.type });
+          console.log(fileNotification2)
+          observables.push(this.emailService.sendEmail(fileNotification2,this.localUserData.userEmail,this.corporateTutorData.userEmail));
+          observables.push(this.emailService.sendEmail(fileNotification,this.localUserData.userEmail,this.academicTutorData.userEmail))
           return forkJoin(observables)
         }
       )

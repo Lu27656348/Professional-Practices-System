@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
 import { Observable, forkJoin, of, switchMap } from 'rxjs';
@@ -15,7 +15,7 @@ import { UsersService } from 'src/app/services/users.service';
   templateUrl: './crear-propuesta-tgdialog.component.html',
   styleUrls: ['./crear-propuesta-tgdialog.component.css']
 })
-export class CrearPropuestaTGDialogComponent {
+export class CrearPropuestaTGDialogComponent implements OnInit{
   graduateWorkForm: any = null;
 
   enterpriseSelected: any = null;
@@ -43,6 +43,8 @@ export class CrearPropuestaTGDialogComponent {
   uploadProposal: boolean = false;
 
   coordinatorData: any = null
+
+  cargadoArchivos: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -108,12 +110,39 @@ export class CrearPropuestaTGDialogComponent {
     })
   }
 
+  ngOnInit(): void {
+    
+  }
+
   cargarArchivoPropuesta(){
-    this.uploadProposal = true
+    if(
+      this.groupSelected && 
+      this.graduateWorkForm.value.estudiante
+    ){
+      if(this.groupSelected == 'GRUPAL' && this.graduateWorkForm.value.partner){
+        this.uploadProposal = true
+      }else{
+        if(this.groupSelected == 'GRUPAL' && this.graduateWorkForm.value.partner == ''){
+          this.uploadProposal = false
+        }
+      }
+      if(this.groupSelected == 'INDIVIDUAL' && this.graduateWorkForm.value.estudiante){
+        this.uploadProposal = true
+      }
+      
+    }else{
+      this._snackBar.open("Debe llenar todos los campos" , " cerrar" , {
+        horizontalPosition: this.horizontalPosition,
+        verticalPosition: this.verticalPosition
+      })
+    }
+  
   }
 
   cargarPropuesta(){
+    
     if(this.graduateWorkForm.valid){
+      this.cargadoArchivos = true
       if(this.groupSelected == "GRUPAL" && (this.graduateWorkForm.value.partner == null || this.graduateWorkForm.value.partner == '') ){
         this._snackBar.open("Los trabajos grupales deben tener dos estudiantes", "cerrar", {
           horizontalPosition: this.horizontalPosition,
@@ -128,7 +157,6 @@ export class CrearPropuestaTGDialogComponent {
         })
         throw new Error("Los trabajos grupales deben tener dos estudiantes")
       }
-      console.log(this.currentFile.type)
       if(this.currentFile.type != "application/pdf"){
         this._snackBar.open("El archivo debe ser en formato PDF", "cerrar", {
           horizontalPosition: this.horizontalPosition,
@@ -136,6 +164,7 @@ export class CrearPropuestaTGDialogComponent {
         })
         throw new Error("El archivo debe estar en formato PDF")
       }
+
       console.log(this.graduateWorkForm.value)
       this.studentService.getStudentCoordinator(this.graduateWorkForm.value.estudiante).pipe(
         switchMap(
@@ -148,7 +177,6 @@ export class CrearPropuestaTGDialogComponent {
         switchMap(
           (result) => {
             console.log(result)
-            console.log(this.coordinatorData)
             
             return this.studentService.createProposal({
               "studentDNI": this.graduateWorkForm.value.estudiante,
@@ -168,6 +196,14 @@ export class CrearPropuestaTGDialogComponent {
         complete: () => {
           console.log("todo bien")
           window.location.href = window.location.href
+        },
+        error: (error) => {
+          
+          this._snackBar.open("Ocurrio un error con la carga del archivo, refresque la pagina e intente de nuevo","cerrar",{
+            horizontalPosition: this.horizontalPosition,
+            verticalPosition: this.verticalPosition
+          })
+          throw new Error(error)
         }
 
       })
@@ -184,10 +220,25 @@ export class CrearPropuestaTGDialogComponent {
   }
 
   cargarDatosAlumno(){
-    this.nextStep = true
+    if(
+      this.graduateWorkForm.value.titulo && 
+      this.graduateWorkForm.value.tipo && 
+      this.graduateWorkForm.value.empresa && 
+      this.typeSelected && 
+      this.graduateWorkForm.value.tutor
+    ){
+      this.nextStep = true
+    }else{
+      this._snackBar.open("Debe llenar todos los campos" , " cerrar" , {
+        horizontalPosition: this.horizontalPosition,
+        verticalPosition: this.verticalPosition
+      })
+    }
+    
   }
 
   regresarDatosPropuesta(){
+
     this.nextStep = false
   }
 

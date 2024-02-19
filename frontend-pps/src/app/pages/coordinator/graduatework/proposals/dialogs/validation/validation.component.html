@@ -1,31 +1,34 @@
 <h2 mat-dialog-title>Datos asociados a la propuesta</h2>
-<mat-dialog-content class="mat-typography">
-  <p *ngIf="!isGrupal"><strong>Datos del estudiante</strong></p>
-  <p *ngIf="isGrupal"><strong>Datos de los estudiantes</strong></p>
-  <mat-divider></mat-divider>
-  <p>{{'Nombre completo: ' +  inputdata.user[0].userLastName + ', ' + inputdata.user[0].userFirstName}}</p>
-  <p>{{'Cedula de identidad: ' +  inputdata.user[0].userDNI}}</p>
-  <p>{{'Correo UCAB: ' +  inputdata.user[0].userEmail}}</p>
-  <p>{{'Número de teléfono: ' +  inputdata.user[0].userPhone }}</p>
-  <mat-divider *ngIf="isGrupal"></mat-divider>
-  <p *ngIf="isGrupal">{{'Nombre completo: ' +  inputdata.user[1].userLastName + ', ' + inputdata.user[1].userFirstName}}</p>
-  <p *ngIf="isGrupal">{{'Cedula de identidad: ' +  inputdata.user[1].userDNI}}</p>
-  <p *ngIf="isGrupal">{{'Correo UCAB: ' +  inputdata.user[1].userEmail}}</p>
-  <p *ngIf="isGrupal">{{'Número de teléfono: ' +  inputdata.user[1].userPhone }}</p>
+<mat-dialog-content class="mat-typography"
+>
+  <p *ngIf="!isGrupal && !cargadoArchivos"><strong>Datos del estudiante</strong></p>
+  <p *ngIf="isGrupal  && !cargadoArchivos"><strong>Datos de los estudiantes</strong></p>
+  <mat-divider *ngIf="!cargadoArchivos"></mat-divider>
+  <p *ngIf="!cargadoArchivos">{{'Nombre completo: ' +  inputdata.user[0].userLastName + ', ' + inputdata.user[0].userFirstName}}</p>
+  <p *ngIf="!cargadoArchivos">{{'Cedula de identidad: ' +  inputdata.user[0].userDNI}}</p>
+  <p *ngIf="!cargadoArchivos">{{'Correo UCAB: ' +  inputdata.user[0].userEmail}}</p>
+  <p *ngIf="!cargadoArchivos">{{'Número de teléfono: ' +  inputdata.user[0].userPhone }}</p>
+  <mat-divider *ngIf="isGrupal && !cargadoArchivos"></mat-divider>
+  <p *ngIf="isGrupal && !cargadoArchivos">{{'Nombre completo: ' +  inputdata.user[1].userLastName + ', ' + inputdata.user[1].userFirstName}}</p>
+  <p *ngIf="isGrupal && !cargadoArchivos">{{'Cedula de identidad: ' +  inputdata.user[1].userDNI}}</p>
+  <p *ngIf="isGrupal && !cargadoArchivos">{{'Correo UCAB: ' +  inputdata.user[1].userEmail}}</p>
+  <p *ngIf="isGrupal && !cargadoArchivos">{{'Número de teléfono: ' +  inputdata.user[1].userPhone }}</p>
 
-  <p><strong>Datos del Trabajo de Grado</strong></p>
-  <mat-divider></mat-divider>
-  <p>{{'Título: ' +  inputdata.graduatework.graduateWorkTitle}}</p>
-  <p>{{'Tipo: ' +  inputdata.graduatework.graduateWorkType}}</p>
-  <p>{{'Organización donde se realizará: ' + this.enterpriseData.enterpriseName}}</p>
-  <p>{{'Posible tutor academico: ' + this.coordinatorData.userLastName + ', ' + this.coordinatorData.userFirstName }}</p>
+  <p *ngIf="!cargadoArchivos"><strong>Datos del Trabajo de Grado</strong></p>
+  <mat-divider *ngIf="!cargadoArchivos"></mat-divider>
+  <p *ngIf="!cargadoArchivos">{{'Título: ' +  inputdata.graduatework.graduateWorkTitle}}</p>
+  <p *ngIf="!cargadoArchivos">{{'Tipo: ' +  inputdata.graduatework.graduateWorkType}}</p>
+  <p *ngIf="!cargadoArchivos">{{'Organización donde se realizará: ' + this.enterpriseData.enterpriseName}}</p>
+  <p *ngIf="!cargadoArchivos">{{'Posible tutor academico: ' + this.coordinatorData.userLastName + ', ' + this.coordinatorData.userFirstName }}</p>
   
-  <h3><strong>Informe de Propuesta de Trabajo de Grado</strong></h3>
-  <mat-divider></mat-divider>
-  <p>Para descargar el Informe de Propuesta de Trabajo de Grado haga, click en descargar:</p>
-  <button mat-button (click)="obtenerInformePropuesta()">Descargar</button>
-  <p></p>
-
+  <h3 *ngIf="!cargadoArchivos"><strong>Informe de Propuesta de Trabajo de Grado</strong></h3>
+  <mat-divider *ngIf="!cargadoArchivos"></mat-divider>
+  <p *ngIf="!cargadoArchivos">Para descargar el Informe de Propuesta de Trabajo de Grado haga, click en descargar:</p>
+  <button mat-button (click)="obtenerInformePropuesta()" *ngIf="!cargadoArchivos">Descargar</button>
+  <p *ngIf="!cargadoArchivos"></p>
+  <div style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">
+    <mat-spinner *ngIf="cargadoArchivos == true"></mat-spinner>
+  </div>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>Cancel</button>

@@ -5269,8 +5269,11 @@ generateGraduateWorkOralCriteriaTable(criteriaArray: Criteria[], seccion: Seccio
         rows: rowsGenerated
     })
 }
+/*
+generateGraduateWorkDefenseNotification() : Document {
 
-
+}
+*/
 generateGraduateWorkJuryReportEvaluationForm(
     criteriaArray: Criteria[],
     seccionArray: Seccion[], 
@@ -7480,7 +7483,7 @@ TutorEvaluationFormSquema.push(
 /* Finalmente cargamos la linea de firma */
 TutorEvaluationFormSquema.push(
     giveSpace,
-    generarFirma("Tutor Empresarial","[Inserte Nombre]")
+    generarFirma("Tutor Académico","[Inserte Nombre]")
 )
 
 const document =  new Document(

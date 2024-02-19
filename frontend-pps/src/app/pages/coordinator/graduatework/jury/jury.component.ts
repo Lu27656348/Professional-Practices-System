@@ -15,6 +15,9 @@ import { JuryDialogComponent } from './jury-dialog/jury-dialog.component'
   styleUrls: ['./jury.component.css']
 })
 export class JuryComponent {
+
+  panelOpenState = false;
+  
   roleSelected: any;
   localUser: any;
   data: any = null;

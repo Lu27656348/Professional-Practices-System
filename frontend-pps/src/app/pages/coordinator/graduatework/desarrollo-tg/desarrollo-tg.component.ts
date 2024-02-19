@@ -15,6 +15,9 @@ import { DesarrolloTgDialogComponent } from './desarrollo-tg-dialog/desarrollo-t
   styleUrls: ['./desarrollo-tg.component.css']
 })
 export class DesarrolloTGComponent {
+
+  panelOpenState = false;
+  
   roleSelected: any;
   localUser: any;
   data: any = null;

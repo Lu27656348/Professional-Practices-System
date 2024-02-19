@@ -1,7 +1,7 @@
 <h2 mat-dialog-title>Cargar Propuesta de Trabajo de Grado</h2>
 <mat-dialog-content class="mat-typography">
 
-    <form [formGroup]="graduateWorkForm" *ngIf="!nextStep && !uploadProposal">
+    <form [formGroup]="graduateWorkForm" *ngIf="!nextStep && !uploadProposal && !cargadoArchivos">
         
         <mat-form-field style="width: 100%;">
             <mat-label>Titulo</mat-label>
@@ -45,7 +45,7 @@
 
     </form>
 
-    <form [formGroup]="graduateWorkForm" *ngIf="nextStep && !uploadProposal">
+    <form [formGroup]="graduateWorkForm" *ngIf="nextStep && !uploadProposal && !cargadoArchivos">
         <mat-form-field style="width: 100%;">
             <mat-label>tipo</mat-label>
             <mat-select [(value)]="groupSelected">
@@ -73,7 +73,7 @@
         </mat-form-field>
     </form>
 
-    <form [formGroup]="graduateWorkForm" *ngIf="nextStep && uploadProposal"> 
+    <form [formGroup]="graduateWorkForm" *ngIf="nextStep && uploadProposal && !cargadoArchivos"> 
         
         
         <div style="height: 50%;">
@@ -82,13 +82,16 @@
             <input style = "margin-top:  10px;" type="file" formControlName="file" id = "fileInput" name="fileInput" (change)="onFileSelected($event)">
         </div>
     </form>
+    <div style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">
+        <mat-spinner *ngIf="cargadoArchivos == true"></mat-spinner>
+    </div>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>Cancel</button>
-  <button mat-raised-button color="primary" (click)="cargarDatosAlumno()" *ngIf="!nextStep">Siguiente</button>
-  <button mat-raised-button color="primary" (click)="regresarDatosPropuesta()" *ngIf="nextStep && !uploadProposal">Atras</button>
-  <button mat-raised-button color="primary" (click)="cargarArchivoPropuesta()" *ngIf="nextStep && !uploadProposal">Siguiente</button>
-  <button mat-raised-button color="primary" (click)="regresarDatosAlumno()" *ngIf="nextStep && uploadProposal">Atras</button>
-  <button mat-raised-button color="primary" (click)="cargarPropuesta()" *ngIf="nextStep && uploadProposal">Cargar Propuesta</button>
+  <button mat-button mat-dialog-close *ngIf="!cargadoArchivos">Cancel</button>
+  <button mat-raised-button color="primary" (click)="cargarDatosAlumno()" *ngIf="!nextStep && !cargadoArchivos">Siguiente</button>
+  <button mat-raised-button color="primary" (click)="regresarDatosPropuesta()" *ngIf="nextStep && !uploadProposal && !cargadoArchivos">Atras</button>
+  <button mat-raised-button color="primary" (click)="cargarArchivoPropuesta()" *ngIf="nextStep && !uploadProposal && !cargadoArchivos">Siguiente</button>
+  <button mat-raised-button color="primary" (click)="regresarDatosAlumno()" *ngIf="nextStep && uploadProposal && !cargadoArchivos">Atras</button>
+  <button mat-raised-button color="primary" (click)="cargarPropuesta()" *ngIf="nextStep && uploadProposal && !cargadoArchivos">Cargar Propuesta</button>
 </mat-dialog-actions>
 

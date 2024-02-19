@@ -15,6 +15,9 @@ import { DefenseDialogComponent } from './defense-dialog/defense-dialog.componen
   styleUrls: ['./defense.component.css']
 })
 export class DefenseComponent {
+
+  panelOpenState = false;
+  
   roleSelected: any;
   localUser: any;
   data: any = null;

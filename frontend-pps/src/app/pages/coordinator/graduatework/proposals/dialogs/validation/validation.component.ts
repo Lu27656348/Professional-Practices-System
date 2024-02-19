@@ -61,45 +61,9 @@ export class ValidationComponent implements OnInit{
   coordinatorData: any = {};
   enterpriseData: any = {};
   isGrupal: boolean = false;
+  cargadoArchivos: boolean = false
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private graduateWorkService: GraduateworkService, private studentService: StudentService,private userService: UsersService, private enterpriseService: EnterpriseService, private dialog: MatDialog, private tegFormService: TegFormService){
-
-    /*
-    this.planillaTEG = new PlanillaPropuestaTEG(
-      {
-        name: "Sidor",
-        address: "Direccion",
-        phone: "Inserte telefono"
-      },
-      {
-        creationDate: new Date().toLocaleDateString(),
-        confirmationDate: new Date().toLocaleDateString(),
-        title: "Sistema de Practicas Profesionales"
-      },
-      {
-        firstName: "Luis Carlos",
-        lastName: "Somoza Ledezma",
-        dni: "V-27656348",
-        cellPhone: "+58-4122155879",
-        emailUcab: "luiscarlossomoza@gmail.com",
-        profession: "Ing. Mecanico",
-        experience: 30,
-        rol: "Coordinador",
-        yearsGraduated: new Date().toLocaleDateString(),
-        schoolName: "Informatica",
-        isUcabProfessor: true
-      }
-    )
-
-    this.planillaTEG.addStudent(
-    {
-      firstName: "Wladimir",
-      lastName: "SanVincente",
-      dni: "V-26100300",
-      cellPhone: "+58-4122155879",
-      emailUcab: "luiscarlossomoza@gmail.com"
-    })
-    */
 
   }
   ngOnInit(){
@@ -155,6 +119,7 @@ export class ValidationComponent implements OnInit{
   veredictoPropuesta(decision: string){
     console.log("veredictoPropuesta() -> " + decision)
     if(decision === 'aprobar'){
+      this.cargadoArchivos = true;
       this.graduateWorkService.changeStatus(this.inputdata.proposal.graduateworkid,20)
       .pipe(
         switchMap(

@@ -105,6 +105,8 @@ export class AssignmentComponent implements OnInit{
 
   fileName: any = null
 
+  cargadoArchivos: boolean = false;
+
   reviewerForm = this.formGroup.group({
     reviewer: ['', Validators.required]
   });
@@ -201,6 +203,7 @@ export class AssignmentComponent implements OnInit{
   veredictoPropuesta(decision: string){
     if(decision === 'aprobar'){
       if(this.committeeForm.valid && this.reviewerForm.valid){
+        this.cargadoArchivos = true;
         this.graduateWorkService.getGraduateWorkById(this.inputdata.gw.graduateWorkId)
         .pipe(
           switchMap(
@@ -253,24 +256,21 @@ export class AssignmentComponent implements OnInit{
           switchMap(
             (reviewerData) => {
               this.reviewerData = reviewerData
-              const criteriaList: any[] = []
+              let criteriaList: any[] = []
               this.criteria.forEach( (criteria: any) => {
-                this.selectedValues.forEach( (value: number, index: number) => {
-                  if(criteria.reviewerCriteriaId == value){
-                    const criterio = {
-                      criteriaId: criteria.reviewerCriteriaId,
-                      criteriaName: criteria.reviewerCriteriaDescription,
-                      maxNote: 0,
-                      model: "INFORMATICA",
-                      seccionId: -1
-    
-                  }
-                  criteriaList.push(criterio)
-                  }
-                })
+
+                const criterio = {
+                  criteriaId: criteria.reviewerCriteriaId,
+                  criteriaName: criteria.reviewerCriteriaDescription,
+                  maxNote: 0,
+                  model: "INFORMATICA",
+                  seccionId: -1
+                }
+                criteriaList.push(criterio)
+                  
+
               })
               console.log(criteriaList)
-    
               const studentDataFormmatted: any = []
     
               this.studentData.forEach( (student: any) => {
@@ -305,7 +305,6 @@ export class AssignmentComponent implements OnInit{
               }
     
               this.reviewerEvaluationFormFile = this.formService.generateGraduateWorkReviewerEvaluationForm(criteriaList,formData)
-              this.formService.printEvaluationForm(this.formService.generateGraduateWorkReviewerEvaluationForm(criteriaList,formData))
 
               console.log(this.administratorData)
               const notificationData = {
@@ -318,7 +317,7 @@ export class AssignmentComponent implements OnInit{
                 correoCoordinador: this.administratorData.userEmail,
                 nombreCoordinador: `${this.administratorData.userFirstName.split(" ")[0]} ${this.administratorData.userLastName.split(" ")[0]}` ,
               }
-              this.formService.printEvaluationForm(this.formService.generateGraduateWorkReviewerNotification(notificationData))
+            
               this.reviewerNotificationFile = this.formService.generateGraduateWorkReviewerNotification(notificationData)
             
               const reviewerEvaluation: CreateReviewerEvaluationRequest = {
@@ -334,13 +333,12 @@ export class AssignmentComponent implements OnInit{
             (result) => {
               console.log(result)
               const observables: Observable<any>[] = [];
-              console.log(this.selectedValues)
-              this.selectedValues.forEach( (criterio: number) => {
+              this.criteria.forEach( (criterio: any) => {
                 
                 observables.push(this.graduateWorkService.createReviewerEvaluationCriteria({
                   "professorDNI": this.reviewerSelected,
                   "graduateWorkId": this.inputdata.gw.graduateWorkId,
-                  "reviewerCriteriaId": criterio
+                  "reviewerCriteriaId": criterio.reviewerCriteriaId
                 }))
                 
               })
@@ -402,6 +400,14 @@ export class AssignmentComponent implements OnInit{
           complete: () => {
             console.log("%cCompletado", "color: green")
             window.location.href = window.location.href
+          },
+          error: (error) => {
+            
+            this._snackBar.open("Ocurrio un error con la carga del archivo, refresque la pagina e intente de nuevo","cerrar",{
+              horizontalPosition: this.horizontalPosition,
+              verticalPosition: this.verticalPosition
+            })
+            throw new Error(error)
           }
         })
         

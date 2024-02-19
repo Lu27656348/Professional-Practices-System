@@ -15,6 +15,9 @@ import { AssignmentComponent } from './dialogs/assignment/assignment.component'
   styleUrls: ['./reviewers.component.css']
 })
 export class ReviewersComponent implements OnInit{
+
+  panelOpenState = false;
+  
   roleSelected: any;
   localUser: any;
   data: any = null;

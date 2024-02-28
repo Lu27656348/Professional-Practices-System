@@ -3,6 +3,7 @@ import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { CommitteeService } from 'src/app/services/committee.service';
 import { ComiteDialogComponent } from './dialogs/comite-dialog/comite-dialog.component'
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UsersService } from 'src/app/services/users.service';
 
 @Component({
   selector: 'app-comite-catalog',
@@ -13,24 +14,39 @@ export class ComiteCatalogComponent {
   comiteList: any[] = []
   displayedColumns: string[] = ['comiteId','fechaComite','check']
 
+  currentFile: any = null
+
+  userData: any = null
+
   constructor(
     private comiteService: CommitteeService,
     private dialog: MatDialog,
+    private userService: UsersService
   ){
-    this.comiteService.getCommittees().subscribe({
-      next: (comiteList) => {
-        console.log(comiteList)
-        this.comiteList = comiteList
-        this.comiteList.forEach( (comite: any, index: number) => {
-          this.comiteList[index].committeeDateFormatted = this.formatDate(new Date(comite.committeeDate))
-        })
-      }
-    })
+    const localUser = localStorage.getItem('user')
+    if(localUser){
+      const localUserData = JSON.parse(localUser)
+      this.userService.getUserData(localUserData.userDNI).subscribe({
+        next: (userData) => {
+          this.userData = userData
+          this.comiteService.getCommitteeBySchool(this.userData.schoolName).subscribe({
+            next: (comiteList) => {
+              console.log(comiteList)
+              this.comiteList = comiteList
+              this.comiteList.forEach( (comite: any, index: number) => {
+                this.comiteList[index].committeeDateFormatted = this.formatDate(new Date(comite.committeeDate))
+              })
+            }
+          })
+        }
+      })
+    }
+    
   }
   openCreateDialog(){
     
     const dialogRef = this.dialog.open(ComiteDialogComponent,{
-      width: '60%'
+      width: '60%',
     })
 
     dialogRef.afterClosed().subscribe(result => {
@@ -45,7 +61,8 @@ export class ComiteCatalogComponent {
       width: '60%',
       data: {
         data: element,
-        mode: "EDITAR"
+        mode: "EDITAR",
+        user: this.userData
       }
     })
 
@@ -53,6 +70,13 @@ export class ComiteCatalogComponent {
       console.log(`Dialog result: ${result}`);
     });
     
+  }
+
+  onFileSelected(event: any) {
+    if (event.target.files && event.target.files[0]) {
+      const file: File = event.target.files[0];
+      this.currentFile = file;
+    }
   }
 
   eliminarRegistro(element: any){

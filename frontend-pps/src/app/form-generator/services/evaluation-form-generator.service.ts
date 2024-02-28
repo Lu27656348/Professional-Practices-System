@@ -578,7 +578,7 @@ const generarFirma = (rol: string, name: string) => {
                                                           })
                                                       ],
                                                       alignment: AlignmentType.CENTER
-                                                  })
+                                                  }),
                                               ],
                                               verticalAlign: VerticalAlign.CENTER,
                                               width: {
@@ -1692,6 +1692,7 @@ generateGraduateWorkReviewerEvaluationCriteriaTable(criteriaArray: Criteria[]) :
     tableRows.push(cabezerasTabla);
 
     criteriaArray.forEach( (criteria: any) => {
+        console.log("selectedValue" in criteria)
         tableRows.push(
             new TableRow({
                 children: [
@@ -1711,7 +1712,9 @@ generateGraduateWorkReviewerEvaluationCriteriaTable(criteriaArray: Criteria[]) :
                         children: [
                             new Paragraph({
                                 children: [
-                                    new CheckBox()
+                                    new CheckBox({
+                                        checked: ("selectedValue" in criteria && criteria.selectedValue == true) ? true : false
+                                    })
                                 ],
                                 alignment: VerticalAlign.CENTER
                             })
@@ -1721,7 +1724,9 @@ generateGraduateWorkReviewerEvaluationCriteriaTable(criteriaArray: Criteria[]) :
                         children: [
                             new Paragraph({
                                 children: [
-                                    new CheckBox()
+                                    new CheckBox({
+                                        checked: ("selectedValue" in criteria && criteria.selectedValue == false) ? true : false
+                                    })
                                 ],
                                 alignment: VerticalAlign.CENTER
                             })
@@ -2435,7 +2440,9 @@ generateGraduateWorkReviewerEvaluationForm(
                                         new TextRun({
                                             text: "Aprobado"
                                         }),
-                                        new CheckBox()
+                                        new CheckBox({
+                                            checked: criteriaArray.every( criteria => criteria.selectedValue == true)
+                                        })
                                     ]
                                 })
                             ],
@@ -2451,7 +2458,9 @@ generateGraduateWorkReviewerEvaluationForm(
                                         new TextRun({
                                             text: "Reprobado"
                                         }),
-                                        new CheckBox()
+                                        new CheckBox({
+                                            checked: !criteriaArray.every( criteria => criteria.selectedValue == true)
+                                        })
                                     ]
                                 })
                             ],
@@ -2465,7 +2474,7 @@ generateGraduateWorkReviewerEvaluationForm(
                                 new Paragraph({
                                     children: [
                                         new TextRun({
-                                            text: "Fecha: Inserte fecha decisión"
+                                            text: new Date().toLocaleDateString()
                                         })
                                     ]
                                 })
@@ -2502,7 +2511,7 @@ generateGraduateWorkReviewerEvaluationForm(
     /* Finalmente cargamos la linea de firma */
     TutorEvaluationFormSquema.push(
         giveSpace,
-        generarFirma("Revisor","[Inserte Nombre]")
+        generarFirma("Revisor",formData.nombreRevisor)
     )
 
 

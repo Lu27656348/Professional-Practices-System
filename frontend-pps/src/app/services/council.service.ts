@@ -17,6 +17,12 @@ export class CouncilService {
     return this.http.get(`${environment.apiUrl}/councils`,{headers});
   }
 
+  getCouncilsBySchool(schoolName: string):Observable<any>{
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`${environment.apiUrl}/councils/school/${schoolName}`,{headers});
+  }
+
   getCouncilById( schoolCouncilId: string ) :Observable<any> {
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
@@ -39,6 +45,16 @@ export class CouncilService {
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
     return this.http.delete(`${environment.apiUrl}/councils/${schoolCouncilId}`,{headers});
+  }
+
+  cargarActaDeConsejo(schoolCouncilId: string, councilFile: File,escuela: string){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    const formData = new FormData()
+    formData.append('file', councilFile)
+    formData.append('consejo', schoolCouncilId)
+    formData.append('escuela', escuela)
+    return this.http.post(`${environment.amazonS3}/upload/consejo`,formData,{headers});
   }
 
 

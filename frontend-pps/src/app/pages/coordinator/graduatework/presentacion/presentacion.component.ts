@@ -104,7 +104,7 @@ export class PresentacionComponent {
     console.log(data);
 
     
-    forkJoin([ this.graduateworkService.getGraduateWorkStudentData(data.graduateWorkId),this.graduateworkService.getCurrentGraduateWork(data.studentDNI)])
+    forkJoin([ this.graduateworkService.getGraduateWorkStudentData(data.graduateworkid),this.graduateworkService.getCurrentGraduateWork(data.studentDNI)])
     .subscribe(([result1,result2]) => {
       console.log(result1)
       console.log(result2)

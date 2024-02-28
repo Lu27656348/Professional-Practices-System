@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CouncilService } from 'src/app/services/council.service';
 import { ConsejoDialogComponent } from './dialogs/consejo-dialog/consejo-dialog.component'
+import { UsersService } from 'src/app/services/users.service';
+import { switchMap } from 'rxjs';
 
 
 @Component({
@@ -12,26 +14,46 @@ import { ConsejoDialogComponent } from './dialogs/consejo-dialog/consejo-dialog.
 export class ConsejoCatalogComponent {
 
   councilList: any[] = []
+  userData: any = null
   displayedColumns: string[] = ['schoolCouncilId', 'schoolSchoolType', 'schoolcouncildate', 'check']
 
   constructor(
     private councilService: CouncilService,
+    private userService: UsersService,
     private dialog: MatDialog
   ){
-    this.councilService.getCouncils().subscribe({
-      next: (councilList) => {
-        console.log(councilList)
-        this.councilList = councilList
-        this.councilList.forEach ( (consejo: any,index: number) => {
-          this.councilList[index].schoolcouncildateformatted = this.formatDate(new Date(consejo.schoolcouncildate))
-        })
-      }
-    })
+    const localUser = localStorage.getItem('user')
+    if(localUser){
+      const localUserData = JSON.parse(localUser)
+      this.userService.getUserData(localUserData.userDNI)
+      .pipe(
+        switchMap(
+          (userData) => {
+            this.userData = userData
+            return this.councilService.getCouncilsBySchool(this.userData.schoolName)
+          }
+        )
+      )
+      .subscribe({
+        next: (councilList) => {
+          console.log(councilList)
+          this.councilList = councilList
+          this.councilList.forEach ( (consejo: any,index: number) => {
+            this.councilList[index].schoolcouncildateformatted = this.formatDate(new Date(consejo.schoolcouncildate))
+          })
+        }
+      })
+    }
+   
   }
   openCreateDialog(){
     
     const dialogRef = this.dialog.open(ConsejoDialogComponent,{
-      width: '60%'
+      width: '60%',
+      data: {
+        user: this.userData,
+        mode: "CREAR"
+      }
     })
 
     dialogRef.afterClosed().subscribe(result => {
@@ -46,6 +68,7 @@ export class ConsejoCatalogComponent {
       width: '60%',
       data: {
         data: element,
+        user: this.userData,
         mode: "EDITAR"
       }
     })

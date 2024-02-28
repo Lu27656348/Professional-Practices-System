@@ -1,20 +1,20 @@
 <h2 mat-dialog-title>Evaluación en Consejo de Escuela</h2>
 <mat-dialog-content class="mat-typography">
-    <h3><strong>Datos de la pasantía</strong></h3>
-    <mat-divider></mat-divider>
-    <p><strong>Titulo de la pasantía: </strong> {{inputdata.pasantia.intershipTitle}}</p>
-    <p><strong>Estudiante:</strong> {{studentData?.userLastName + ", " + studentData?.userFirstName}}</p>
-    <p><strong>Organización donde se realizará:</strong> {{enterpriseData?.enterpriseName}}</p>
-    <p><strong>Tutor Empresarial:</strong> {{corporateTutorData?.userLastName + ", " + corporateTutorData?.userFirstName}}</p>
-    <p><strong>Fecha de Inicio:</strong> {{this.inputdata.pasantia.intershipStartDate}}</p>
-    <p><strong>Fecha de Culminación:</strong> {{this.inputdata.pasantia.intershipCompletionDate}}</p>
-    <h3><strong>Descargar propuesta de pasantía</strong></h3>
-    <mat-divider></mat-divider>
-    <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 10px;">
+    <h3 *ngIf="cargadoArchivos == false"><strong>Datos de la pasantía</strong></h3>
+    <mat-divider *ngIf="cargadoArchivos == false"></mat-divider>
+    <p *ngIf="cargadoArchivos == false"><strong>Titulo de la pasantía: </strong> {{inputdata.pasantia.intershipTitle}}</p>
+    <p *ngIf="cargadoArchivos == false"><strong>Estudiante:</strong> {{studentData?.userLastName + ", " + studentData?.userFirstName}}</p>
+    <p *ngIf="cargadoArchivos == false"><strong>Organización donde se realizará:</strong> {{enterpriseData?.enterpriseName}}</p>
+    <p *ngIf="cargadoArchivos == false"><strong>Tutor Empresarial:</strong> {{corporateTutorData?.userLastName + ", " + corporateTutorData?.userFirstName}}</p>
+    <p *ngIf="cargadoArchivos == false"><strong>Fecha de Inicio:</strong> {{this.inputdata.pasantia.intershipStartDate}}</p>
+    <p *ngIf="cargadoArchivos == false"> <strong>Fecha de Culminación:</strong> {{this.inputdata.pasantia.intershipCompletionDate}}</p>
+    <h3 *ngIf="cargadoArchivos == false"><strong>Descargar propuesta de pasantía</strong></h3>
+    <mat-divider *ngIf="cargadoArchivos == false"></mat-divider>
+    <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 10px;" *ngIf="cargadoArchivos == false">
       <button mat-raised-button style="padding-top: 10px; padding-bottom: 10px;" (click)="descargarPropuestaPasantiaAlumno()">Descargar Propuesta de Pasantía</button>
     </div>
     
-    <form [formGroup]="pasantiaForm">
+    <form [formGroup]="pasantiaForm" *ngIf="cargadoArchivos == false">
       <h3 style="margin-top: 10px;"><strong>Seleccione un consejo de escuela</strong></h3>
       <mat-divider></mat-divider>
       <mat-form-field style="width: 100%;">
@@ -37,9 +37,12 @@
           </mat-select>
       </mat-form-field>
     </form>
+    <div style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">
+      <mat-spinner *ngIf="cargadoArchivos == true"></mat-spinner>
+  </div>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>Cancel</button>
-  <button mat-raised-button color="warn" (click)="rechazarPropuestaPasantia()">Rechazar</button>
-  <button mat-raised-button color="primary" (click)="aprobarPropuestaPasantia()">Aprobar</button>
+  <button mat-button mat-dialog-close *ngIf="cargadoArchivos == false">Cancel</button>
+  <button mat-raised-button color="warn" (click)="rechazarPropuestaPasantia()" *ngIf="cargadoArchivos == false">Rechazar</button>
+  <button mat-raised-button color="primary" (click)="aprobarPropuestaPasantia()" *ngIf="cargadoArchivos == false">Aprobar</button>
 </mat-dialog-actions>

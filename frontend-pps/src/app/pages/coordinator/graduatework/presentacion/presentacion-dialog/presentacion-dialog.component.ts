@@ -2,6 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { switchMap } from 'rxjs';
 import { EvaluationFormGeneratorService } from 'src/app/form-generator/services/evaluation-form-generator.service';
 import { DocumentService } from 'src/app/services/document.service';
 import { GraduateworkService } from 'src/app/services/graduatework.service';
@@ -15,6 +16,7 @@ import { UsersService } from 'src/app/services/users.service';
 export class PresentacionDialogComponent {
 
   inputdata: any = null;
+  cargadoArchivos: boolean = false
 
   constructor(
     private documentService: DocumentService,
@@ -41,13 +43,39 @@ export class PresentacionDialogComponent {
   }
 
   cargarActaEstudiante(){
-    this.graduateWorkService.changeStatus(this.inputdata.graduateWorkData.graduateworkid,90).subscribe({
-      next: (result) => {
-        console.log(result)
-      },
-      complete: () => {
-        window.location.href = window.location.href
+    if(this.graduateWorkForm.valid){
+      this.cargadoArchivos = true
+      let formattedFileName = '';
+      if(this.inputdata.studentData.length > 1){
+        formattedFileName = `${this.inputdata.studentData[0].userLastName.split(" ")[0]}${this.inputdata.studentData[0].userFirstName.split(" ")[0]} ${this.inputdata.studentData[1].userLastName.split(" ")[0]}${this.inputdata.studentData[1].userFirstName.split(" ")[0]} Informe TG.pdf`
+      }else{
+        formattedFileName = `${this.inputdata.studentData[0].userLastName.split(" ")[0]}${this.inputdata.studentData[0].userFirstName.split(" ")[0]} Informe TG.pdf`
       }
-    })
+      this.documentService.copyFileAndRename(this.currentFile as File,formattedFileName).pipe(
+        switchMap(
+          (newFile) => {
+            return this.graduateWorkService.uploadFinalSubmittion(newFile,this.inputdata.studentData)
+          }
+        ),
+        switchMap(
+          (result) => {
+            console.log(result)
+            return this.graduateWorkService.changeStatus(this.inputdata.graduateWorkData.graduateworkid,90)
+          }
+        ),
+      )
+      .subscribe({
+        next: (result) => {
+          console.log(result)
+        },
+        complete: () => {
+          window.location.href = window.location.href
+        }
+      })
+    
+    }else{
+      
+    }
+    
   }
 }

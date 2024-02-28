@@ -4,5 +4,8 @@ export interface Criteria {
     criteriaDescription: string | null,
     maxNote: number,
     model: string,
-    seccionId: number
+    criteriaModel: string,
+    schoolName: string,
+    seccionId: number,
+    selectedValue?: boolean 
 }

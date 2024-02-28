@@ -24,7 +24,7 @@
         
         </mat-drawer>
         <mat-drawer-content> 
-            <table mat-table [dataSource]="intershipData" class="mat-elevation-z8">
+            <table mat-table [dataSource]="intershipData" class="mat-elevation-z8" *ngIf="cargadoArchivos == false">
 
                 <ng-container matColumnDef="intershipId">
                     <th mat-header-cell *matHeaderCellDef> ID </th>
@@ -60,7 +60,9 @@
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
-              
+            <div style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">
+              <mat-spinner *ngIf="cargadoArchivos == true"></mat-spinner>
+            </div>
         
         </mat-drawer-content>
     </mat-drawer-container>

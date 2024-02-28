@@ -18,6 +18,13 @@ export class PasantiaService {
     return this.http.get(`${environment.apiUrlPasantia}/pasantia/status/${statuscode}`,{headers});
   }
 
+  getPasantiasByStatusAndSchool(statuscode: number, schoolName: string) : Observable<any> {
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`${environment.apiUrlPasantia}/pasantia/status/${statuscode}/school/${schoolName}`,{headers});
+  }
+
+
   getPasantiaById( intershipId: number){
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
@@ -36,7 +43,7 @@ export class PasantiaService {
     return this.http.post(`${environment.apiUrlPasantia}/pasantia/create`,pasantia,{headers});
   }
 
-  cargarPropuestaPasantia( file: File, userData: any ) : Observable<any> {
+  cargarPropuestaPasantia( file: File, userData: any, escuela: string ) : Observable<any> {
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
     const formData = new FormData();
@@ -47,6 +54,7 @@ export class PasantiaService {
     }
     formData.append('file', file)
     formData.append('studentData', JSON.stringify(studentData))
+    formData.append('escuela', escuela)
     return this.http.post(`${environment.amazonS3}/upload/pasantia/propuesta`,formData,{headers});
   }
 
@@ -71,4 +79,9 @@ export class PasantiaService {
     return this.http.post(`${environment.apiUrlPasantia}/pasantia/evaluate/report`,evaluation,{headers});
   }
 
+  obtenerEstudiantesPendientesPorPasantia(){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`${environment.apiUrlPasantia}/pasantia/proposal/pending`,{headers});
+  }
 }

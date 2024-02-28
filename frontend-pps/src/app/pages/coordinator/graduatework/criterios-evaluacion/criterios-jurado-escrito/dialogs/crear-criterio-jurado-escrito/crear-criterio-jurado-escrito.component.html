@@ -1,0 +1,26 @@
+<h2 mat-dialog-title>Crear Criterio de Jurado - Trabajo Escrito</h2>
+<mat-dialog-content class="mat-typography">
+    <form [formGroup]="CriteriaForm" style="display: flex; flex-direction: column;" *ngIf="cargadoArchivos == false">
+
+        
+        <mat-form-field class="full-width input-margin">
+            <mat-label>Ingrese el nombre del Criterio</mat-label>
+            <input formControlName = "criteriaName" matInput placeholder="Responsabilidad" value = "">
+        </mat-form-field>
+
+        <mat-form-field class="full-width input-margin">
+            <mat-label>Ingrese la nota máxima del criterio</mat-label>
+            <input formControlName = "maxNote" matInput placeholder="2" value = "">
+        </mat-form-field>
+      
+    </form>
+
+    <div style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">
+        <mat-spinner *ngIf="cargadoArchivos == true"></mat-spinner>
+    </div>
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close *ngIf="cargadoArchivos == false">Cancel</button>
+  <button mat-raised-button (click) = "crearSeccion()" color="primary" *ngIf="cargadoArchivos == false" mat-dialog-close>Crear Criterio</button>
+</mat-dialog-actions>

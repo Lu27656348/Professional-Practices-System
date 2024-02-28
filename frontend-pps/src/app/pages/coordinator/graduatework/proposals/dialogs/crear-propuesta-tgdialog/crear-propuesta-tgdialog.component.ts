@@ -46,6 +46,9 @@ export class CrearPropuestaTGDialogComponent implements OnInit{
 
   cargadoArchivos: boolean = false;
 
+  userData: any = null
+  escuela: any = null
+
   constructor(
     private formBuilder: FormBuilder,
     private externalService: ExternalPersonnelService,
@@ -57,6 +60,26 @@ export class CrearPropuestaTGDialogComponent implements OnInit{
     private graduateWorkService: GraduateworkService,
     private documentService: DocumentService
   ){
+    const localUser = localStorage.getItem('user')
+    if(localUser){
+      const localUserData = JSON.parse(localUser)
+      this.userService.getUserData(localUserData.userDNI).subscribe({
+        next: (userData) => {
+          this.userData = userData
+          if(this.userData.schoolName == 'Ing. Informatica'){
+            this.escuela = 'Informática'
+          }else{
+            this.escuela = 'Civil'
+          }
+          this.studentService.getStudentBySchool(this.userData.schoolName).subscribe({
+            next: (studentData) => {
+              console.log(studentData)
+              this.studentList = studentData
+            }
+          })
+        }
+      })
+    }
     this.graduateWorkForm = this.formBuilder.group({
       titulo: ['',Validators.required],
       tipo: ['',Validators.required],
@@ -67,12 +90,7 @@ export class CrearPropuestaTGDialogComponent implements OnInit{
       file: ['',Validators.required]
     })
 
-    this.studentService.getStudentsData().subscribe({
-      next: (studentData) => {
-        console.log(studentData)
-        this.studentList = studentData
-      }
-    })
+    
 
     this.enterpriseService.getEnterprises().subscribe({
       next: (enterpriseList) => {
@@ -171,7 +189,7 @@ export class CrearPropuestaTGDialogComponent implements OnInit{
           (coordinatorData) => {
             console.log(coordinatorData)
             this.coordinatorData = coordinatorData
-            return this.studentService.upload(this.currentFile as File, this.graduateWorkForm.value.estudiante as string, this.graduateWorkForm.value.partner)
+            return this.studentService.upload(this.currentFile as File, this.graduateWorkForm.value.estudiante as string, this.graduateWorkForm.value.partner,this.escuela)
           }
         ),
         switchMap(

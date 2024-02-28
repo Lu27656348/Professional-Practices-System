@@ -42,4 +42,44 @@ export class CriteriosTutorEmpresarialService {
     headers.append('Access-Control-Allow-Origin', '*');
     return this.http.put(`${environment.apiUrlPasantia}/pasantia/criterios/empresarial/put/${criteriaId}`,criteria,{headers});
   }
+
+
+
+  getAllEnterpriseTutorCriteriaBySchool(schoolName: string) : Observable<any> {
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`${environment.apiUrlPasantia}/pasantia/criterios/empresarial/get/by/school/${schoolName}`,{headers});
+  }
+
+  getAllEnterpriseTutorSeccionBySchool(schoolName: string) : Observable<any> {
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`${environment.apiUrlPasantia}/pasantia/secciones/empresarial/get/by/school/${schoolName}`,{headers});
+  }
+
+
+
+
+  createCorporativeTutorSeccion(seccionName: string, maxNote: number, schoolName: string){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    const body = {
+      seccionName: seccionName,
+      maxNote: maxNote,
+      schoolName: schoolName
+    }
+    return this.http.post(`${environment.apiUrlPasantia}/pasantia/secciones/empresarial/post`,body,{headers});
+  }
+
+  createCorporativeTutorCriteria(criteriaName: string, maxNote: number, schoolName: string, seccionId: number){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    const body = {
+      criteriaName: criteriaName,
+      maxNote: maxNote,
+      schoolName: schoolName,
+      seccionId: seccionId
+    }
+    return this.http.post(`${environment.apiUrlPasantia}/pasantia/criterios/empresarial/post`,body,{headers});
+  }
 }

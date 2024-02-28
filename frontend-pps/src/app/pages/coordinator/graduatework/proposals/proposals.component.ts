@@ -50,6 +50,7 @@ export class ProposalsComponent implements OnInit{
 
   proposal: any[] = [];
 
+  userData: any = null
 
 
   displayedColumns: string[] = ['graduateWorkId', 'graduateWorkTitle', 'studentDNI', 'symbol',"check"];
@@ -105,6 +106,11 @@ export class ProposalsComponent implements OnInit{
       console.log("LOCAL STORAGE")
 
       this.localUser = JSON.parse(userString);
+      this.userService.getUserData(this.localUser.userDNI).subscribe({
+        next: (userData) => {
+          this.userData = userData
+        }
+      })
       
       this.data = {...this.localUser.user}
 
@@ -146,7 +152,8 @@ export class ProposalsComponent implements OnInit{
         data: {
           user: result1,
           proposal: result2,
-          graduatework: result3
+          graduatework: result3,
+          userData: this.userData
         }
       })
 

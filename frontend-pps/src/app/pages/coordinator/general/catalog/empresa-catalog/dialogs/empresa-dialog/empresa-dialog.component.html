@@ -1,18 +1,18 @@
-<h2 mat-dialog-title>Ingrese los datos del Profesional Externos</h2>
+<h2 mat-dialog-title>Ingrese los datos de la empresa</h2>
 <mat-dialog-content class="mat-typography">
     <form [formGroup]="enterpriseForm" style="display: flex; flex-direction: column;" *ngIf="nextStep == false">
 
         
         <mat-form-field class="full-width input-margin">
-            <mat-label>Ingrese su nombre completo:</mat-label>
+            <mat-label>Nombre de la Empresa:</mat-label>
             <input formControlName = "enterpriseName" matInput placeholder="Venalum C.A" value = "">
         </mat-form-field>
         <mat-form-field class="full-width input-margin">
-            <mat-label>Ingrese sus apellidos:</mat-label>
+            <mat-label>Ingrese el número de contacto de la empresa:</mat-label>
             <input formControlName = "enterpriseDescription" matInput placeholder="..." value = "">
         </mat-form-field>
         <mat-form-field class="full-width input-margin">
-            <mat-label>Ingrese su número de teléfono:</mat-label>
+            <mat-label>Ingrese la dirección de la empresa</mat-label>
             <input formControlName = "enterpriseAddress" matInput placeholder="..." value = "">
         </mat-form-field>
 

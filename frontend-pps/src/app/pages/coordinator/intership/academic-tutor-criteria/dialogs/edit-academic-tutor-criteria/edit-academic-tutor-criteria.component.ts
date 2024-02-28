@@ -1,9 +1,10 @@
 import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { CriteriaRequest } from 'src/app/interfaces/CriteriaRequest';
 import { CriteriosTutorAcademicoService } from 'src/app/services/pasantia/criterios-tutor-academico.service';
 import { CriteriosTutorEmpresarialService } from 'src/app/services/pasantia/criterios-tutor-empresarial.service';
+import { CreateAcademicTutorCriteriaComponent } from '../create-academic-tutor-criteria/create-academic-tutor-criteria.component';
 
 @Component({
   selector: 'app-edit-academic-tutor-criteria',
@@ -17,7 +18,12 @@ export class EditAcademicTutorCriteriaComponent {
   isCriteriaSelected: boolean = false;
   displayedColumns: string[] = ['criteriaId','criteriaName', 'maxNote', 'check']
 
-  constructor(private academicTutorCriteria: CriteriosTutorAcademicoService, @Inject(MAT_DIALOG_DATA) public data: any, private formBuilder: FormBuilder){
+  constructor(
+    private academicTutorCriteria: CriteriosTutorAcademicoService, 
+    @Inject(MAT_DIALOG_DATA) public data: any, 
+    private formBuilder: FormBuilder,
+    private dialog: MatDialog,
+  ){
     console.log(this.data)
     this.criteriaForm = formBuilder.group({
       criteriaId: new FormControl(),
@@ -44,6 +50,18 @@ export class EditAcademicTutorCriteriaComponent {
       maxNote:new FormControl(data.maxNote)
     })
 
+  }
+
+  agregarCriterioASeccion(){
+    const dialogRef = this.dialog.open(CreateAcademicTutorCriteriaComponent,{
+      width: '60%', 
+      data: this.data
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+      this.ngOnInit()
+    });
   }
 
   guardarCambios(){

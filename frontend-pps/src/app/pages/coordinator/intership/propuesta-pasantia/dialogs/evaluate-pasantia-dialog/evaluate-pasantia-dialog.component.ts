@@ -69,6 +69,8 @@ export class EvaluatePasantiaDialogComponent implements OnInit{
   horizontalPosition: MatSnackBarHorizontalPosition = "right";
   verticalPosition: MatSnackBarVerticalPosition = 'bottom';
 
+  cargadoArchivos: boolean = false
+
   formatDate(date: Date): string {
     const options: Intl.DateTimeFormatOptions = {
       year: "numeric",
@@ -135,7 +137,7 @@ export class EvaluatePasantiaDialogComponent implements OnInit{
       }
     )
     
-    this.councilService.getCouncils().subscribe({
+    this.councilService.getCouncilsBySchool(this.inputdata.user.schoolName).subscribe({
       next: (councilList) => {
         this.councilList = councilList
       }
@@ -164,6 +166,7 @@ export class EvaluatePasantiaDialogComponent implements OnInit{
 
   rechazarPropuestaPasantia(){
     if(this.pasantiaForm.value.consejoEscuela){
+      this.cargadoArchivos = true
       const evaluationData: EvaluateIntershipProposalRequest = {
         intershipId: this.inputdata.pasantia.intershipId,
         intershipStatusCode: 400,
@@ -194,7 +197,7 @@ export class EvaluatePasantiaDialogComponent implements OnInit{
   aprobarPropuestaPasantia(){
     if(this.pasantiaForm.valid){
 
-      
+      this.cargadoArchivos = true
       this.councilService.getCouncilById(this.pasantiaForm.value.consejoEscuela as string).pipe(
         switchMap(
           (schoolData) => {

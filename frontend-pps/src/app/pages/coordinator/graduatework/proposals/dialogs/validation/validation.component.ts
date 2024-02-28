@@ -23,7 +23,7 @@ interface ResponseBlob<T> extends Response {
   blob(): Promise<Blob>;
 }
 
-async function downloadFile(fileName: string, studentDNI: string | null, userFirstName: string | null, userLastName: string | null) {
+async function downloadFile(fileName: string, studentDNI: string | null, userFirstName: string | null, userLastName: string | null,escuela: string) {
   try {
     const response = await fetch(`${environment.amazonS3}/download`, {
       method: 'POST',
@@ -34,7 +34,8 @@ async function downloadFile(fileName: string, studentDNI: string | null, userFir
         fileName: fileName,
         studentDNI: studentDNI,
         userFirstName: userFirstName,
-        userLastName: userLastName
+        userLastName: userLastName,
+        escuela: escuela
       })
     } as RequestInit);
 
@@ -113,7 +114,13 @@ export class ValidationComponent implements OnInit{
     }
     
     console.log(fileName);
-    downloadFile(fileName,this.inputdata.user[0].userDNI, this.inputdata.user[0].userFirstName.split(' ')[0],this.inputdata.user[0].userLastName.split(' ')[0]);
+    let escuela;
+    if(this.inputdata.userData.schoolName == "Ing. Informatica"){
+      escuela = "Informatica"
+    }else{
+      escuela = "Civil"
+    }
+    downloadFile(fileName,this.inputdata.user[0].userDNI, this.inputdata.user[0].userFirstName.split(' ')[0],this.inputdata.user[0].userLastName.split(' ')[0],escuela);
   }
 
   veredictoPropuesta(decision: string){

@@ -1,6 +1,10 @@
 <h2 mat-dialog-title>Editar criterios de sección</h2>
 <mat-dialog-content class="mat-typography">
-
+  <div style="display: flex; " *ngIf="!isCriteriaSelected">
+    <button mat-raised-button color="primary" (click)="agregarCriterioASeccion()">
+      <mat-icon>add_box</mat-icon>
+    </button>
+  </div>
   <table mat-table [dataSource]="criteriaList" class="mat-elevation-z8" *ngIf="!isCriteriaSelected">
 
     <!--- Note that these columns can be defined in any order.

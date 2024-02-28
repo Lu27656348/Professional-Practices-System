@@ -16,37 +16,53 @@ export class EvaluacionTutoresComponent implements OnInit{
   tutorEvaluationList: any = null;
   displayedColumns: string[] = ['intershipId', 'intershipTitle', 'author', 'startDate','check'];
 
+  localUserData: any = null
+
   constructor(
     private pasantiaService: PasantiaService, 
     private userService: UsersService,
     private dialog: MatDialog 
   ){
-    this.pasantiaService.getPasantiasByStatus(30).pipe(
-      switchMap(
-        (tutorEvaluationList) => {
-          console.log(tutorEvaluationList)
-          const observables: Observable<any>[] = []
-
-          tutorEvaluationList.forEach( (pasantia: any) => {
-            observables.push(this.userService.getUserData(pasantia.studentDNI))
+    const localUser = localStorage.getItem('user')
+    if(localUser){
+      const localStorageData = JSON.parse(localUser)
+      this.userService.getUserData(localStorageData.userDNI)
+      .pipe(
+        switchMap(
+          (localUserData) => {
+            this.localUserData = localUserData
+            console.log(this.localUserData)
+            return  this.pasantiaService.getPasantiasByStatusAndSchool(30,this.localUserData.schoolName)
+          }
+        ),
+        switchMap(
+          (tutorEvaluationList) => {
+            console.log(tutorEvaluationList)
+            const observables: Observable<any>[] = []
+  
+            tutorEvaluationList.forEach( (pasantia: any) => {
+              observables.push(this.userService.getUserData(pasantia.studentDNI))
+            })
+            this.tutorEvaluationList = tutorEvaluationList
+            return forkJoin(observables)
+          }
+        ),
+        switchMap( (studentData) => {
+          console.log(studentData)
+          this.tutorEvaluationList.forEach( (pasantia:any , index: number) => {
+            this.tutorEvaluationList[index].author = studentData[index].userLastName + ", " + studentData[index].userFirstName
+            this.tutorEvaluationList[index].intershipStartDate = new Date(this.tutorEvaluationList[index].intershipStartDate).toLocaleDateString()
           })
-          this.tutorEvaluationList = tutorEvaluationList
-          return forkJoin(observables)
-        }
-      ),
-      switchMap( (studentData) => {
-        console.log(studentData)
-        this.tutorEvaluationList.forEach( (pasantia:any , index: number) => {
-          this.tutorEvaluationList[index].author = studentData[index].userLastName + ", " + studentData[index].userFirstName
-          this.tutorEvaluationList[index].intershipStartDate = new Date(this.tutorEvaluationList[index].intershipStartDate).toLocaleDateString()
+          return of("Completado")
         })
-        return of(null)
+      )
+      .subscribe({
+        complete: () => {
+          console.log("completado")
+        }
       })
-    ).subscribe({
-      complete: () => {
-        console.log("completado")
-      }
-    })
+    }
+
   }
 
   ngOnInit(): void {
@@ -58,7 +74,8 @@ export class EvaluacionTutoresComponent implements OnInit{
     const dialogRef = this.dialog.open(CargarEvaluacionesDialogComponent,{
       width: '60%',
       data: {
-        pasantia: data
+        pasantia: data,
+        user: this.localUserData
       }
     })
 

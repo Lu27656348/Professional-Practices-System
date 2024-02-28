@@ -20,6 +20,10 @@ export class EntregaInformeDialogComponent {
   horizontalPosition: MatSnackBarHorizontalPosition = "right";
   verticalPosition: MatSnackBarVerticalPosition = 'bottom';
 
+  userData: any = null
+
+  cargadoArchivos: boolean = false
+
   constructor(
     private _snackBar: MatSnackBar, 
     private pasantiaService: PasantiaService, 
@@ -29,6 +33,16 @@ export class EntregaInformeDialogComponent {
   ){
     console.log(this.data)
     this.inputdata = this.data
+    const localUser = localStorage.getItem('user')
+    if(localUser){
+      const localUserData = JSON.parse(localUser)
+      console.log(localUserData)
+      this.userService.getUserData(localUserData.userDNI).subscribe({
+        next: (userData) => {
+          this.userData = userData
+        }
+      })
+    }
   }
 
   cargarEvaluacionFinal(){
@@ -42,6 +56,7 @@ export class EntregaInformeDialogComponent {
         })
         throw new Error("El archivo debe ser en formato PDF")
       }
+      this.cargadoArchivos = true
       this.userService.getUserData(this.inputdata.pasantia.studentDNI)
       .pipe(
         switchMap(
@@ -54,7 +69,13 @@ export class EntregaInformeDialogComponent {
         ),
         switchMap(
           (newFile) => {
-            return this.pasantiaService.cargarPropuestaPasantia(newFile,this.studentData)
+            let escuela;
+            if(this.userData.schoolName == 'Ing. Informatica'){
+              escuela = "Informática"
+            }else{
+              escuela = "Civil"
+            }
+            return this.pasantiaService.cargarPropuestaPasantia(newFile,this.studentData,escuela)
           }
         ),
         switchMap(

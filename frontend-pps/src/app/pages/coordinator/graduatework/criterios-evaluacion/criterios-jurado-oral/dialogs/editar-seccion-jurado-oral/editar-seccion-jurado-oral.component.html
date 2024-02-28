@@ -1,0 +1,19 @@
+<h2 mat-dialog-title>Editar Sección</h2>
+<mat-dialog-content class="mat-typography">
+
+  <form [formGroup]="seccionForm" style="width: 100%; padding-right: 20px;"> 
+    <mat-form-field style="width: 100%; margin-left: 10px;">
+        <mat-label>Nombre de la seccion:</mat-label>
+        <input formControlName = "seccionName" matInput placeholder="Luis Carlos">
+    </mat-form-field>
+    <mat-form-field style="width: 100%; margin-left: 10px;">
+      <mat-label>Seleccione la nota máxima:</mat-label>
+      <input type = "number" formControlName = "maxNote" matInput placeholder="4">
+  </mat-form-field>
+  </form>
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-button color="primary" mat-dialog-close (click)="guardarCambiosSeccion()">Guardar cambios</button>
+</mat-dialog-actions>

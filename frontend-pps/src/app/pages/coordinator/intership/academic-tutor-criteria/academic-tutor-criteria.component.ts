@@ -9,6 +9,10 @@ import { CriteriosTutorEmpresarialService } from 'src/app/services/pasantia/crit
 import { EditCorporativeTutorCriteriaComponent } from '../corporative-tutor-criteria/dialogs/edit-corporative-tutor-criteria/edit-corporative-tutor-criteria.component';
 import { EditCorporativeTutorSeccionComponent } from '../corporative-tutor-criteria/dialogs/edit-corporative-tutor-seccion/edit-corporative-tutor-seccion.component';
 import { CriteriosTutorAcademicoService } from 'src/app/services/pasantia/criterios-tutor-academico.service';
+import { UsersService } from 'src/app/services/users.service';
+import { CreateAcademicTutorCriteriaComponent } from './dialogs/create-academic-tutor-criteria/create-academic-tutor-criteria.component';
+import { CreateAcademicTutorSeccionComponent } from './dialogs/create-academic-tutor-seccion/create-academic-tutor-seccion.component';
+import { EditAcademicTutorCriteriaComponent } from './dialogs/edit-academic-tutor-criteria/edit-academic-tutor-criteria.component';
 
 @Component({
   selector: 'app-academic-tutor-criteria',
@@ -22,26 +26,41 @@ export class AcademicTutorCriteriaComponent {
   seccionList: SeccionInterface[] = []
   criteriaList: any[] = []
 
-  constructor(private corporateCriteriaService: CriteriosTutorAcademicoService, private dialog: MatDialog,private formGenerator: EvaluationFormGeneratorService){
+  userData: any = null
 
-    this.corporateCriteriaService.getAllAcademicTutorSeccion()
-    .pipe(
-      switchMap(
-        (seccionList) => {
-          console.log(seccionList)
-          this.seccionList = seccionList
-          this.dataSource = new MatTableDataSource(seccionList)
-          return this.corporateCriteriaService.getAllAcademicTutorCriteria()
-        }
+  constructor(
+    private corporateCriteriaService: CriteriosTutorAcademicoService, 
+    private dialog: MatDialog,
+    private formGenerator: EvaluationFormGeneratorService,
+    private userService: UsersService
+  ){
+    const localUser = localStorage.getItem('user')
+    if(localUser){
+      const localStorageData = JSON.parse(localUser)
+      this.userService.getUserData(localStorageData.userDNI)
+      .pipe(
+        switchMap(
+          (userData) => {
+            this.userData = userData;
+            return this.corporateCriteriaService.getAllAcademicTutorSeccionBySchool(this.userData.schoolName)
+          }
+        ),
+        switchMap(
+          (seccionList) => {
+            console.log(seccionList)
+            this.seccionList = seccionList
+            this.dataSource = new MatTableDataSource(seccionList)
+            return this.corporateCriteriaService.getAllAcademicTutorCriteriaBySchool(this.userData.schoolName)
+          }
+        )
       )
-    )
-    .subscribe({
-      next: (criteriaList) => {
-        console.log(criteriaList)
-        this.criteriaList = criteriaList
-      }
-    })
-    
+      .subscribe({
+        next: (result) => {
+          console.log(result)
+          this.criteriaList = result
+        }
+      })
+    }  
   }
   ngOnInit(): void {
   
@@ -55,7 +74,7 @@ export class AcademicTutorCriteriaComponent {
 
   openEditCriteriaDialog(data: any) {
     console.log(data)
-    const dialogRef = this.dialog.open(EditCorporativeTutorCriteriaComponent,{
+    const dialogRef = this.dialog.open(EditAcademicTutorCriteriaComponent,{
       width: '60%', 
       data: data
     })
@@ -82,12 +101,23 @@ export class AcademicTutorCriteriaComponent {
      
   }
 
+  openCreateSeccionDialog(){
+    const dialogRef = this.dialog.open(CreateAcademicTutorSeccionComponent,{
+      width: '60%'
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+  
+    });
+  }
+
   generarPlanilla(){
-    this.corporateCriteriaService.getAllAcademicTutorSeccion().pipe(
+    this.corporateCriteriaService.getAllAcademicTutorSeccionBySchool(this.userData.schoolName).pipe(
       switchMap( 
         (seccionList) => {
           this.seccionList = seccionList
-          return this.corporateCriteriaService.getAllAcademicTutorCriteria()
+          return this.corporateCriteriaService.getAllAcademicTutorCriteriaBySchool(this.userData.schoolName)
         }
       ),
       switchMap( 

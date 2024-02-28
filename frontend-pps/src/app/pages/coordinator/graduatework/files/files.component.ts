@@ -98,7 +98,7 @@ export class FilesComponent implements OnInit{
     //this.dataSource.data = TREE_DATA
     console.log(this.dataSource)
     console.log(this.dataSource.data)
-    this.graduateWorkService.listProposalFiles().subscribe({
+    this.graduateWorkService.listProposalFiles("Informática").subscribe({
       next: (fileList) => {
         console.log(fileList)
         const treeStructure = this.crearArboles(fileList);

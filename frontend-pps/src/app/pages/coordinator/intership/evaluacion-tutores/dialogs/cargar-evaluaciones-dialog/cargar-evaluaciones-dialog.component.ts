@@ -27,6 +27,10 @@ export class CargarEvaluacionesDialogComponent {
   studentData: any = null;
   academicTutorData: any = null;
   corportateTutorData: any = null;
+  
+  userData: any = null
+
+  cargadoArchivos: boolean = false
 
   constructor(
     private formBuilder: FormBuilder,
@@ -36,7 +40,16 @@ export class CargarEvaluacionesDialogComponent {
     private documentService: DocumentService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ){
-
+    const localUser = localStorage.getItem('user')
+    if(localUser){
+      const localUserData = JSON.parse(localUser)
+      console.log(localUserData)
+      this.userService.getUserData(localUserData.userDNI).subscribe({
+        next: (userData) => {
+          this.userData = userData
+        }
+      })
+    }
     console.log(this.data)
     this.inputdata = this.data
     this.pasantiaForm = this.formBuilder.group({
@@ -63,6 +76,7 @@ export class CargarEvaluacionesDialogComponent {
         })
         throw new Error("La planilla de evaluación del Tutor académico debe ser en PDF")
       }
+      this.cargadoArchivos = true
       console.log(this.pasantiaForm.value)
       console.log(this.academicTutorFile)
       console.log(this.corporateTutorFile)
@@ -89,12 +103,18 @@ export class CargarEvaluacionesDialogComponent {
         }),
         switchMap(
           (academicTutorFile)=> {
-          
+            let escuela;
+            if(this.userData.schoolName == 'Ing. Informatica'){
+              escuela = "Informática"
+            }else{
+              escuela = "Civil"
+            }
           return this.pasantiaService.cargarPropuestaPasantia(academicTutorFile,{
             userDNI: this.studentData.userDNI,
             userFirstName: this.studentData.userFirstName,
             userLastName: this.studentData.userLastName
-          })
+          },
+          escuela)
         }),
         switchMap(
           (uploadResult)=> {
@@ -109,11 +129,18 @@ export class CargarEvaluacionesDialogComponent {
         }),
         switchMap(
           (corporateTutorFile)=> {
+            let escuela;
+            if(this.userData.schoolName == 'Ing. Informatica'){
+              escuela = "Informática"
+            }else{
+              escuela = "Civil"
+            }
             return this.pasantiaService.cargarPropuestaPasantia(corporateTutorFile,{
               userDNI: this.studentData.userDNI,
               userFirstName: this.studentData.userFirstName,
               userLastName: this.studentData.userLastName
-            })
+            },
+            escuela)
           })
 
       )

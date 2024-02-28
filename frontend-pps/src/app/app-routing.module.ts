@@ -40,6 +40,11 @@ import { DesarrolloTGComponent } from './pages/coordinator/graduatework/desarrol
 import { PresentacionComponent } from './pages/coordinator/graduatework/presentacion/presentacion.component';
 import { CompletadasComponent } from './pages/coordinator/graduatework/completadas/completadas.component';
 import { AcademicTutorCriteriaComponent } from './pages/coordinator/intership/academic-tutor-criteria/academic-tutor-criteria.component';
+import { ProfessorReviewerComponent } from './pages/professor/graduatework/professor-reviewer/professor-reviewer.component';
+import { CriteriosJuradoOralComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-jurado-oral/criterios-jurado-oral.component';
+import { CriteriosJuradoEscritoComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-jurado-escrito/criterios-jurado-escrito.component';
+import { CriteriosTutorEscritoComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-tutor-escrito/criterios-tutor-escrito.component';
+import { CriteriosTutorOralComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-tutor-oral/criterios-tutor-oral.component';
 //import { AcademicTutorCriteriaComponent } from './pages/coordinator/intership/academic-tutor-criteria/academic-tutor-criteria.component';
 
 const routes: Routes = [
@@ -119,6 +124,23 @@ const routes: Routes = [
   {
     path: "graduate-work/criteria/academic/tutor",
     component: CorporativeTutorCriteriaComponent
+  },
+  /* Configuración de Planillas de Evaluación */
+  {
+    path: "graduate-work/jurado/presentacion",
+    component: CriteriosJuradoOralComponent
+  },
+  {
+    path: "graduate-work/jurado/informe",
+    component: CriteriosJuradoEscritoComponent
+  },
+  {
+    path: "graduate-work/tutor/presentacion",
+    component: CriteriosTutorOralComponent
+  },
+  {
+    path: "graduate-work/tutor/informe",
+    component: CriteriosTutorEscritoComponent
   },
   /* Rutas para el proceso de pasantía  */
   {
@@ -201,6 +223,12 @@ const routes: Routes = [
     path: "archivos",
     component: GeneralFilesComponent
   },
+   /* Generador de Planilla del Revisor */
+   {
+    path: "generar/planilla/:profesorRevisor/:trabajoDeGrado",
+    component: ProfessorReviewerComponent
+  },
+  /* En caso de una ruta no definida */
   {
     path: "**",
     component: LoginComponent

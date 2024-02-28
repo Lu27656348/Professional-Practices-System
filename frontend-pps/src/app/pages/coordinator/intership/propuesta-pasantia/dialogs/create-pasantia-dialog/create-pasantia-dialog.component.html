@@ -1,8 +1,8 @@
 <h2 mat-dialog-title>Cargar Propuesta de Pasantia</h2>
 <mat-dialog-content class="mat-typography">
-    <h3>Cargue los datos de la propuesta</h3>
-    <mat-divider></mat-divider>
-    <form [formGroup]="pasantiaForm">
+    <h3 *ngIf="cargadoArchivos == false">Cargue los datos de la propuesta</h3>
+    <mat-divider *ngIf="cargadoArchivos == false"></mat-divider>
+    <form [formGroup]="pasantiaForm" *ngIf="cargadoArchivos == false">
         
         <mat-form-field style="width: 100%;">
             <mat-label>Titulo</mat-label>
@@ -59,9 +59,13 @@
         </div>
 
     </form>
+
+    <div style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">
+        <mat-spinner *ngIf="cargadoArchivos == true"></mat-spinner>
+    </div>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>Cancel</button>
-  <button mat-raised-button color="primary" (click)="cargarPropuesta()">Siguiente</button>
+  <button mat-button mat-dialog-close *ngIf="cargadoArchivos == false">Cancel</button>
+  <button mat-raised-button color="primary" (click)="cargarPropuesta()" *ngIf="cargadoArchivos == false">Siguiente</button>
 </mat-dialog-actions>
 

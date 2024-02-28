@@ -19,6 +19,8 @@ export class CreatePasantiaDialogComponent {
  
   pasantiaForm: any = null;
 
+  cargadoArchivos: boolean = false
+
   enterpriseSelected: any = null;
   externalSelected: any = null;
   studentSelected: any = null;
@@ -33,6 +35,8 @@ export class CreatePasantiaDialogComponent {
   currentFile: any = null
 
   studentData: any = null;
+
+  userData: any = null
   
 
   range = new FormGroup({
@@ -57,7 +61,28 @@ export class CreatePasantiaDialogComponent {
     return null;
   }
 
-  constructor(private formBuilder: FormBuilder, private externalService: ExternalPersonnelService, private studentService: StudentService, private professorService: ProfessorsService, private enterpriseService: EnterpriseService, private userService: UsersService,private _snackBar: MatSnackBar, private pasantiaService: PasantiaService, private documentService: DocumentService){
+  constructor(
+    private formBuilder: FormBuilder, 
+    private externalService: ExternalPersonnelService, 
+    private studentService: StudentService,
+    private professorService: ProfessorsService, 
+    private enterpriseService: EnterpriseService,
+    private userService: UsersService,
+    private _snackBar: MatSnackBar,
+    private pasantiaService: PasantiaService,
+    private documentService: DocumentService
+  ){
+
+    const localUser = localStorage.getItem('user')
+    if(localUser){
+      const localUserData = JSON.parse(localUser)
+      console.log(localUserData)
+      this.userService.getUserData(localUserData.userDNI).subscribe({
+        next: (userData) => {
+          this.userData = userData
+        }
+      })
+    }
     this.pasantiaForm = this.formBuilder.group({
       titulo: ['',Validators.required],
       estudiante: ['',Validators.required],
@@ -68,12 +93,33 @@ export class CreatePasantiaDialogComponent {
       file: ['',Validators.required]
     })
 
+    this.pasantiaService.obtenerEstudiantesPendientesPorPasantia().pipe(
+      switchMap(
+        (result: any) => {
+          console.log(result)
+          const observables: Observable<any>[] = []
+          result.forEach( (element: any) => {
+            observables.push(this.userService.getUserData(element))
+          }); 
+          return forkJoin(observables)
+        }
+      )
+    ).subscribe(
+      {
+        next: (result: any) => {
+          console.log(result)
+          this.studentList = result
+        }
+      }
+    )
+    /*
     this.studentService.getStudentsData().subscribe({
       next: (studentData) => {
         console.log(studentData)
         this.studentList = studentData
       }
     })
+    */
 
     this.enterpriseService.getEnterprises().subscribe({
       next: (enterpriseList) => {
@@ -112,6 +158,7 @@ export class CreatePasantiaDialogComponent {
     console.log(this.studentSelected)
     if(this.pasantiaForm.valid){
       console.log("Valido")
+      this.cargadoArchivos = true;
     
       this.userService.getUserData(this.pasantiaForm.value.estudiante)
       .pipe(
@@ -131,7 +178,13 @@ export class CreatePasantiaDialogComponent {
         ),
         switchMap(
           (newFile: File) => {
-            return this.pasantiaService.cargarPropuestaPasantia(newFile,this.studentData)
+            let escuela;
+            if(this.userData.schoolName == 'Ing. Informatica'){
+              escuela = "Informática"
+            }else{
+              escuela = "Civil"
+            }
+            return this.pasantiaService.cargarPropuestaPasantia(newFile,this.studentData,escuela)
           }
         ),
         switchMap(

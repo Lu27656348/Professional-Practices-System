@@ -1,8 +1,9 @@
 import { Component, Inject, OnInit} from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { CriteriaRequest } from 'src/app/interfaces/CriteriaRequest';
 import { CriteriosTutorEmpresarialService } from 'src/app/services/pasantia/criterios-tutor-empresarial.service';
+import { CreateCorporateTutorCriteriaComponent } from '../create-corporate-tutor-criteria/create-corporate-tutor-criteria.component';
 
 @Component({
   selector: 'app-edit-corporative-tutor-criteria',
@@ -16,7 +17,12 @@ export class EditCorporativeTutorCriteriaComponent implements OnInit{
   isCriteriaSelected: boolean = false;
   displayedColumns: string[] = ['criteriaId','criteriaName', 'maxNote', 'check']
 
-  constructor(private corporativeTutorCriteria: CriteriosTutorEmpresarialService, @Inject(MAT_DIALOG_DATA) public data: any, private formBuilder: FormBuilder){
+  constructor(
+    private corporativeTutorCriteria: CriteriosTutorEmpresarialService, 
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private formBuilder: FormBuilder,
+    private dialog: MatDialog
+  ){
     console.log(this.data)
     this.criteriaForm = formBuilder.group({
       criteriaId: new FormControl(),
@@ -55,5 +61,19 @@ export class EditCorporativeTutorCriteriaComponent implements OnInit{
       }
     })
     console.log("guardarCambios")
+  }
+
+  agregarCriterioASeccion(){
+    const dialogRef = this.dialog.open(CreateCorporateTutorCriteriaComponent,{
+      width: '60%', 
+      data: this.data
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+      this.ngOnInit()
+    });
+
+    this.ngOnInit()
   }
 }

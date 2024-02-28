@@ -288,10 +288,10 @@ export class GraduateworkService {
     return this.http.post(`${environment.amazonS3}/download`,body,{headers});
   }
 
-  listProposalFiles():Observable<any>{
+  listProposalFiles(schoolName: string):Observable<any>{
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
-    return this.http.get(`${environment.amazonS3}/list`,{headers});
+    return this.http.get(`${environment.amazonS3}/list/${schoolName}`,{headers});
   }
 
   listFinalFiles() : Observable<any> {

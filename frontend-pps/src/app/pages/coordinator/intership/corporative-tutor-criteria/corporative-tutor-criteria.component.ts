@@ -9,6 +9,8 @@ import { Criteria } from 'src/app/form-generator/interfaces/criteria';
 import { EvaluationFormGeneratorService } from 'src/app/form-generator/services/evaluation-form-generator.service';
 import { Seccion } from 'src/app/form-generator/interfaces/seccion';
 import { CriteriosTutorAcademicoService } from 'src/app/services/pasantia/criterios-tutor-academico.service';
+import { UsersService } from 'src/app/services/users.service';
+import { CreateCorporateTutorSeccionComponent } from './dialogs/create-corporate-tutor-seccion/create-corporate-tutor-seccion.component';
 
 interface SeccionInterface {
   maxNote: number,
@@ -28,25 +30,43 @@ export class CorporativeTutorCriteriaComponent implements OnInit{
   seccionList: SeccionInterface[] = []
   criteriaList: any[] = []
 
-  constructor(private corporateCriteriaService: CriteriosTutorEmpresarialService, private dialog: MatDialog,private formGenerator: EvaluationFormGeneratorService){
+  userData: any = null
 
-    this.corporateCriteriaService.getAllEnterpriseTutorSeccion()
-    .pipe(
-      switchMap(
-        (seccionList) => {
-          console.log(seccionList)
-          this.seccionList = seccionList
-          this.dataSource = new MatTableDataSource(seccionList)
-          return this.corporateCriteriaService.getAllEnterpriseTutorCriteria()
+  constructor(
+    private corporateCriteriaService: CriteriosTutorEmpresarialService,
+    private dialog: MatDialog,
+    private formGenerator: EvaluationFormGeneratorService,
+    private userService: UsersService
+  ){
+    const localUser = localStorage.getItem('user')
+    if(localUser){
+      const localStorageData = JSON.parse(localUser)
+      this.userService.getUserData(localStorageData.userDNI)
+      .pipe(
+        switchMap(
+          (userData) => {
+            this.userData = userData
+            return this.corporateCriteriaService.getAllEnterpriseTutorSeccionBySchool(this.userData.schoolName)
+          }
+        ),
+        switchMap(
+          (seccionList) => {
+            console.log(seccionList)
+            this.seccionList = seccionList
+            this.dataSource = new MatTableDataSource(seccionList)
+            return this.corporateCriteriaService.getAllEnterpriseTutorCriteriaBySchool(this.userData.schoolName)
+          }
+        )
+      )
+      .subscribe(
+        {
+          next: (criteriaList) => {
+            console.log(criteriaList)
+            this.criteriaList = criteriaList
+          }
         }
       )
-    )
-    .subscribe({
-      next: (criteriaList) => {
-        console.log(criteriaList)
-        this.criteriaList = criteriaList
-      }
-    })
+    }
     
   }
   ngOnInit(): void {
@@ -88,12 +108,24 @@ export class CorporativeTutorCriteriaComponent implements OnInit{
      
   }
 
+  openCreateSeccionDialog(){
+    const dialogRef = this.dialog.open(CreateCorporateTutorSeccionComponent,{
+      width: '60%',
+      data: this.userData
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+  
+    });
+  }
+
   generarPlanilla(){
-    this.corporateCriteriaService.getAllEnterpriseTutorSeccion().pipe(
+    this.corporateCriteriaService.getAllEnterpriseTutorSeccionBySchool(this.userData.schoolName).pipe(
       switchMap( 
         (seccionList) => {
           this.seccionList = seccionList
-          return this.corporateCriteriaService.getAllEnterpriseTutorCriteria()
+          return this.corporateCriteriaService.getAllEnterpriseTutorCriteriaBySchool(this.userData.schoolName)
         }
       ),
       switchMap( 

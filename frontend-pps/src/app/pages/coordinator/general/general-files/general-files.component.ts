@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { DocumentService } from 'src/app/services/document.service';
 import { GraduateworkService } from 'src/app/services/graduatework.service';
+import { UsersService } from 'src/app/services/users.service';
 function getFilePath(node: TreeNode, fileName: string, parentPath: string = ""): string | null {
   // Si el nombre del archivo coincide con el nombre del nodo, devolvemos la ruta completa
   if (node.name === fileName) {
@@ -93,18 +94,36 @@ export class GeneralFilesComponent {
   displayedColumns: string[] = ['graduateWorkId', 'graduateWorkTitle', 'studentDNI',"check"];
   dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
-  constructor(private graduateWorkService: GraduateworkService, private documentService: DocumentService) {
+  userData: any = null
+
+  constructor(private graduateWorkService: GraduateworkService, private documentService: DocumentService, private userService: UsersService) {
     //this.dataSource.data = TREE_DATA
     console.log(this.dataSource)
     console.log(this.dataSource.data)
-    this.graduateWorkService.listProposalFiles().subscribe({
-      next: (fileList) => {
-        console.log(fileList)
-        const treeStructure = this.crearArboles(fileList);
-        console.log(treeStructure)
-        this.dataSource.data = treeStructure
-      }
-    });
+    const localUser = localStorage.getItem('user')
+    if(localUser){
+      const localUserData = JSON.parse(localUser);
+      this.userService.getUserData(localUserData.userDNI).subscribe({
+        next: (userData) => {
+            this.userData = userData
+            let escuela;
+            if(this.userData.schoolName == 'Ing. Informatica'){
+              escuela = "Informática"
+            }else{
+              escuela = "Civil"
+            }
+            this.graduateWorkService.listProposalFiles(escuela).subscribe({
+              next: (fileList) => {
+                console.log(fileList)
+                const treeStructure = this.crearArboles(fileList);
+                console.log(treeStructure)
+                this.dataSource.data = treeStructure
+              }
+            });
+        }
+      })
+    }
+    
   }
 
   hasChild = (_: number, node: FlatTreeNode) => node.expandable;

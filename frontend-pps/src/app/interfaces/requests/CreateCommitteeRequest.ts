@@ -1,4 +1,5 @@
 export interface CreateCommitteeRequest {
     committeeId: string,
-    committeeDate: Date
+    committeeDate: Date,
+    schoolName: string
 }

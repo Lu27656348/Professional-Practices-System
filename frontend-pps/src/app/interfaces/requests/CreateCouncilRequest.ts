@@ -1,5 +1,6 @@
 export interface CreateCouncilRequest {
     schoolCouncilId: string,
     schoolcouncildate: Date,
-    schoolSchoolType: string
+    schoolSchoolType: string,
+    schoolName: string
 }

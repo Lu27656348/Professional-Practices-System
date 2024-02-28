@@ -17,6 +17,12 @@ export class CommitteeService {
     return this.http.get(`${environment.apiUrl}/committees`,{headers});
   }
 
+  getCommitteeBySchool(schoolName: string ):Observable<any>{
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`${environment.apiUrl}/committees/by/school/${schoolName}`,{headers});
+  }
+
   createCommittee(committeeData: CreateCommitteeRequest){
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
@@ -33,5 +39,15 @@ export class CommitteeService {
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
     return this.http.delete(`${environment.apiUrl}/committees/${committeeId}`,{headers});
+  }
+
+  cargarActaDeComite(committeeId: string, committeeFile: File, escuela: string){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    const formData = new FormData()
+    formData.append('file', committeeFile)
+    formData.append('comite', committeeId)
+    formData.append('escuela', escuela)
+    return this.http.post(`${environment.amazonS3}/upload/comite`,formData,{headers});
   }
 }

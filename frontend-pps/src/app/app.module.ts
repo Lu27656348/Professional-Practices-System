@@ -108,7 +108,35 @@ import { EditAcademicTutorCriteriaComponent } from './pages/coordinator/intershi
 import { EditAcademicTutorSeccionComponent } from './pages/coordinator/intership/academic-tutor-criteria/dialogs/edit-academic-tutor-seccion/edit-academic-tutor-seccion.component';
 //import { AcademicTutorCriteriaComponent } from './pages/coordinator/intership/academic-tutor-criteria/academic-tutor-criteria.component';
 //import { EditAcademicTutorCriteriaComponent } from './pages/coordinator/intership/academic-tutor-criteria/edit-academic-tutor-criteria/edit-academic-tutor-criteria.component';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner'; 
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { CreateAcademicTutorCriteriaComponent } from './pages/coordinator/intership/academic-tutor-criteria/dialogs/create-academic-tutor-criteria/create-academic-tutor-criteria.component';
+import { CreateAcademicTutorSeccionComponent } from './pages/coordinator/intership/academic-tutor-criteria/dialogs/create-academic-tutor-seccion/create-academic-tutor-seccion.component';
+import { CreateCorporateTutorCriteriaComponent } from './pages/coordinator/intership/corporative-tutor-criteria/dialogs/create-corporate-tutor-criteria/create-corporate-tutor-criteria.component'; 
+import { CreateCorporateTutorSeccionComponent } from './pages/coordinator/intership/corporative-tutor-criteria/dialogs/create-corporate-tutor-seccion/create-corporate-tutor-seccion.component';
+import { CriteriosJuradoOralComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-jurado-oral/criterios-jurado-oral.component';
+import { CriteriosJuradoEscritoComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-jurado-escrito/criterios-jurado-escrito.component';
+import { CriteriosTutorEscritoComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-tutor-escrito/criterios-tutor-escrito.component';
+import { CriteriosTutorOralComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-tutor-oral/criterios-tutor-oral.component';
+import { CriteriosTutorEmpresarialComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-tutor-empresarial/criterios-tutor-empresarial.component';
+
+import { CrearCriterioJuradoOralComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-jurado-oral/dialogs/crear-criterio-jurado-oral/crear-criterio-jurado-oral.component';
+import { CrearSeccionJuradoOralComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-jurado-oral/dialogs/crear-seccion-jurado-oral/crear-seccion-jurado-oral.component';
+import { EditarSeccionJuradoOralComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-jurado-oral/dialogs/editar-seccion-jurado-oral/editar-seccion-jurado-oral.component';
+import { EditarCriterioJuradoOralComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-jurado-oral/dialogs/editar-criterio-jurado-oral/editar-criterio-jurado-oral.component';
+
+import { CrearCriterioJuradoEscritoComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-jurado-escrito/dialogs/crear-criterio-jurado-escrito/crear-criterio-jurado-escrito.component';
+import { CrearSeccionJuradoEscritoComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-jurado-escrito/dialogs/crear-seccion-jurado-escrito/crear-seccion-jurado-escrito.component';
+import { EditarSeccionJuradoEscritoComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-jurado-escrito/dialogs/editar-seccion-jurado-escrito/editar-seccion-jurado-escrito.component';
+import { EditarCriterioJuradoEscritoComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-jurado-escrito/dialogs/editar-criterio-jurado-escrito/editar-criterio-jurado-escrito.component';
+import { CrearCriterioTutorEscritoComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-tutor-escrito/dialogs/crear-criterio-tutor-escrito/crear-criterio-tutor-escrito.component';
+import { CrearSeccionTutorEscritoComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-tutor-escrito/dialogs/crear-seccion-tutor-escrito/crear-seccion-tutor-escrito.component';
+import { EditarSeccionTutorEscritoComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-tutor-escrito/dialogs/editar-seccion-tutor-escrito/editar-seccion-tutor-escrito.component';
+import { EditarCriterioTutorEscritoComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-tutor-escrito/dialogs/editar-criterio-tutor-escrito/editar-criterio-tutor-escrito.component';
+import { EditarCriterioTutorOralComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-tutor-oral/dialogs/editar-criterio-tutor-oral/editar-criterio-tutor-oral.component';
+import { CrearCriterioTutorOralComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-tutor-oral/dialogs/crear-criterio-tutor-oral/crear-criterio-tutor-oral.component';
+import { CrearSeccionTutorOralComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-tutor-oral/dialogs/crear-seccion-tutor-oral/crear-seccion-tutor-oral.component';
+import { EditarSeccionTutorOralComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-tutor-oral/dialogs/editar-seccion-tutor-oral/editar-seccion-tutor-oral.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -185,6 +213,31 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     AcademicTutorCriteriaComponent,
     EditAcademicTutorCriteriaComponent,
     EditAcademicTutorSeccionComponent,
+    CreateAcademicTutorCriteriaComponent,
+    CreateAcademicTutorSeccionComponent,
+    CreateCorporateTutorCriteriaComponent,
+    CreateCorporateTutorSeccionComponent,
+    CriteriosJuradoOralComponent,
+    CriteriosJuradoEscritoComponent,
+    CriteriosTutorEscritoComponent,
+    CriteriosTutorOralComponent,
+    CriteriosTutorEmpresarialComponent,
+    CrearCriterioJuradoOralComponent,
+    CrearSeccionJuradoOralComponent,
+    EditarSeccionJuradoOralComponent,
+    EditarCriterioJuradoOralComponent,
+    CrearCriterioJuradoEscritoComponent,
+    CrearSeccionJuradoEscritoComponent,
+    EditarSeccionJuradoEscritoComponent,
+    EditarCriterioJuradoEscritoComponent,
+    CrearCriterioTutorEscritoComponent,
+    CrearSeccionTutorEscritoComponent,
+    EditarSeccionTutorEscritoComponent,
+    EditarCriterioTutorEscritoComponent,
+    EditarCriterioTutorOralComponent,
+    CrearCriterioTutorOralComponent,
+    CrearSeccionTutorOralComponent,
+    EditarSeccionTutorOralComponent
   ],
   imports: [
     BrowserModule,

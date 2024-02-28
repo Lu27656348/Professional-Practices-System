@@ -17,44 +17,60 @@ export class PropuestaPasantiaComponent implements OnInit{
 
   displayedColumns: string[] = ['intershipId', 'intershipTitle', 'author', 'startDate','endDate','check']
 
-  constructor(private pasantiaService: PasantiaService,private dialog: MatDialog, private userService: UsersService){
+  userData: any = null
 
+  constructor(private pasantiaService: PasantiaService,private dialog: MatDialog, private userService: UsersService){
+    const localUser = localStorage.getItem('user')
+    if(localUser){
+      const localUserData = JSON.parse(localUser)
+      console.log(localUserData.userDNI)
+      this.userService.getUserData(localUserData.userDNI).pipe(
+        switchMap(
+          (userData) => {
+            this.userData = userData
+            console.log(userData)
+            return this.pasantiaService.getPasantiasByStatusAndSchool(10,this.userData?.schoolName)
+          }
+        ),
+        switchMap(
+          (intershipList) => {
+            console.log(intershipList)
+            const observables: Observable<any>[] = []
+  
+            intershipList.forEach( (pasantia: any) => {
+              observables.push(this.userService.getUserData(pasantia.studentDNI))
+            })
+            this.intershipData = intershipList
+            return forkJoin(observables)
+          }
+        ),
+        switchMap( (studentData) => {
+          console.log(studentData)
+          this.intershipData.forEach( (pasantia:any , index: number) => {
+            this.intershipData[index].author = studentData[index].userLastName + ", " + studentData[index].userFirstName
+            this.intershipData[index].intershipStartDate = new Date(this.intershipData[index].intershipStartDate).toLocaleDateString()
+            this.intershipData[index].intershipCompletionDate = new Date(this.intershipData[index].intershipCompletionDate).toLocaleDateString()
+          })
+          return of("Completado")
+        })
+      ).subscribe({
+        next: (result) => {
+          console.log(result)
+        }
+      })
+    }
   }
   ngOnInit(): void {
-    this.pasantiaService.getPasantiasByStatus(10).pipe(
-      switchMap(
-        (intershipList) => {
-          console.log(intershipList)
-          const observables: Observable<any>[] = []
 
-          intershipList.forEach( (pasantia: any) => {
-            observables.push(this.userService.getUserData(pasantia.studentDNI))
-          })
-          this.intershipData = intershipList
-          return forkJoin(observables)
-        }
-      ),
-      switchMap( (studentData) => {
-        console.log(studentData)
-        this.intershipData.forEach( (pasantia:any , index: number) => {
-          this.intershipData[index].author = studentData[index].userLastName + ", " + studentData[index].userFirstName
-          this.intershipData[index].intershipStartDate = new Date(this.intershipData[index].intershipStartDate).toLocaleDateString()
-          this.intershipData[index].intershipCompletionDate = new Date(this.intershipData[index].intershipCompletionDate).toLocaleDateString()
-        })
-        return of(null)
-      })
-    ).subscribe({
-      complete: () => {
-        console.log("completado")
-      }
-    })
+    
   }
   openDialog(data: any){
     console.log(data)
     const dialogRef = this.dialog.open(EvaluatePasantiaDialogComponent,{
       width: '60%',
       data: {
-        pasantia: data
+        pasantia: data,
+        user: this.userData
       }
     })
 

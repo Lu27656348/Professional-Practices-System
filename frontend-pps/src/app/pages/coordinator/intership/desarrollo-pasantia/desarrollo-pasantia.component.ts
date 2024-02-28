@@ -33,6 +33,8 @@ export class DesarrolloPasantiaComponent {
 
   displayedColumns: string[] = ['intershipId', 'intershipTitle', 'author', 'startDate','endDate','check']
 
+  cargadoArchivos: boolean = false
+
   constructor(
     
     private pasantiaService: PasantiaService,
@@ -47,52 +49,57 @@ export class DesarrolloPasantiaComponent {
     const localUser = localStorage.getItem('user')
     if(localUser){
       const localStorageData = JSON.parse(localUser)
-      this.userService.getUserData(localStorageData.userDNI).subscribe({
-        next: (localUserData) => {
-          this.localUserData = localUserData
-          console.log(this.localUserData)
+      this.userService.getUserData(localStorageData.userDNI)
+      .pipe(
+        switchMap(
+          (localUserData) => {
+            this.localUserData = localUserData
+            console.log(this.localUserData)
+            return  this.pasantiaService.getPasantiasByStatusAndSchool(20,this.localUserData.schoolName)
+          }
+        ),
+        switchMap(
+          (intershipList) => {
+            console.log(intershipList)
+            const observables: Observable<any>[] = []
+  
+            intershipList.forEach( (pasantia: any,index: number) => {
+  
+              let fechaInicio = new Date(pasantia.intershipStartDate as number);
+              let fechaFinal = new Date(pasantia.intershipCompletionDate as number);
+              let fechaComienzo = new Date();
+              intershipList[index].diferencia = Math.floor((fechaFinal.getTime() - fechaComienzo.getTime()) / (1000 * 60 * 60 * 24));
+              observables.push(this.userService.getUserData(pasantia.studentDNI))
+            })
+            this.intershipData = intershipList
+            return forkJoin(observables)
+          }
+        ),
+        switchMap( (studentData) => {
+          console.log(studentData)
+          this.intershipData.forEach( (pasantia:any , index: number) => {
+            this.intershipData[index].author = studentData[index].userLastName + ", " + studentData[index].userFirstName
+            this.intershipData[index].intershipStartDate = new Date(this.intershipData[index].intershipStartDate).toLocaleDateString()
+            this.intershipData[index].intershipCompletionDate = new Date(this.intershipData[index].intershipCompletionDate).toLocaleDateString()
+          })
+          return of("Completado")
+        })
+      )
+      .subscribe({
+        next: (result) => {
+          console.log(result)
         }
       })
-
+      
     }
   }
   ngOnInit(): void {
-    this.pasantiaService.getPasantiasByStatus(20).pipe(
-      switchMap(
-        (intershipList) => {
-          console.log(intershipList)
-          const observables: Observable<any>[] = []
-
-          intershipList.forEach( (pasantia: any,index: number) => {
-
-            let fechaInicio = new Date(pasantia.intershipStartDate as number);
-            let fechaFinal = new Date(pasantia.intershipCompletionDate as number);
-            let fechaComienzo = new Date();
-            intershipList[index].diferencia = Math.floor((fechaFinal.getTime() - fechaComienzo.getTime()) / (1000 * 60 * 60 * 24));
-            observables.push(this.userService.getUserData(pasantia.studentDNI))
-          })
-          this.intershipData = intershipList
-          return forkJoin(observables)
-        }
-      ),
-      switchMap( (studentData) => {
-        console.log(studentData)
-        this.intershipData.forEach( (pasantia:any , index: number) => {
-          this.intershipData[index].author = studentData[index].userLastName + ", " + studentData[index].userFirstName
-          this.intershipData[index].intershipStartDate = new Date(this.intershipData[index].intershipStartDate).toLocaleDateString()
-          this.intershipData[index].intershipCompletionDate = new Date(this.intershipData[index].intershipCompletionDate).toLocaleDateString()
-        })
-        return of(null)
-      })
-    ).subscribe({
-      complete: () => {
-        console.log("completado")
-      }
-    })
+    
   }
 
   enviarPlanillas(element: any){
     console.log(element)
+    this.cargadoArchivos = true
     this.userService.getUserData(element.studentDNI).pipe(
       switchMap(
         (studentData) => {
@@ -115,7 +122,7 @@ export class DesarrolloPasantiaComponent {
       switchMap(
         (enterpriseData) => {
           this.enterpriseData = enterpriseData
-          return this.corporateTutorCriteriaService.getAllEnterpriseTutorCriteria()
+          return this.corporateTutorCriteriaService.getAllEnterpriseTutorCriteriaBySchool(this.localUserData.schoolName)
           //return this.formGenerator.convertDocumentToBlob(this.formGenerator.generateIntershipAcademicTutorEvaluationForm())
           //return of(null)
         }
@@ -123,19 +130,19 @@ export class DesarrolloPasantiaComponent {
       switchMap(
         (corporateTutorCriteriaList) => {
           this.corporateCriteriaList = corporateTutorCriteriaList
-          return this.academicTutorCriteriaService.getAllAcademicTutorCriteria()
+          return this.academicTutorCriteriaService.getAllAcademicTutorCriteriaBySchool(this.localUserData.schoolName)
         }
       ),
       switchMap(
         (academicTutorCriteriaList) => {
           this.academicCriteriaList = academicTutorCriteriaList
-          return this.academicTutorCriteriaService.getAllAcademicTutorSeccion()
+          return this.academicTutorCriteriaService.getAllAcademicTutorSeccionBySchool(this.localUserData.schoolName)
         }
       ),
       switchMap(
         (academicTutorSeccionList) => {
           this.academicSeccionList = academicTutorSeccionList
-          return this.corporateTutorCriteriaService.getAllEnterpriseTutorSeccion()
+          return this.corporateTutorCriteriaService.getAllEnterpriseTutorSeccionBySchool(this.localUserData.schoolName)
         }
       ),
       switchMap(

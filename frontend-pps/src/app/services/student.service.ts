@@ -28,6 +28,12 @@ export class StudentService {
     return this.http.get(`${environment.apiUrl}/students`,{headers});
   }
 
+  getStudentBySchool( schoolName: string ) : Observable<any> {
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`${environment.apiUrl}/students/by/school/${schoolName}`,{headers});
+  }
+
   getStudentsData() : Observable<any> {
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
@@ -63,7 +69,7 @@ export class StudentService {
     return regexValidator.test(fileNameWithOutExtension);
   }
 
-  upload(file: File, studentDNI: string, studentDNI2: string | null = null) : Observable<any>{
+  upload(file: File, studentDNI: string, studentDNI2: string | null = null, escuela: string) : Observable<any>{
 
 
     if(file){
@@ -99,6 +105,7 @@ export class StudentService {
                 userFirstName: this.firstStudentData.userFirstName,
                 userLastName: this.firstStudentData.userLastName
               }));
+              formData.append('escuela',escuela)
 
               return this.http.post(`${environment.amazonS3}/upload`, formData, { headers });
               
@@ -141,7 +148,7 @@ export class StudentService {
             ]
               formData.append('file', newFile);
               formData.append('userData', JSON.stringify(userData)); // Append user data (optional)
-
+              formData.append('escuela',escuela)
         
               return this.http.post(`${environment.amazonS3}/upload/double`, formData, { headers: headers});
             })

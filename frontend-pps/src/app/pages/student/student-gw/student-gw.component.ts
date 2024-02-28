@@ -502,7 +502,7 @@ export class StudentGWComponent {
           console.log("Es tesis grupal")
           console.log("Tu companero es: " + this.partnerSelected)
 
-          this.studentService.upload(this.currentFile as File, this.user.userDNI as string, this.partnerSelected)
+          this.studentService.upload(this.currentFile as File, this.user.userDNI as string, this.partnerSelected,"Civil")
           .pipe(
             switchMap(() => {
               console.log("SE CARGO EL ARCHIVO COMENZANDO CREACION DE PROPUESTA");
@@ -541,7 +541,7 @@ export class StudentGWComponent {
           });
         }else{
           console.log("Es tesis individual")
-          this.studentService.upload(this.currentFile as File, this.user.userDNI as string, null)
+          this.studentService.upload(this.currentFile as File, this.user.userDNI as string, null,"Civil")
           .pipe(
             catchError( (error) => {
               console.log("ERROR EN NOMBRE DE ARCHIVO");
@@ -804,7 +804,7 @@ export class StudentGWComponent {
             let formattedFileName;
             if(this.studentList.length > 1){
               formattedFileName =  `${this.studentList[0].userLastName.split(' ')[0]}${this.studentList[0].userFirstName.split(' ')[0]} ${this.studentList[1].userLastName.split(' ')[0]}${this.studentList[1].userFirstName.split(' ')[0]} PTG.pdf`
-              return this.studentService.upload(this.currentFile as File, userData.userDNI as string, this.studentList[1].userDNI)
+              return this.studentService.upload(this.currentFile as File, userData.userDNI as string, this.studentList[1].userDNI,"Civil")
             }else{
               formattedFileName = `${this.studentList[0].userLastName.split(' ')[0]}${this.studentList[0].userFirstName.split(' ')[0]} PTG.pdf`
             }
@@ -813,7 +813,7 @@ export class StudentGWComponent {
         ),
         switchMap(
           (newFile) => {
-            return this.studentService.upload(newFile, this.localUser.userDNI as string, null)
+            return this.studentService.upload(newFile, this.localUser.userDNI as string, null,"Civil")
           }
         ),
         switchMap(

@@ -1,6 +1,6 @@
-<h2 mat-dialog-title>Ingrese los datos del Profesional Externos</h2>
+<h2 mat-dialog-title>Ingrese los datos del Consejo de Escuela</h2>
 <mat-dialog-content class="mat-typography">
-    <form [formGroup]="councilForm" style="display: flex; flex-direction: column;">
+    <form [formGroup]="councilForm" style="display: flex; flex-direction: column;" *ngIf="cargadoArchivos == false">
 
         
         <mat-form-field class="full-width input-margin" *ngIf="!isEditMode">
@@ -21,12 +21,21 @@
               <mat-option  value="EXTRAORDINARIO">Extraordinario</mat-option>
             </mat-select>
         </mat-form-field>
-
+        <div style="height: 50%;" *ngIf="data?.mode !== 'EDITAR'">
+            <h3 style="margin-top: 15px;">Cargue el Acta de Consejo de Escuela</h3>
+            <mat-divider></mat-divider>
+            <input style = "margin-top:  10px;" type="file" formControlName="councilFile" id = "fileInput" name="fileInput" (change)="onFileSelected($event)">
+        </div>
       
     </form>
+
+    <div style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">
+        <mat-spinner *ngIf="cargadoArchivos == true"></mat-spinner>
+    </div>
+
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>Cancel</button>
-  <button mat-raised-button color="primary" (click)="agregarConsejo()" *ngIf="data == null">Agregar Consejo</button>
-  <button mat-raised-button color="primary" (click)="modificarConsejo()" *ngIf="data != null && data.mode == 'EDITAR'">Modificar Consejo</button>
+  <button mat-button mat-dialog-close *ngIf="cargadoArchivos == false">Cancel</button>
+  <button mat-raised-button color="primary" (click)="agregarConsejo()" *ngIf="data.mode == 'CREAR' && cargadoArchivos == false">Agregar Consejo</button>
+  <button mat-raised-button color="primary" (click)="modificarConsejo()" *ngIf="data != null && data.mode == 'EDITAR' && cargadoArchivos == false">Modificar Consejo</button>
 </mat-dialog-actions>

@@ -125,6 +125,8 @@ export class AssignmentComponent implements OnInit{
 
   reviewerEvaluationFormFile: any = null;
   reviewerNotificationFile: any = null;
+
+  userData: any = null
   constructor(
     private graduateWorkService: GraduateworkService,
     private professorService: ProfessorsService, 
@@ -139,6 +141,22 @@ export class AssignmentComponent implements OnInit{
     private emailService: EmailService,
     private formService: EvaluationFormGeneratorService
   ){
+
+    const localUser = localStorage.getItem('user')
+    if(localUser){
+      const localUserData = JSON.parse(localUser)
+      this.userService.getUserData(localUserData.userDNI).subscribe({
+        next: (userData) => {
+          this.userData = userData
+          this.committeeService.getCommitteeBySchool(this.userData.schoolName).subscribe({
+            next: ( data:any ) => {
+              this.committeeList = [...data]
+              console.log(this.committeeList)
+            }
+          })
+        }
+      })
+    }
     this.inputdata = this.data
     console.log(this.inputdata)
     this.graduateWorkService.getCriteria().subscribe({
@@ -165,12 +183,7 @@ export class AssignmentComponent implements OnInit{
       }
     })
 
-    this.committeeService.getCommittees().subscribe({
-      next: ( data:any ) => {
-        this.committeeList = [...data]
-        console.log(this.committeeList)
-      }
-    })
+  
 
 
 
@@ -442,14 +455,15 @@ export class AssignmentComponent implements OnInit{
     const todayDate = new Date();
     this.committeeService.createCommittee({
       "committeeId": this.committeeForm.value.committeeId as string,
-      "committeeDate": todayDate as Date
+      "committeeDate": todayDate as Date,
+      "schoolName": this.userData.schoolName
     }).subscribe({
       next: (data) => {
         console.log(data)
         this.isCreateNewCommittee = !this.isCreateNewCommittee
       },
       complete: () => {
-        this.committeeService.getCommittees().subscribe({
+        this.committeeService.getCommitteeBySchool(this.userData.schoolName).subscribe({
           next: ( data:any ) => {
             this.committeeList = [...data]
           }

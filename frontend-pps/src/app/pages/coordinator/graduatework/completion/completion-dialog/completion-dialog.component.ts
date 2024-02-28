@@ -31,6 +31,8 @@ export class CompletionDialogComponent {
   professorData: any;
   professorList: any;
 
+  cargadoArchivos: boolean = false
+
   constructor(
     private formBuilder: FormBuilder,
     private externalService: ExternalPersonnelService,
@@ -54,14 +56,20 @@ export class CompletionDialogComponent {
   }
 
   culminarTrabajoDeGrado(){
-    this.graduateWorkService.changeStatus(this.inputdata.proposal[0].graduateworkid,100).subscribe({
-      next: (result) => {
-        console.log(result)
-      },
-      complete: () => {
-        window.location.href = window.location.href
-      }
-    })
+    if(this.graduateWorkForm.valid){
+      this.cargadoArchivos = true
+      this.graduateWorkService.changeStatus(this.inputdata.proposal[0].graduateworkid,100).subscribe({
+        next: (result) => {
+          console.log(result)
+        },
+        complete: () => {
+          window.location.href = window.location.href
+        }
+      })
+    }else{
+      
+    }
+    
   }
 
   onFileSelected(event: any) {

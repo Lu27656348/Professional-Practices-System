@@ -23,6 +23,7 @@ export class NavbarComponent implements OnInit{
   data: any = null;
   
   isRoleSelected: boolean = false
+  userData: any = null
 
 
   dataBs: any;
@@ -30,10 +31,19 @@ export class NavbarComponent implements OnInit{
 
   constructor(private loginService: LoginService,private router: Router,private userService: UsersService,private dataService: NavbarService){
     const localUserRoles = localStorage.getItem('roles')
-    if(localUserRoles){
+    const localUserData = localStorage.getItem('user')
+    if(localUserRoles && localUserData){
       const roles = JSON.parse(localUserRoles);
-      console.log(roles)
+      const userData = JSON.parse(localUserData);
       this.dataService.setRole(roles);
+      this.userService.getUserData(userData.userDNI).subscribe(
+        {
+          next: (userData) =>{
+            this.userData = userData
+            console.log(userData)
+          }
+        }
+      )
     }
     
     this.dataService.getData().subscribe({

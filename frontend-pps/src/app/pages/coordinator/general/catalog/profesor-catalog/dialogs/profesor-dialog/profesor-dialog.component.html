@@ -47,14 +47,6 @@
         </div>
     </form>
     <form [formGroup]="professorForm" *ngIf="nextStep" style="display: flex; flex-direction: column;">
-        <mat-form-field style="width: 100%;">
-            <mat-label>Seleccione la escuela a la que pertenece</mat-label>
-            <mat-select formControlName = "escuela">
-              <mat-option *ngFor="let school of schoolList" [value]="school.schoolname">
-                {{ school.schoolname }}
-              </mat-option>
-            </mat-select>
-        </mat-form-field>
 
         <mat-form-field style="width: 100%;">
             <mat-label>Ingrese la cantidad de años de experiencia:</mat-label>

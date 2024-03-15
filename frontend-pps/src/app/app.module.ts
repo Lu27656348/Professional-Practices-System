@@ -136,6 +136,14 @@ import { EditarCriterioTutorOralComponent } from './pages/coordinator/graduatewo
 import { CrearCriterioTutorOralComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-tutor-oral/dialogs/crear-criterio-tutor-oral/crear-criterio-tutor-oral.component';
 import { CrearSeccionTutorOralComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-tutor-oral/dialogs/crear-seccion-tutor-oral/crear-seccion-tutor-oral.component';
 import { EditarSeccionTutorOralComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-tutor-oral/dialogs/editar-seccion-tutor-oral/editar-seccion-tutor-oral.component';
+import { CriteriosProfesorRevisorComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-profesor-revisor/criterios-profesor-revisor.component';
+import { CrearCriterioProfesorRevisorComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-profesor-revisor/dialogs/crear-criterio-profesor-revisor/crear-criterio-profesor-revisor.component';
+import { EditarCriterioProfesorRevisorComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-profesor-revisor/dialogs/editar-criterio-profesor-revisor/editar-criterio-profesor-revisor.component';
+import { CrearCriterioTutorEmpresarialComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-tutor-empresarial/crear-criterio-tutor-empresarial/crear-criterio-tutor-empresarial.component';
+import { EditarCriterioTutorEmpresarialComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-tutor-empresarial/editar-criterio-tutor-empresarial/editar-criterio-tutor-empresarial.component';
+import { PantallaEvaluacionComponent } from './pages/coordinator/intership/pantalla-evaluacion/pantalla-evaluacion.component';
+import { PantallaEvaluacionJuradoPresentacionComponent } from './pages/coordinator/graduatework/pantalla-evaluacion-jurado-presentacion/pantalla-evaluacion-jurado-presentacion.component';
+import { PantallaEvaluacionJuradoEscritoComponent } from './pages/coordinator/graduatework/pantalla-evaluacion-jurado-escrito/pantalla-evaluacion-jurado-escrito.component';
 
 @NgModule({
   declarations: [
@@ -237,7 +245,15 @@ import { EditarSeccionTutorOralComponent } from './pages/coordinator/graduatewor
     EditarCriterioTutorOralComponent,
     CrearCriterioTutorOralComponent,
     CrearSeccionTutorOralComponent,
-    EditarSeccionTutorOralComponent
+    EditarSeccionTutorOralComponent,
+    CriteriosProfesorRevisorComponent,
+    CrearCriterioProfesorRevisorComponent,
+    EditarCriterioProfesorRevisorComponent,
+    CrearCriterioTutorEmpresarialComponent,
+    EditarCriterioTutorEmpresarialComponent,
+    PantallaEvaluacionComponent,
+    PantallaEvaluacionJuradoPresentacionComponent,
+    PantallaEvaluacionJuradoEscritoComponent
   ],
   imports: [
     BrowserModule,

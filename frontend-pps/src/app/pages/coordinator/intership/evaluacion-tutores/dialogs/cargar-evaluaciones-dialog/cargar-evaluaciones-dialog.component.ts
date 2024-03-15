@@ -5,6 +5,7 @@ import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition
 import { switchMap } from 'rxjs';
 import { EvaluateIntershipReportRequest } from 'src/app/interfaces/requests/EvaluateIntershipReportRequest';
 import { DocumentService } from 'src/app/services/document.service';
+import { EmailService } from 'src/app/services/email.service';
 import { PasantiaService } from 'src/app/services/pasantia/pasantia.service';
 import { UsersService } from 'src/app/services/users.service';
 
@@ -38,6 +39,7 @@ export class CargarEvaluacionesDialogComponent {
     private pasantiaService: PasantiaService,
     private userService: UsersService,
     private documentService: DocumentService,
+    private emailService: EmailService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ){
     const localUser = localStorage.getItem('user')
@@ -103,6 +105,7 @@ export class CargarEvaluacionesDialogComponent {
         }),
         switchMap(
           (academicTutorFile)=> {
+            this.academicTutorFile = academicTutorFile
             let escuela;
             if(this.userData.schoolName == 'Ing. Informatica'){
               escuela = "Informática"
@@ -129,6 +132,7 @@ export class CargarEvaluacionesDialogComponent {
         }),
         switchMap(
           (corporateTutorFile)=> {
+            this.corporateTutorFile = corporateTutorFile
             let escuela;
             if(this.userData.schoolName == 'Ing. Informatica'){
               escuela = "Informática"
@@ -141,11 +145,36 @@ export class CargarEvaluacionesDialogComponent {
               userLastName: this.studentData.userLastName
             },
             escuela)
-          })
+          }),
+          switchMap(
+            (result) => {
+              return this.emailService.sendMultipleEmail(
+                [this.academicTutorFile,this.corporateTutorFile],
+                {
+                  emailTo: this.studentData.userEmail,
+                  emailFrom: this.inputdata.user.userEmail,
+                  subject: "Entrega Informe de Pasantía con evaluación de los tutores",
+                  htmlContent:
+                  `
+                  Puerto Ordaz, ${new Date().toLocaleDateString("es-ES", {day: "numeric",month: "long", year: "numeric",})}
+                  Buen día estimado ${this.studentData.userLastName}, ${this.studentData.userFirstName}
+                  Saludándole cordialmente
+                  Por favor envíe al correo ${this.inputdata.user.userEmail}, su Informe de Pasantía, lo más pronto posible; agregando las planillas de evaluación de los tutores después de la primera página. 
+                  Recuerde el formato del archivo es PDF y el nombre del archivo
+                  PrimerApellidoPrimerNombre Informe Pasantía
+                  Cualquier consulta o duda estoy a su disposición.
+                  Atentamente,
+                  ${this.inputdata.user.userLastName}, ${this.inputdata.user.userFirstName}
+                  `
+                }
+              )
+            }
+          )
 
       )
       .subscribe({
         next: (uploadResult) => {
+            console.log(uploadResult)
             console.log("Todo bien")
         },
         complete: () => {
@@ -154,7 +183,8 @@ export class CargarEvaluacionesDialogComponent {
               console.log(result)
             },
             complete: () => {
-              window.location.href = window.location.href
+              this.cargadoArchivos = false
+              //window.location.href = window.location.href
             }
           })
         }

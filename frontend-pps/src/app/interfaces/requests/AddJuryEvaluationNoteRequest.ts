@@ -3,5 +3,5 @@ export interface AddJuryEvaluationNote {
     studentDNI: string,
     graduateWorkId: string,
     criteriaId: number,
-    evaluationNote: number
+    evaluationNote: number | null
 }

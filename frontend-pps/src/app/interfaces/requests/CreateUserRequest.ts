@@ -6,4 +6,5 @@ export interface CreateUserRequest {
 	userEmail: string,
 	userPhone: string | null,
 	userEmailAlt: string | null,
+	schoolName: string
 }

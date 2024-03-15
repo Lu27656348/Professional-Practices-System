@@ -1,3 +1,4 @@
+import { core } from '@angular/compiler';
 import { Component, Inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -29,8 +30,7 @@ export class ProfesorDialogComponent {
       profesion: new FormControl('',Validators.required),
       experiencia: new FormControl('',Validators.required),
       graduacion: new FormControl('',Validators.required),
-      oficina: new FormControl('')
-      
+      oficina: new FormControl('',[])
   })
 
   nextStep: boolean = false
@@ -41,7 +41,19 @@ export class ProfesorDialogComponent {
 
   schoolList: any = null
 
+  coordinatorData: any = null
+
   constructor(private _snackBar: MatSnackBar, private schoolService: SchoolService,private userService: UsersService, private professorService: ProfessorsService,@Inject(MAT_DIALOG_DATA) public data: any){
+    const localUser = localStorage.getItem('user')
+    if(localUser){
+      const localUserData = JSON.parse(localUser)
+      this.userService.getUserData(localUserData.userDNI).subscribe({
+        next: (coordinatorData) => {
+          console.log(coordinatorData)
+          this.coordinatorData = coordinatorData
+        }
+      })
+    }
     this.schoolService.getSchools().subscribe({
       next: (schoolList) => [
         this.schoolList = schoolList
@@ -57,6 +69,7 @@ export class ProfesorDialogComponent {
         correoElectronico: this.data.data.userEmail,
         telefono: this.data.data.userPhone
       })
+      this.userForm?.get('cedula')?.disable();
       this.professorForm.setValue({
         escuela: this.data.data.professorData.professorSchoolName,
         profesion: this.data.data.professorData.professorProfession,
@@ -82,7 +95,16 @@ export class ProfesorDialogComponent {
   }
 
   agregarProfesor(){
-    if(this.professorForm.valid){
+    console.log( this.professorForm?.get('escuela'))
+    console.log( this.professorForm?.get('profesion'))
+    console.log( this.professorForm?.get('experiencia'))
+    console.log( this.professorForm?.get('graduacion'))
+    if(
+      this.professorForm?.get('escuela') &&
+      this.professorForm?.get('profesion') &&
+      this.professorForm?.get('experiencia') &&
+      this.professorForm?.get('graduacion')
+    ){
       console.log(this.userForm.value)
       console.log(this.professorForm.value)
       const userData: CreateUserRequest = {
@@ -92,11 +114,12 @@ export class ProfesorDialogComponent {
         userLastName: this.userForm.value.apellidos,
         userEmail: this.userForm.value.correoElectronico + this.emailFormatSelected,
         userPhone: this.userForm.value.telefono,
-        userEmailAlt: null
+        userEmailAlt: null,
+        schoolName: this.coordinatorData.schoolName
       }
       const professorData: createProfessorRequest = {
         professorDNI: "V-" + this.userForm.value.cedula,
-        professorSchoolName: this.professorForm.value.escuela,
+        professorSchoolName: this.coordinatorData.schoolName,
         professorProfession: this.professorForm.value.profesion,
         professorOffice: this.professorForm.value.oficina,
         professorWorkExperience: this.professorForm.value.experiencia,
@@ -114,11 +137,19 @@ export class ProfesorDialogComponent {
         next: (result) => {
           console.log(result)
         },
+        error: (error) => {
+          console.log(error)
+          this._snackBar.open("Error en la creacion de profesor", "cerrar",{
+            horizontalPosition: this.horizontalPosition,
+            verticalPosition: this.verticalPosition,
+          })
+        },
         complete: () => {
           window.location.href = window.location.href
         }
       })
     }else{
+      console.log("Error en agregar profesor")
       this._snackBar.open("Debe llenar todos los campos", "cerrar",{
         horizontalPosition: this.horizontalPosition,
         verticalPosition: this.verticalPosition,
@@ -127,21 +158,28 @@ export class ProfesorDialogComponent {
   }
 
   modificarProfesor(){
-    if(this.professorForm.valid){
+    console.log(this.userForm?.get('cedula')?.value)
+    if(
+      this.professorForm?.get('escuela')?.valid &&
+      this.professorForm?.get('profesion')?.valid &&
+      this.professorForm?.get('experiencia')?.valid &&
+      this.professorForm?.get('graduacion')?.valid
+    ){
       console.log(this.userForm.value)
       console.log(this.professorForm.value)
       const userData: CreateUserRequest = {
-        userDNI: this.userForm.value.cedula,
+        userDNI: this.userForm?.get('cedula')?.value,
 	      userPassword: "Hola",
         userFirstName: this.userForm.value.nombres,
         userLastName: this.userForm.value.apellidos,
         userEmail: this.userForm.value.correoElectronico,
         userPhone: this.userForm.value.telefono,
-        userEmailAlt: null
+        userEmailAlt: null,
+        schoolName: this.coordinatorData.schoolName,
       }
       const professorData: createProfessorRequest = {
-        professorDNI: this.userForm.value.cedula,
-        professorSchoolName: this.professorForm.value.escuela,
+        professorDNI: this.userForm?.get('cedula')?.value,
+        professorSchoolName: this.coordinatorData.schoolName,
         professorProfession: this.professorForm.value.profesion,
         professorOffice: this.professorForm.value.oficina,
         professorWorkExperience: this.professorForm.value.experiencia,
@@ -149,7 +187,7 @@ export class ProfesorDialogComponent {
       }
       console.log(userData)
       console.log(professorData)
-      this.userService.createUser(userData).pipe(
+      this.userService.updateUser(userData).pipe(
         switchMap(
           (userResult) => {
             return this.professorService.createProfessors(professorData)
@@ -159,11 +197,15 @@ export class ProfesorDialogComponent {
         next: (result) => {
           console.log(result)
         },
+        error: (error) => {
+          console.log(error)
+        },
         complete: () => {
           window.location.href = window.location.href
         }
       })
     }else{
+      console.log("Error en modificar profesor")
       this._snackBar.open("Debe llenar todos los campos", "cerrar",{
         horizontalPosition: this.horizontalPosition,
         verticalPosition: this.verticalPosition,

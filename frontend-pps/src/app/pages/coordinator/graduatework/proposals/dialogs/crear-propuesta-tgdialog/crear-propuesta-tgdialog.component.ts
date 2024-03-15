@@ -71,7 +71,20 @@ export class CrearPropuestaTGDialogComponent implements OnInit{
           }else{
             this.escuela = 'Civil'
           }
-          this.studentService.getStudentBySchool(this.userData.schoolName).subscribe({
+          this.studentService.getStudentBySchoolAndValidateGraduateWork(this.userData.schoolName)
+          .pipe(
+            switchMap(
+              ( studentListDNI : any ) => {
+                console.log(studentListDNI)
+                const observables: Observable<any>[] = []
+                studentListDNI.forEach ( (student:any) => {
+                  observables.push(this.userService.getUserData(student.studentDNI))
+                } )
+                return forkJoin(observables)
+              }
+            )
+          )
+          .subscribe({
             next: (studentData) => {
               console.log(studentData)
               this.studentList = studentData
@@ -221,6 +234,7 @@ export class CrearPropuestaTGDialogComponent implements OnInit{
             horizontalPosition: this.horizontalPosition,
             verticalPosition: this.verticalPosition
           })
+          this.cargadoArchivos = false
           throw new Error(error)
         }
 

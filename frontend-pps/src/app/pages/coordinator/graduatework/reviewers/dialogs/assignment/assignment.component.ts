@@ -18,6 +18,7 @@ import { EnterpriseService } from 'src/app/services/enterprise.service';
 import { ExternalPersonnelService } from 'src/app/services/external-personnel.service';
 import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
 import { environment } from 'src/environments/environment';
+import { SendEmailRequest } from 'src/app/interfaces/requests/SendEmailRequest';
 
 interface Criteria {
   reviewerCriteriaId: number;
@@ -27,7 +28,7 @@ interface ResponseBlob<T> extends Response {
   blob(): Promise<Blob>;
 }
 
-function downloadFile(fileName: string, studentDNI: string | null, userFirstName: string | null, userLastName: string | null) : Observable<Blob> {
+function downloadFile(fileName: string, studentDNI: string | null, userFirstName: string | null, userLastName: string | null,escuela: string) : Observable<Blob> {
   return from(
     fetch(`${environment.amazonS3}/download`, {
       method: 'POST',
@@ -38,7 +39,8 @@ function downloadFile(fileName: string, studentDNI: string | null, userFirstName
         fileName: fileName,
         studentDNI: studentDNI,
         userFirstName: userFirstName,
-        userLastName: userLastName
+        userLastName: userLastName,
+        escuela: escuela
       }),
       })
   )
@@ -270,7 +272,19 @@ export class AssignmentComponent implements OnInit{
             (reviewerData) => {
               this.reviewerData = reviewerData
               let criteriaList: any[] = []
-              this.criteria.forEach( (criteria: any) => {
+              console.log( this.criteria)
+              console.log(this.userData)
+              console.log(this.graduateWorkData)
+              const criteriaFiltered =
+              this.criteria.filter(
+                (criteriaData:any) => 
+                criteriaData.schoolName == this.userData.schoolName 
+                && criteriaData.criteriaModel == this.graduateWorkData.graduateWorkType
+              )
+              console.log(criteriaFiltered)
+              this.criteria.filter(
+                (criteriaData:any) => criteriaData.schoolName == this.userData.schoolName && criteriaData.criteriaModel == this.graduateWorkData.graduateWorkType
+              ).forEach( (criteria: any) => {
 
                 const criterio = {
                   criteriaId: criteria.reviewerCriteriaId,
@@ -346,7 +360,11 @@ export class AssignmentComponent implements OnInit{
             (result) => {
               console.log(result)
               const observables: Observable<any>[] = [];
-              this.criteria.forEach( (criterio: any) => {
+              this.criteria.filter(
+                (criteriaData:any) => 
+                criteriaData.schoolName == this.userData.schoolName 
+                && criteriaData.criteriaModel == this.graduateWorkData.graduateWorkType
+              ).forEach( (criterio: any) => {
                 
                 observables.push(this.graduateWorkService.createReviewerEvaluationCriteria({
                   "professorDNI": this.reviewerSelected,
@@ -392,7 +410,13 @@ export class AssignmentComponent implements OnInit{
     
               console.log(fileName);
               this.fileName = fileName
-              return downloadFile(fileName,this.inputdata.user[0].userDNI, this.inputdata.user[0].userFirstName.split(' ')[0],this.inputdata.user[0].userLastName.split(' ')[0])
+              let escuela;
+              if(this.userData.schoolName == "Ing. Informatica"){
+                escuela = "Informática"
+              }else{
+                escuela = "Civil"
+              }
+              return downloadFile(fileName,this.inputdata.user[0].userDNI, this.inputdata.user[0].userFirstName.split(' ')[0],this.inputdata.user[0].userLastName.split(' ')[0],escuela)
 
             }
           ),
@@ -401,7 +425,43 @@ export class AssignmentComponent implements OnInit{
               const file: File = new File([propuestaBlob], this.fileName, { type: propuestaBlob.type });
               console.log(file)
               this.fileArray.push(file)
-              return this.emailService.sendMultipleEmail(this.fileArray,this.administratorData.userEmail, this.reviewerData.userEmail) 
+
+              let studentNames: string = ""
+              if(this.inputdata.user.length > 1){
+                studentNames = `Alumnos ${this.inputdata.user[0].userLastName.split(' ')[0]}${this.inputdata.user[0].userFirstName.split(' ')[0]} ${this.inputdata.user[1].userLastName.split(' ')[0]}${this.inputdata.user[1].userFirstName.split(' ')[0]}`
+              }else{
+                studentNames = ` Alumno ${this.inputdata.user[0].userLastName.split(' ')[0]}${this.inputdata.user[0].userFirstName.split(' ')[0]}`
+              }
+
+              let emailData: SendEmailRequest = {
+                emailTo: this.reviewerData.userEmail,
+                emailFrom: this.administratorData.userEmail,
+                subject: `Designación Profesor Revisor ${this.reviewerData.userLastName.split(" ")[0]} ${this.reviewerData.userFirstName.split(" ")[0]} - Propuesta de TG ${studentNames}` ,
+                htmlContent: 
+                `
+                Puerto Ordaz, ${new Date().toLocaleDateString("es-ES", {day: "numeric",month: "long", year: "numeric",})}
+
+                          Buen día estimado(a) profesor(a): ${this.reviewerData.userLastName}, ${this.reviewerData.userFirstName}
+
+                          Saludándole cordialmente
+
+                          Adjunto: Carta de Designación como Profesor Revisor, Propuesta, Planilla de Evaluación de la misma editable, con los datos de la propuesta y estudiante.
+
+                          Nota: Puede generar la planilla de evaluación de Propuesta en el siguiente enlace:
+
+                          Enlace: ${environment.basicURL}/generar/planilla/${this.reviewerData.userDNI}/${this.inputdata.gw.graduateWorkId}
+
+                          Agradeciendo su amable y pronta atención a la presente.
+
+                          Cualquier consulta o duda estoy a su disposición.
+
+                          Atentamente
+
+                ${this.administratorData.userLastName}, ${this.administratorData.userFirstName}
+                `
+              }
+              
+              return this.emailService.sendMultipleEmail(this.fileArray, emailData) 
             }
           )
         )
@@ -420,7 +480,8 @@ export class AssignmentComponent implements OnInit{
               horizontalPosition: this.horizontalPosition,
               verticalPosition: this.verticalPosition
             })
-            throw new Error(error)
+            this.cargadoArchivos = false
+            throw new Error(error.message)
           }
         })
         
@@ -435,7 +496,12 @@ export class AssignmentComponent implements OnInit{
     
    
     }else{
-
+      this.graduateWorkService.changeStatus(this.inputdata.gw.graduateWorkId,400)
+      .subscribe({
+        next: (result) => {
+          window.location.href = window.location.href
+        }
+      })
     }
 
   }
@@ -482,7 +548,9 @@ export class AssignmentComponent implements OnInit{
     console.log(this.reviewerCriteriaForm.value.reviewerCriteriaDescription)
     this.graduateWorkService.createReviewerCriteria({
       "reviewerCriteriaId": null,
-      "reviewerCriteriaDescription": this.reviewerCriteriaForm.value.reviewerCriteriaDescription as string
+      "reviewerCriteriaDescription": this.reviewerCriteriaForm.value.reviewerCriteriaDescription as string,
+      schoolName: this.userData.schoolName,
+      criteriaModel: this.graduateWorkData.graduateWorkType
     }).pipe(
       switchMap( (result) => {
         console.log(result)
@@ -515,7 +583,13 @@ export class AssignmentComponent implements OnInit{
     }
     
     console.log(fileName);
-    downloadFile(fileName,this.inputdata.user[0].userDNI, this.inputdata.user[0].userFirstName.split(' ')[0],this.inputdata.user[0].userLastName.split(' ')[0])
+    let escuela;
+    if(this.userData.schoolName == "Ing. Informatica"){
+      escuela = "Informática"
+    }else{
+      escuela = "Civil"
+    }
+    downloadFile(fileName,this.inputdata.user[0].userDNI, this.inputdata.user[0].userFirstName.split(' ')[0],this.inputdata.user[0].userLastName.split(' ')[0],escuela)
     .subscribe({
       next: (result) => {
         console.log(result)

@@ -7,5 +7,6 @@ export interface Criteria {
     criteriaModel: string,
     schoolName: string,
     seccionId: number,
-    selectedValue?: boolean 
+    selectedValue?: boolean
+    selectedValues?: number
 }

@@ -65,7 +65,13 @@ export class DesarrolloTgDialogComponent {
     this.documentService.copyFileAndRename(this.currentFile as File, formattedFileName).pipe(
       switchMap(
         (newFile) => {
-          return this.graduateWorkService.uploadFinalSubmittion(newFile,this.inputdata.userData)
+          let escuela
+          if( this.inputdata.userData[0].schoolName == "Ing. Informatica"){
+            escuela = "Informática"
+          }else{
+            escuela = "Civil"
+          }
+          return this.graduateWorkService.uploadFinalSubmittion(newFile,this.inputdata.userData,escuela)
         }
       )
     )

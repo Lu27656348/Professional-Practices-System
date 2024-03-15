@@ -112,7 +112,7 @@ export class ConsejoDialogComponent {
   }
   
   modificarConsejo(){
-    if(this.councilForm.valid){
+    if(this.councilForm.get('schoolCouncilDate') && this.councilForm.get('schoolCouncilType')){
       console.log(this.councilForm.value)
       const councilData: CreateCouncilRequest = {
         schoolCouncilId: this.councilForm.value.schoolCouncilId,

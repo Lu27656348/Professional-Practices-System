@@ -90,4 +90,8 @@ export class PropuestaPasantiaComponent implements OnInit{
       console.log(`Dialog result: ${result}`);
     });
   }
+
+  generarReportePasantia(){
+    console.log("generarReportePasantia()")
+  }
 }

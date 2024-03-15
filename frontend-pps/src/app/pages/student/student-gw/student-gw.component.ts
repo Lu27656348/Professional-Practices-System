@@ -704,7 +704,7 @@ export class StudentGWComponent {
         ),
         switchMap(
           (newFile) => {
-            return this.graduateworkService.uploadFinalSubmittion(newFile, this.studentList)
+            return this.graduateworkService.uploadFinalSubmittion(newFile, this.studentList, "Informatica")
           }
         ),
         switchMap(

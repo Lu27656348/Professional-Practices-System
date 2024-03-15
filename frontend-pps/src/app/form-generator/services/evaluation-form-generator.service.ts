@@ -1035,6 +1035,22 @@ export class EvaluationFormGeneratorService {
     return maxNote;
   }
 
+  calculateSeccionSum(seccions: Seccion[]){
+    let sum = 0;
+    seccions.forEach( (seccion) => {
+        sum = sum + ((seccion?.sum) ? seccion?.sum : 0)
+    })
+    return sum;
+  }
+
+  calculateCriteriaSum(criteria: Criteria[]){
+    let sum = 0;
+    criteria.forEach( (criteria) => {
+        sum = sum + ((criteria?.selectedValues) ? criteria?.selectedValues : 0)
+    })
+    return sum;
+  }
+
   generateCriteriaEvaluationTable(criteriaArray: Criteria[],seccion: Seccion) : Table{
     /* Primero Injectamos las cabeceras de la tabla */
     const maxNoteInCriteriaList = this.findMaxNote(criteriaArray)
@@ -1140,7 +1156,27 @@ export class EvaluationFormGeneratorService {
                 noteCellArray.push(seccionCell)
                 noteCellArray.push(criteriaCell)
                 for(let i = 0; i <= criteria.maxNote; i++){
-                    noteCellArray.push(celdaCuadrito)
+                    noteCellArray.push(
+                        new TableCell({
+                            children: [
+                                new Paragraph({
+                                children: [
+                                    new CheckBox(
+                                        {
+                                            checked: (criteria?.selectedValues == i) as boolean
+                                        }
+                                    )
+                                ],
+                                alignment: "center"
+                                })
+                            ],
+                            width: {
+                            size:`1cm`,
+                            type: WidthType.DXA
+                            },
+                            verticalAlign: VerticalAlign.CENTER
+                        })
+                    )
                 }
                 
                 rowsGenerated.push(
@@ -1221,7 +1257,27 @@ export class EvaluationFormGeneratorService {
                 noteCellArray.push(seccionCell)
                 noteCellArray.push(criteriaCell)
                 for(let i = 0; i <= criteria.maxNote; i++){
-                    noteCellArray.push(celdaCuadrito)
+                    noteCellArray.push(
+                        new TableCell({
+                            children: [
+                                new Paragraph({
+                                children: [
+                                    new CheckBox(
+                                        {
+                                            checked: (criteria?.selectedValues == i) as boolean
+                                        }
+                                    )
+                                ],
+                                alignment: "center"
+                                })
+                            ],
+                            width: {
+                            size:`1cm`,
+                            type: WidthType.DXA
+                            },
+                            verticalAlign: VerticalAlign.CENTER
+                        })
+                    )
                 }
                 
                 rowsGenerated.push(
@@ -1318,7 +1374,7 @@ export class EvaluationFormGeneratorService {
                                     new Paragraph({
                                         children: [
                                             new TextRun({
-                                                text: "Total " + seccion.seccionName + "(Máximo " +  "[seccion.maxNote] " + "puntos)"
+                                                    text: `Total ${seccion.seccionName} Máximo ${seccion.maxNote} puntos)`
                                             })
                                         ],
                                         alignment: AlignmentType.LEFT
@@ -1334,7 +1390,7 @@ export class EvaluationFormGeneratorService {
                                     new Paragraph({
                                         children: [
                                             new TextRun({
-                                                text: "Total " + seccion.seccionName + "[totalSum]" + " puntos"
+                                                text: `Total ${seccion.seccionName} ${ seccion?.sum } puntos`
                                             })
                                         ],
                                         alignment: AlignmentType.LEFT
@@ -1385,7 +1441,7 @@ export class EvaluationFormGeneratorService {
                                 new Paragraph({
                                     children: [
                                         new TextRun({
-                                            text: "Puntuacion TOTAL " + "[totalSum] "  + " puntos."
+                                            text: `Puntuacion TOTAL ${this.calculateSeccionSum(seccionArray)} puntos.`
                                         })
                                     ],
                                     alignment: AlignmentType.LEFT
@@ -5148,14 +5204,16 @@ generateGraduateWorkJuryNotification(
 }
 
 generateGraduateWorkCriteriaTable(criteriaArray: Criteria[], seccion: Seccion) : Table {
+  
     const maxNoteInCriteriaList = this.findMaxNote(criteriaArray)
     const rowsGenerated :  TableRow[] = []
     const columnGenerated : TableCell[] = []
 
+
     const seccionCell = new TableCell({
                             width: {
-                                size: `5cm`,
-                                type:  WidthType.DXA
+                                size: `4cm`,
+                                  type:  WidthType.DXA
                                 },
                             children: [
                                 new Paragraph({
@@ -5170,19 +5228,65 @@ generateGraduateWorkCriteriaTable(criteriaArray: Criteria[], seccion: Seccion) :
                             verticalMerge: "continue"
                         })
         /* Para cada una de las secciones dentro de nuestra evaluacion insertamos el nombre */
+        columnGenerated.push(
+            seccionCell
+        )
+        /* Insertamos la cabecera de criterios */
+        columnGenerated.push(
+            new TableCell({
+                width: {
+                    size: `5cm`,
+                    type:  WidthType.DXA
+                },
+                children: [
+                    new Paragraph({
+                        children: [
+                            new TextRun({
+                                text: "Criterios de Evaluación"
+                            })
+                        ],
+                        alignment: AlignmentType.LEFT
+                    })
+                ]
+            }),
+        )
+        /* Insertamos la cabecera de notas */
+        for(let i = 0 ; i <= maxNoteInCriteriaList; i++){
+            columnGenerated.push(
+                new TableCell({
+                    children: [
+                        new Paragraph({
+                        children: [
+                            new TextRun({
+                                text: i.toLocaleString()
+                            })
+                        ],
+                        alignment: "center"
+                        })
+                    ],
+                    width: {
+                    size:`0.815cm`,
+                    type: WidthType.DXA
+                    },
+                    verticalAlign: VerticalAlign.CENTER
+            }))
+        }
 
         /* Insertamos todo en la primera fila de nuestra tabla */
 
-    
+        rowsGenerated.push(
+            new TableRow({
+                children: columnGenerated
+            })
+        )
         /* Luego si el ID de la seccion del criterio coincide con la seccion actual lo agregamos */
         criteriaArray.forEach( (criteria) => {
             if(criteria.seccionId == seccion.seccionId){
-                console.log(criteria)
                 let noteCellArray: TableCell[] = []
                 let criteriaCell: TableCell = 
                                             new TableCell({
                                                 width: {
-                                                    size: "5cm",
+                                                    size: 400,
                                                     type:  WidthType.DXA
                                                 },
                                                 children: [
@@ -5199,7 +5303,27 @@ generateGraduateWorkCriteriaTable(criteriaArray: Criteria[], seccion: Seccion) :
                 noteCellArray.push(seccionCell)
                 noteCellArray.push(criteriaCell)
                 for(let i = 0; i <= criteria.maxNote; i++){
-                    noteCellArray.push(celdaCuadrito)
+                    noteCellArray.push(
+                        new TableCell({
+                            children: [
+                                new Paragraph({
+                                children: [
+                                    new CheckBox(
+                                        {
+                                            checked: (criteria?.selectedValues == i) as boolean
+                                        }
+                                    )
+                                ],
+                                alignment: "center"
+                                })
+                            ],
+                            width: {
+                            size:`1cm`,
+                            type: WidthType.DXA
+                            },
+                            verticalAlign: VerticalAlign.CENTER
+                        })
+                    )
                 }
                 
                 rowsGenerated.push(
@@ -5211,7 +5335,6 @@ generateGraduateWorkCriteriaTable(criteriaArray: Criteria[], seccion: Seccion) :
             
         })
 
-
     return new Table({
 
         indent: {
@@ -5220,6 +5343,8 @@ generateGraduateWorkCriteriaTable(criteriaArray: Criteria[], seccion: Seccion) :
         },
         rows: rowsGenerated
     })
+
+
 }
 
 generateGraduateWorkOralCriteriaTable(criteriaArray: Criteria[], seccion: Seccion) : Table {
@@ -5227,20 +5352,88 @@ generateGraduateWorkOralCriteriaTable(criteriaArray: Criteria[], seccion: Seccio
     const rowsGenerated :  TableRow[] = []
     const columnGenerated : TableCell[] = []
 
+    console.log(criteriaArray)
+    console.log(seccion)
+
+    const seccionCell = new TableCell({
+                            width: {
+                                size: `4cm`,
+                                  type:  WidthType.DXA
+                                },
+                            children: [
+                                new Paragraph({
+                                    children: [
+                                        new TextRun({
+                                            text: seccion.seccionName
+                                        })
+                                    ],
+                                    alignment: AlignmentType.LEFT
+                                })
+                            ],
+                            verticalMerge: "continue"
+                        })
         /* Para cada una de las secciones dentro de nuestra evaluacion insertamos el nombre */
+        columnGenerated.push(
+            seccionCell
+        )
+        /* Insertamos la cabecera de criterios */
+        
+        columnGenerated.push(
+            new TableCell({
+                width: {
+                    size: `5cm`,
+                    type:  WidthType.DXA
+                },
+                children: [
+                    new Paragraph({
+                        children: [
+                            new TextRun({
+                                text: "Criterios de Evaluación"
+                            })
+                        ],
+                        alignment: AlignmentType.LEFT
+                    })
+                ]
+            }),
+        )
+        
+        /* Insertamos la cabecera de notas */
+        for(let i = 0 ; i <= maxNoteInCriteriaList; i++){
+            columnGenerated.push(
+                new TableCell({
+                    children: [
+                        new Paragraph({
+                        children: [
+                            new TextRun({
+                                text: i.toLocaleString()
+                            })
+                        ],
+                        alignment: "center"
+                        })
+                    ],
+                    width: {
+                    size:`0.815cm`,
+                    type: WidthType.DXA
+                    },
+                    verticalAlign: VerticalAlign.CENTER
+            }))
+        }
 
         /* Insertamos todo en la primera fila de nuestra tabla */
 
-    
+        rowsGenerated.push(
+            new TableRow({
+                children: columnGenerated
+            })
+        )
         /* Luego si el ID de la seccion del criterio coincide con la seccion actual lo agregamos */
-        criteriaArray.forEach( (criteria) => {
+        criteriaArray.forEach( (criteria:any) => {
             if(criteria.seccionId == seccion.seccionId){
-                console.log(criteria)
                 let noteCellArray: TableCell[] = []
                 let criteriaCell: TableCell = 
                                             new TableCell({
                                                 width: {
-                                                    size: "7.5cm",
+                                                    size: 400,
                                                     type:  WidthType.DXA
                                                 },
                                                 children: [
@@ -5254,9 +5447,30 @@ generateGraduateWorkOralCriteriaTable(criteriaArray: Criteria[], seccion: Seccio
                                                     })
                                                 ]
                                             })
+                noteCellArray.push(seccionCell)
                 noteCellArray.push(criteriaCell)
                 for(let i = 0; i <= criteria.maxNote; i++){
-                    noteCellArray.push(celdaCuadritoA)
+                    noteCellArray.push(
+                        new TableCell({
+                            children: [
+                                new Paragraph({
+                                children: [
+                                    new CheckBox(
+                                        {
+                                            checked: (criteria?.selectedValues == i) as boolean
+                                        }
+                                    )
+                                ],
+                                alignment: "center"
+                                })
+                            ],
+                            width: {
+                            size:`1cm`,
+                            type: WidthType.DXA
+                            },
+                            verticalAlign: VerticalAlign.CENTER
+                        })
+                    )
                 }
                 
                 rowsGenerated.push(
@@ -5268,7 +5482,6 @@ generateGraduateWorkOralCriteriaTable(criteriaArray: Criteria[], seccion: Seccio
             
         })
 
-
     return new Table({
 
         indent: {
@@ -5277,6 +5490,7 @@ generateGraduateWorkOralCriteriaTable(criteriaArray: Criteria[], seccion: Seccio
         },
         rows: rowsGenerated
     })
+
 }
 /*
 generateGraduateWorkDefenseNotification() : Document {
@@ -5287,7 +5501,8 @@ generateGraduateWorkJuryReportEvaluationForm(
     criteriaArray: Criteria[],
     seccionArray: Seccion[], 
     titulo: string, 
-    studentNames: { nombre: string }[]
+    studentNames: { nombre: string }[],
+    juryName: string | null = null
 ) : Document {
 
     const giveSpace = 
@@ -5298,8 +5513,8 @@ generateGraduateWorkJuryReportEvaluationForm(
                 }),
             ],
             spacing: {
-                after: 100,
-                before: 100
+                after: 50,
+                before: 50
             },
             alignment: AlignmentType.CENTER
         })
@@ -5320,7 +5535,7 @@ generateGraduateWorkJuryReportEvaluationForm(
                 }),
             ],
             spacing: {
-                after: 200
+                after: 100
             },
             alignment: AlignmentType.CENTER
         })
@@ -5443,11 +5658,7 @@ generateGraduateWorkJuryReportEvaluationForm(
     const dataTable = new Table({
         rows: tableRows
     })
-
     TutorEvaluationFormSquema.push(dataTable)
-    /* Cargamos un espacio para separar las tablas e insertamos una tabla como cabecera */
-
-    
     TutorEvaluationFormSquema.push(giveSpace)
 
     const tablaCabecera = new Table({
@@ -5557,14 +5768,12 @@ generateGraduateWorkJuryReportEvaluationForm(
             })
         ]
     })
-    TutorEvaluationFormSquema.push(tablaCabecera)
-    TutorEvaluationFormSquema.push(giveSpace)
     /* Ahora por cada seccion que deba contener nuestra planilla vamos a generar una tabla y la insertaremos */
-
+    
     seccionArray.forEach( (seccion: any) => {
-        /* Cargamos la tabla de la seccion con cada uno de sus criterios */
+        // Cargamos la tabla de la seccion con cada uno de sus criterios 
         TutorEvaluationFormSquema.push(this.generateGraduateWorkCriteriaTable(criteriaArray,seccion))
-        /* Generamos la tabla resumen que pondera el total de puntos  */
+        //Generamos la tabla resumen que pondera el total de puntos  
         TutorEvaluationFormSquema.push(
             new Table({
                 indent: {
@@ -5599,7 +5808,7 @@ generateGraduateWorkJuryReportEvaluationForm(
                                     new Paragraph({
                                         children: [
                                             new TextRun({
-                                                text: "Total " + seccion.seccionName + "[totalSum]" + " puntos"
+                                                text: `Total ${seccion.seccionName} ${seccion?.sum} puntos`
                                             })
                                         ],
                                         alignment: AlignmentType.RIGHT,
@@ -5619,7 +5828,7 @@ generateGraduateWorkJuryReportEvaluationForm(
             })
         )
     })
-
+   
     TutorEvaluationFormSquema.push(giveSpace)
     /* Finalmente cargamos la tabla de ponderacion final */
     TutorEvaluationFormSquema.push(
@@ -5656,7 +5865,7 @@ generateGraduateWorkJuryReportEvaluationForm(
                                 new Paragraph({
                                     children: [
                                         new TextRun({
-                                            text: "Puntuacion TOTAL " + "[totalSum] "  + " puntos."
+                                            text: "Puntuacion TOTAL " + this.calculateSeccionSum(seccionArray)  + " puntos."
                                         })
                                     ],
                                     alignment: AlignmentType.RIGHT,
@@ -5678,7 +5887,7 @@ generateGraduateWorkJuryReportEvaluationForm(
     /* Finalmente cargamos la linea de firma */
     TutorEvaluationFormSquema.push(
         giveSpace,
-        generarFirma("Jurado","[Inserte Nombre]")
+        generarFirma("Jurado",(juryName) ? juryName : "Inserte Nombre")
     )
 
     const document =  new Document(
@@ -5697,7 +5906,7 @@ generateGraduateWorkJuryReportEvaluationForm(
                         },
                         paragraph: {
                             spacing: {
-                                after: 200,
+                                after: 100,
                             },
                         },
                     },
@@ -5774,8 +5983,8 @@ generateGraduateWorkJuryReportEvaluationForm(
                                 new  ImageRun({
                                     data: this.imageArraBuffer,
                                     transformation: {
-                                        width: 400,
-                                        height: 100,
+                                        width: 200,
+                                        height: 50,
                                     },
                                 })
                                 
@@ -5847,9 +6056,11 @@ generateGraduateWorkJuryReportEvaluationForm(
 
 generateGraduateWorkJuryOralEvaluationForm(
     criteriaArray: Criteria[],
+    criteriosComunes: Criteria[],
     seccionArray: Seccion[], 
     titulo: string, 
-    studentNames: { nombre: string }[]
+    studentNames: { nombre: string, userDNI: string }[],
+    tutorName?: string
 ) : Document {
 
     const giveSpace = 
@@ -5860,12 +6071,13 @@ generateGraduateWorkJuryOralEvaluationForm(
                 }),
             ],
             spacing: {
-                after: 100,
-                before: 100
+                after: 50,
+                before: 50
             },
             alignment: AlignmentType.CENTER
         })
 
+    /*
     const tablaCabeceraSeccion = new Table({
             rows: [
                 new TableRow({
@@ -5962,7 +6174,7 @@ generateGraduateWorkJuryOralEvaluationForm(
                 })
             ]
     })
-
+    */
     console.log(criteriaArray)
     console.log(seccionArray)
     const TutorEvaluationFormSquema: FileChild[] = []
@@ -6291,11 +6503,11 @@ generateGraduateWorkJuryOralEvaluationForm(
     TutorEvaluationFormSquema.push(tablaCabecera)
     TutorEvaluationFormSquema.push(giveSpace)
     /* Ahora por cada seccion que deba contener nuestra planilla vamos a generar una tabla y la insertaremos */
-
+    console.log(criteriosComunes)
     seccionArray.forEach( (seccion: any, index: number) => {
         /* Cargamos la tabla de la seccion con cada uno de sus criterios */
-        if(seccion.seccionId == 1){
-            TutorEvaluationFormSquema.push(this.generateGraduateWorkOralCriteriaTable(criteriaArray,seccion))
+        if(seccion.seccionId == criteriosComunes[0].seccionId){
+            TutorEvaluationFormSquema.push(this.generateGraduateWorkOralCriteriaTable(criteriosComunes,seccion))
             TutorEvaluationFormSquema.push(giveSpace)
             /* Generamos la tabla resumen que pondera el total de puntos  */
             TutorEvaluationFormSquema.push(
@@ -6332,7 +6544,7 @@ generateGraduateWorkJuryOralEvaluationForm(
                                         new Paragraph({
                                             children: [
                                                 new TextRun({
-                                                    text: "Total " + seccion.seccionName + "[totalSum]" + " puntos"
+                                                    text: "Total " + seccion.seccionName + "  " + this.calculateCriteriaSum(criteriosComunes) +" puntos"
                                                 })
                                             ],
                                             alignment: AlignmentType.RIGHT,
@@ -6351,117 +6563,119 @@ generateGraduateWorkJuryOralEvaluationForm(
                     ]
                 })
             )
+    
         }else{
             studentNames.forEach( (student: any, index: number) => {
 
-                TutorEvaluationFormSquema.push(giveSpace)
-                TutorEvaluationFormSquema.push(
-                    new Paragraph({
-                        children: [
-                            new TextRun({
-                                text: `C${index+1}: Evaluación Individual de la Presentación y Defensa`,
-                                bold: true
-                            })
-                        ]
-                    })
-                )
-                TutorEvaluationFormSquema.push(
-                    new Table({
-                        rows: [
-                            new TableRow({
+
+                        TutorEvaluationFormSquema.push(giveSpace)
+                        TutorEvaluationFormSquema.push(
+                            new Paragraph({
                                 children: [
-                                    new TableCell({
-                                        children: [
-                                            new Paragraph({
-                                                children: [
-                                                    new TextRun({
-                                                        text: `Nombre del Alumno ${index}:    ${student.nombre}`
-                                                    })
-                                                ]
-                                            })
-                                        ],
-                                        width: {
-                                            type: WidthType.DXA,
-                                            size: "18cm"
-                                        }
+                                    new TextRun({
+                                        text: `C${index+1}: Evaluación Individual de la Presentación y Defensa`,
+                                        bold: true
                                     })
                                 ]
                             })
-                        ]
-                    })
-                )
-                TutorEvaluationFormSquema.push(giveSpace)
-                TutorEvaluationFormSquema.push(tablaCabeceraSeccion)
-                TutorEvaluationFormSquema.push(giveSpace)
-                TutorEvaluationFormSquema.push(this.generateGraduateWorkOralCriteriaTable(criteriaArray,seccion))
+                        )
+                        TutorEvaluationFormSquema.push(
+                            new Table({
+                                rows: [
+                                    new TableRow({
+                                        children: [
+                                            new TableCell({
+                                                children: [
+                                                    new Paragraph({
+                                                        children: [
+                                                            new TextRun({
+                                                                text: `Nombre del Alumno ${index+1}:    ${student.nombre}`
+                                                            })
+                                                        ]
+                                                    })
+                                                ],
+                                                width: {
+                                                    type: WidthType.DXA,
+                                                    size: "18cm"
+                                                }
+                                            })
+                                        ]
+                                    })
+                                ]
+                            })
+                        )
+        
+                        TutorEvaluationFormSquema.push(giveSpace)
+                        TutorEvaluationFormSquema.push(this.generateGraduateWorkOralCriteriaTable(criteriaArray.filter( ( newCriteriaList: any ) => newCriteriaList.userDNI == student.userDNI),seccion))
+                        TutorEvaluationFormSquema.push(giveSpace)
+                        TutorEvaluationFormSquema.push(
+                            new Table({
+                                indent: {
+                                    size: 0,
+                                    type: WidthType.DXA,
+                                },
+                                rows: [
+                                    new TableRow({
+                                        children: [
+                                            new TableCell({
+                                                width: {
+                                                    size: `5cm`,
+                                                    type:  WidthType.DXA
+                                                },
+                                                children: [
+                                                    new Paragraph({
+                                                        children: [
+                                                            new TextRun({
+                                                                text: "Total (máximo 20 puntos)"
+                                                            })
+                                                        ],
+                                                        alignment: AlignmentType.RIGHT
+                                                    })
+                                                ]
+                                            }),
+                                            new TableCell({
+                                                width: {
+                                                    size: `11cm`,
+                                                    type:  WidthType.DXA
+                                                },
+                                                children: [
+                                                    new Paragraph({
+                                                        children: [
+                                                            new TextRun({
+                                                                text: "Puntuacion TOTAL " +  this.calculateCriteriaSum(criteriaArray.filter( ( newCriteriaList: any ) => newCriteriaList.userDNI == student.userDNI))  + " puntos."
+                                                            })
+                                                        ],
+                                                        alignment: AlignmentType.RIGHT,
+                                                        indent: {
+                                                            right: "1cm"
+                                                        }
+                                                    })
+                                                ],
+                                                verticalAlign: "bottom",
+                                            }),
+                                        ]
+                                    })
+                                    
+                                ]
+                            })
+                        )
+
+                
             })
             
         }
         //TutorEvaluationFormSquema.push(this.generateGraduateWorkOralCriteriaTable(criteriaArray,seccion))
         //TutorEvaluationFormSquema.push(giveSpace)
         /* Generamos la tabla resumen que pondera el total de puntos  */
-
+        
     })
 
     TutorEvaluationFormSquema.push(giveSpace)
-    /* Finalmente cargamos la tabla de ponderacion final */
-    TutorEvaluationFormSquema.push(
-        new Table({
-            indent: {
-                size: 0,
-                type: WidthType.DXA,
-            },
-            rows: [
-                new TableRow({
-                    children: [
-                        new TableCell({
-                            width: {
-                                size: `5cm`,
-                                type:  WidthType.DXA
-                            },
-                            children: [
-                                new Paragraph({
-                                    children: [
-                                        new TextRun({
-                                            text: "Total (máximo 60 puntos)"
-                                        })
-                                    ],
-                                    alignment: AlignmentType.RIGHT
-                                })
-                            ]
-                        }),
-                        new TableCell({
-                            width: {
-                                size: `11cm`,
-                                type:  WidthType.DXA
-                            },
-                            children: [
-                                new Paragraph({
-                                    children: [
-                                        new TextRun({
-                                            text: "Puntuacion TOTAL " + "[totalSum] "  + " puntos."
-                                        })
-                                    ],
-                                    alignment: AlignmentType.RIGHT,
-                                    indent: {
-                                        right: "1cm"
-                                    }
-                                })
-                            ],
-                            verticalAlign: "bottom",
-                        }),
-                    ]
-                })
-                
-            ]
-        })
-    )
-
 
     /* Finalmente cargamos la linea de firma */
     TutorEvaluationFormSquema.push(
         giveSpace,
-        generarFirma("Jurado","[Inserte Nombre]")
+        generarFirma("Jurado",(tutorName) ? tutorName : "Inserte Nombre")
     )
 
     const document =  new Document(
@@ -7359,7 +7573,7 @@ generateGraduateWorkJuryStudentNotification(
                                     new Paragraph({
                                         children: [
                                             new TextRun({
-                                                text: "Total " + seccion.seccionName + "[totalSum]" + " puntos"
+                                                text: `Total ${seccion.seccionName} ${seccion.sum} puntos`
                                             })
                                         ],
                                         alignment: AlignmentType.RIGHT,
@@ -7416,7 +7630,7 @@ TutorEvaluationFormSquema.push(
                             new Paragraph({
                                 children: [
                                     new TextRun({
-                                        text: "Puntuacion TOTAL " + "[totalSum] "  + " puntos."
+                                        text: `Puntuacion TOTAL ${this.calculateSeccionSum(seccionArray)} puntos.`
                                     })
                                 ],
                                 alignment: AlignmentType.RIGHT,

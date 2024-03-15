@@ -1,0 +1,31 @@
+.mdc-data-table__header-cell {
+    text-align: center;
+}
+
+.mat-column-0,
+.mat-column-1,
+.mat-column-2,
+.mat-column-3,
+.mat-column-4,
+.mat-column-5,
+.mat-column-6,
+.mat-column-7,
+.mat-column-8,
+.mat-column-9,
+.mat-column-10,
+.mat-column-11,
+.mat-column-12
+ {
+    width: 5%;
+    border: 1px solid currentColor;
+    text-align: center;
+}
+
+
+.disabled-checkbox {
+    opacity: 0.5; /* Adjust opacity to indicate disabled state */
+    cursor: not-allowed; /* Prevent interaction hints */
+    color: gray; /* Change text color for disabled state */
+    background-color: black;
+    /* Optionally, modify other styles like background-color */
+}

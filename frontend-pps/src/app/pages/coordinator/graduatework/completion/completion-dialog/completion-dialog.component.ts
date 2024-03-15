@@ -58,7 +58,7 @@ export class CompletionDialogComponent {
   culminarTrabajoDeGrado(){
     if(this.graduateWorkForm.valid){
       this.cargadoArchivos = true
-      this.graduateWorkService.changeStatus(this.inputdata.proposal[0].graduateworkid,100).subscribe({
+      this.graduateWorkService.changeStatus(this.inputdata.graduatework.graduateworkid,100).subscribe({
         next: (result) => {
           console.log(result)
         },

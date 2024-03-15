@@ -224,7 +224,7 @@ export class ProfessorJuryDialogComponent implements OnInit{
           console.log(juryData)
           if(juryData.juryType == 'TUTOR'){
             if(this.graduateWorkType == 'EXPERIMENTAL'){
-              this.graduateWorkService.getTutorReportExperimentalCriteria().subscribe({
+              this.graduateWorkService.getTutorReportExperimentalCriteria("Ing. Informatica").subscribe({
                 next: (criteriaExperimentalList : any)=>{
                   console.log(criteriaExperimentalList)
                   criteriaExperimentalList.forEach( (element: any,index: number) => {
@@ -235,7 +235,7 @@ export class ProfessorJuryDialogComponent implements OnInit{
                 }
               })
         
-              this.graduateWorkService.getTutorOraltExperimentalCriteria().subscribe({
+              this.graduateWorkService.getTutorOraltExperimentalCriteria("Ing. Informatica").subscribe({
                 next: (oralCriteriaExperimentalList : any ) => {
                   console.log(oralCriteriaExperimentalList)
                   oralCriteriaExperimentalList.forEach( (element: any,index: number) => {
@@ -257,7 +257,7 @@ export class ProfessorJuryDialogComponent implements OnInit{
           }else{
 
             if(this.graduateWorkType == 'EXPERIMENTAL'){
-              this.graduateWorkService.getJuryReportExperimentalCriteria().subscribe({
+              this.graduateWorkService.getJuryReportExperimentalCriteria("Ing. Informatica").subscribe({
                 next: (criteriaExperimentalList : any)=>{
                   console.log(criteriaExperimentalList)
                   criteriaExperimentalList.forEach( (element: any,index: number) => {
@@ -268,7 +268,7 @@ export class ProfessorJuryDialogComponent implements OnInit{
                 }
               })
         
-              this.graduateWorkService.getJuryOralExperimentalCriteria().subscribe({
+              this.graduateWorkService.getJuryOralExperimentalCriteria("Ing. Informatica").subscribe({
                 next: (oralCriteriaExperimentalList : any ) => {
                   console.log(oralCriteriaExperimentalList)
                   oralCriteriaExperimentalList.forEach( (element: any,index: number) => {

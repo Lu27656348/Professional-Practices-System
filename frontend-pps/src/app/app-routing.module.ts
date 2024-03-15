@@ -45,6 +45,11 @@ import { CriteriosJuradoOralComponent } from './pages/coordinator/graduatework/c
 import { CriteriosJuradoEscritoComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-jurado-escrito/criterios-jurado-escrito.component';
 import { CriteriosTutorEscritoComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-tutor-escrito/criterios-tutor-escrito.component';
 import { CriteriosTutorOralComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-tutor-oral/criterios-tutor-oral.component';
+import { CriteriosProfesorRevisorComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-profesor-revisor/criterios-profesor-revisor.component';
+import { CriteriosTutorEmpresarialComponent } from './pages/coordinator/graduatework/criterios-evaluacion/criterios-tutor-empresarial/criterios-tutor-empresarial.component';
+import { PantallaEvaluacionComponent } from './pages/coordinator/intership/pantalla-evaluacion/pantalla-evaluacion.component';
+import { PantallaEvaluacionJuradoPresentacionComponent } from './pages/coordinator/graduatework/pantalla-evaluacion-jurado-presentacion/pantalla-evaluacion-jurado-presentacion.component';
+import { PantallaEvaluacionJuradoEscritoComponent } from './pages/coordinator/graduatework/pantalla-evaluacion-jurado-escrito/pantalla-evaluacion-jurado-escrito.component';
 //import { AcademicTutorCriteriaComponent } from './pages/coordinator/intership/academic-tutor-criteria/academic-tutor-criteria.component';
 
 const routes: Routes = [
@@ -142,6 +147,14 @@ const routes: Routes = [
     path: "graduate-work/tutor/informe",
     component: CriteriosTutorEscritoComponent
   },
+  {
+    path: "graduate-work/reviewer/criteria",
+    component: CriteriosProfesorRevisorComponent
+  },
+  {
+    path: "graduate-work/corporate/criteria",
+    component: CriteriosTutorEmpresarialComponent
+  },
   /* Rutas para el proceso de pasantía  */
   {
     path: "intership/coordinator",
@@ -227,6 +240,21 @@ const routes: Routes = [
    {
     path: "generar/planilla/:profesorRevisor/:trabajoDeGrado",
     component: ProfessorReviewerComponent
+  },
+   /* Generador de Planilla de Tutores de Pasantia */
+   {
+    path: "generar/planilla/pasantia/:modo/:tutor/:pasantiaId",
+    component: PantallaEvaluacionComponent
+  },
+  /* Generador de Planilla de Jurado de Presentacion Trabajo de Grado */
+  {
+    path: "generar/planilla/trabajodegrado/presentacion/:modo/:tutor/:graduateWorkId",
+    component: PantallaEvaluacionJuradoPresentacionComponent
+  },
+  /* Generador de Planilla de Jurado de Informe Escrito Trabajo de Grado */
+  {
+    path: "generar/planilla/trabajodegrado/informe/:modo/:tutor/:graduateWorkId",
+    component: PantallaEvaluacionJuradoEscritoComponent
   },
   /* En caso de una ruta no definida */
   {

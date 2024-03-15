@@ -2,12 +2,14 @@ import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, forkJoin, of, switchMap } from 'rxjs';
 import { EvaluationFormGeneratorService } from 'src/app/form-generator/services/evaluation-form-generator.service';
+import { SendEmailRequest } from 'src/app/interfaces/requests/SendEmailRequest';
 import { EmailService } from 'src/app/services/email.service';
 import { EnterpriseService } from 'src/app/services/enterprise.service';
 import { CriteriosTutorAcademicoService } from 'src/app/services/pasantia/criterios-tutor-academico.service';
 import { CriteriosTutorEmpresarialService } from 'src/app/services/pasantia/criterios-tutor-empresarial.service';
 import { PasantiaService } from 'src/app/services/pasantia/pasantia.service';
 import { UsersService } from 'src/app/services/users.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-desarrollo-pasantia',
@@ -123,8 +125,7 @@ export class DesarrolloPasantiaComponent {
         (enterpriseData) => {
           this.enterpriseData = enterpriseData
           return this.corporateTutorCriteriaService.getAllEnterpriseTutorCriteriaBySchool(this.localUserData.schoolName)
-          //return this.formGenerator.convertDocumentToBlob(this.formGenerator.generateIntershipAcademicTutorEvaluationForm())
-          //return of(null)
+
         }
       ),
       switchMap(
@@ -179,8 +180,87 @@ export class DesarrolloPasantiaComponent {
           console.log(fileNotification)
           let fileNotification2: File = new File([this.corporateTutorEvaluation], `${this.corporateTutorData.userLastName.split(" ")[0]}${this.corporateTutorData.userFirstName.split(" ")[0]} Evaluación Individual Pasantía – Tutor Empresarial.docx`, { type: this.corporateTutorEvaluation.type });
           console.log(fileNotification2)
-          observables.push(this.emailService.sendEmail(fileNotification2,this.localUserData.userEmail,this.corporateTutorData.userEmail));
-          observables.push(this.emailService.sendEmail(fileNotification,this.localUserData.userEmail,this.academicTutorData.userEmail))
+
+          let emailData: SendEmailRequest = {
+            emailTo: this.corporateTutorData.userEmail,
+            emailFrom: this.localUserData.userEmail,
+            subject: `Evaluaciones y Cierre proceso de Pasantía Periodo 2023-30 - Tutor Empresarial: ${this.corporateTutorData.userLastName},  ${this.corporateTutorData.userFirstName} Alumno: ${this.studentData.userLastName}, ${this.studentData.userFirstName}` ,
+            htmlContent: 
+            `
+            Puerto Ordaz, ${new Date().toLocaleDateString("es-ES", {day: "numeric",month: "long", year: "numeric",})}
+            Buen día estimada Tutor Empresarial ${this.corporateTutorData.userLastName},  ${this.corporateTutorData.userFirstName}
+            Saludándole cordialmente
+            Agradeciendo por la experiencia de formación ofrecida a nuestro alumno, le indico el proceso de finalización de Pasantía:
+           
+            1)	Entrega de informe
+
+            El alumno ${this.studentData.userLastName}, ${this.studentData.userFirstName}
+
+            Debe enviarle el informe final de la Pasantía, el cual usted revisará, en caso de tener alguna observación, se la comunica al alumno. 
+
+            2)	Evaluación de Pasantía
+
+            Al estar conforme con el informe, completa la planilla de evaluación personalizada y editable que anexo al presente correo.
+            Podrá calificarla de manera electrónica en el siguiente enlace: ${environment.basicURL}/generar/planilla/pasantia/empresarial/${this.corporateTutorData.userDNI}/${element.intershipId}
+
+            3)	Envío de Evaluación de Pasantía
+            Envíe la planilla de evaluación en formato PDF, desde su correo empresarial al correo institucional del Tutor Académico con copia al correo del alumno; a continuación, indico estos datos:
+            Alumno	${this.studentData.userLastName}, ${this.studentData.userFirstName} Correo Alumno: ${this.studentData.userEmail}
+            Tutor Académico	${this.academicTutorData.userLastName}, ${this.academicTutorData.userFirstName} Correo Tutor Académico: ${this.academicTutorData.userEmail}
+
+            •	El envío al Tutor Académico es la señal de revisión y conformidad con el informe y el trabajo realizado por el alumno.
+            •	El motivo de la copia al alumno es que él requiere anexar esta planilla de evaluación a su informe final
+            •	Se recomienda imprimir firmar y sellar con sello de la empresa las planillas y luego de enviadas por correo, entregar al alumno para que las consigne en la coordinación de prácticas profesionales de la escuela de Ingeniería de Informática
+            Reiterando mi agradecimiento y quedando a su disposición por cualquier consulta o duda 
+            Atentamente,
+
+            ${this.localUserData.userLastName},  ${this.localUserData.userFirstName}
+            `
+          }
+
+          let emailDataV2: SendEmailRequest = {
+            emailTo: this.academicTutorData.userEmail,
+            emailFrom: this.localUserData.userEmail,
+            subject: `Evaluaciones y Cierre proceso de Pasantía Periodo 2023-30 - Tutor Académico: ${this.academicTutorData.userLastName}, ${this.academicTutorData.userFirstName} Alumno: ${this.studentData.userLastName}, ${this.studentData.userFirstName}` ,
+            htmlContent: 
+            `
+            Puerto Ordaz, ${new Date().toLocaleDateString("es-ES", {day: "numeric",month: "long", year: "numeric",})}
+            Buen día estimado Tutor Académico  ${this.academicTutorData.userLastName}, ${this.academicTutorData.userFirstName}
+            Saludándole cordialmente
+            Para el Cierre de Pasantía Periodo 2023-30, el proceso es:
+
+            1)	Entrega de informe, por parte del alumno
+
+            ${this.studentData.userLastName}, ${this.studentData.userFirstName}
+
+            Debe enviarle el informe final de la pasantía, previa revisión y evaluación del Tutor Empresarial, el cual usted revisará, en caso de tener alguna observación, se la comunica al alumno.
+
+            El Tutor Empresarial debe haberle enviado copia de la planilla de evaluación de la Pasantía, en señal de conformidad con la realización de la Pasantía y de revisión del Informe, sino es así, por favor comuníquese con él.
+
+            2)	Evaluación de Pasantía
+
+            Al estar conforme con el informe, complete la planilla de evaluación personalizada y editable que se adjunta al presente correo.
+            Podrá calificarla de manera electrónica en el siguiente enlace: ${environment.basicURL}/generar/planilla/pasantia/academico/${this.academicTutorData.userDNI}/${element.intershipId}}
+
+            3)	Impresión Planilla de Evaluación de Pasantía
+
+            Luego de completar cada uno de los criterios de evaluación de la planilla, fírmela, escanéela y entréguela en la Coordinación de Prácticas Profesionales de la Escuela de Ingeniería Informática.    
+
+            4)	Envío de Evaluación de Pasantía
+
+            Envíe la planilla de evaluación en formato PDF, desde su correo institucional al correo del alumno y al correo ${this.localUserData.userEmail}; a continuación, los datos del alumno:
+            
+            Alumno: ${this.studentData.userLastName}, ${this.studentData.userFirstName}	 Correo: ${this.studentData.userEmail}
+             
+            •	El motivo de la copia al alumno es que él requiere anexar esta planilla de evaluación a su informe final, antes de entregarlo.
+            •	El motivo de la entrega y copia de la planilla de evaluación a la coordinación de Prácticas Profesionales es la garantía y respaldo de las evaluaciones, para luego colocar formalmente la nota al alumno.
+             Cualquier consulta o duda estoy a su disposición
+            Atentamente,
+            ${this.localUserData.userLastName},  ${this.localUserData.userFirstName}
+            `
+          }
+          observables.push(this.emailService.sendEmail(fileNotification2,emailData));
+          observables.push(this.emailService.sendEmail(fileNotification,emailDataV2))
           return forkJoin(observables)
         }
       )
@@ -189,14 +269,63 @@ export class DesarrolloPasantiaComponent {
       {
         next: (result) => {
           console.log(result)
-          this.pasantiaService.cambiarEstadoPasantia(element.intershipId,30).subscribe({
+          const observables: Observable<any>[] = []
+          this.academicCriteriaList.forEach( (criteria: any) => {
+            let data = {
+              userDNI: this.academicTutorData.userDNI,
+              intershipId: element.intershipId,
+              criteriaId: criteria.criteriaId,
+              maxNote: criteria.maxNote
+            }
+            console.log(data)
+            
+            observables.push(this.pasantiaService.asociarCriterioConEvaluacionDeTutorAcademico(
+              data
+            ))
+            
+          })
+
+          this.corporateCriteriaList.forEach( (criteria: any) => {
+            let data = {
+              userDNI: this.corporateTutorData.userDNI,
+              intershipId: element.intershipId,
+              criteriaId: criteria.criteriaId,
+              maxNote: criteria.maxNote
+            }
+            console.log(data)
+            
+            observables.push(this.pasantiaService.asociarCriterioConEvaluacionDeTutorEmpresarial(
+              data
+            ))
+            
+          })
+
+          forkJoin(observables).pipe(
+            switchMap(
+              (result) => {
+                console.log(result)
+                return this.pasantiaService.cambiarEstadoPasantia(element.intershipId,30)
+              }
+            )
+          )
+          .subscribe({
+            next: (result) => {
+              console.log(result)
+            },
             complete: () => {
-              window.location.href = window.location.href
+              this.cargadoArchivos = false
+              window.location.href = window.location.href   
             }
           })
+
+          
         }
       }
     )
     //this.pasantiaService.cambiarEstadoPasantia()
+  }
+
+  generarReportePasantia(){
+    
   }
 }

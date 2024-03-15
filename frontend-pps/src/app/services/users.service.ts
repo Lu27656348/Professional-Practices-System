@@ -30,6 +30,12 @@ export class UsersService {
     return this.http.post(`${environment.apiUrl}/users/create`,userData,{headers});
   }
 
+  updateUser( userData: CreateUserRequest ){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.put(`${environment.apiUrl}/users/put`,userData,{headers});
+  }
+
   getMode(){
     return this.mode;
   }

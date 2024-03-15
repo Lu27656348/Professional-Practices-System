@@ -49,6 +49,8 @@ export class ReviewerEvaluationDialogComponent {
   graduateWorkData: any = null
   reviewerData: any = null
 
+  graduateWorkStudentData: any = null
+
   cargadoArchivos: boolean = false;
 
   constructor(
@@ -121,6 +123,11 @@ export class ReviewerEvaluationDialogComponent {
       next: (result) => {
         console.log(result)
         this.reviewerData = result
+        this.graduateWorkService.getGraduateWorkStudentData(this.inputdata.gw.graduateWorkId).subscribe({
+          next: (studentData) => {
+            this.graduateWorkStudentData = studentData
+          }
+        })
       }
     })
   }
@@ -199,14 +206,26 @@ export class ReviewerEvaluationDialogComponent {
                   userFirstName: this.inputdata.user[1].userFirstName
                 },
               ]
-              return this.studentService.cargarArchivoPropuestaDoble(newFile as File, studentData)
+              let escuela;
+              if( this.graduateWorkStudentData[0].schoolName == "Ing. Informatica"){
+                escuela = "Informática"
+              }else{
+                escuela = "Civil"
+              }
+              return this.studentService.cargarArchivoPropuestaDoble(newFile as File, studentData,escuela)
             }
             const studentData = {
               userDNI: this.inputdata.user[0].userDNI,
               userLastName: this.inputdata.user[0].userLastName,
               userFirstName: this.inputdata.user[0].userFirstName
             }
-            return this.studentService.cargarArchivoPropuesta(newFile as File, studentData)
+            let escuela;
+              if( this.graduateWorkStudentData[0].schoolName == "Ing. Informatica"){
+                escuela = "Informática"
+              }else{
+                escuela = "Civil"
+              }
+            return this.studentService.cargarArchivoPropuesta(newFile as File, studentData,escuela)
           }
         )
       ).subscribe({
@@ -222,7 +241,7 @@ export class ReviewerEvaluationDialogComponent {
             horizontalPosition: this.horizontalPosition,
             verticalPosition: this.verticalPosition
           })
-          throw new Error(error)
+          throw new Error(error.message)
         }
       })
     

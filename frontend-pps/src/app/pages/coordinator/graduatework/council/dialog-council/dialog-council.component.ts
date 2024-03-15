@@ -15,9 +15,10 @@ import { EvaluationFormGeneratorService } from 'src/app/form-generator/services/
 import { StudentService } from 'src/app/services/student.service';
 import { EmailService } from 'src/app/services/email.service';
 import { environment } from 'src/environments/environment';
+import { SendEmailRequest } from 'src/app/interfaces/requests/SendEmailRequest';
 
 
-function downloadFile(fileName: string, studentDNI: string | null, userFirstName: string | null, userLastName: string | null) : Observable<Blob> {
+function downloadFile(fileName: string, studentDNI: string | null, userFirstName: string | null, userLastName: string | null, escuela: string) : Observable<Blob> {
   return from(
     fetch(`${environment.amazonS3}/download`, {
       method: 'POST',
@@ -28,7 +29,8 @@ function downloadFile(fileName: string, studentDNI: string | null, userFirstName
         fileName: fileName,
         studentDNI: studentDNI,
         userFirstName: userFirstName,
-        userLastName: userLastName
+        userLastName: userLastName,
+        escuela: escuela
       }),
       })
   )
@@ -264,21 +266,57 @@ export class DialogCouncilComponent implements OnInit{
                 fileName = this.inputdata.userData[0].userLastName.split(' ')[0]+this.inputdata.userData[0].userFirstName.split(' ')[0]+' PTG.pdf';
               }
               this.fileArray.push(file)
-              return downloadFile(fileName,this.inputdata.userData[0].userDNI, this.inputdata.userData[0].userFirstName.split(' ')[0],this.inputdata.userData[0].userLastName.split(' ')[0])
+              let escuela
+              if( this.inputdata.userData[0].schoolName == "Ing. Informatica"){
+                escuela = "Informática"
+              }else{
+                escuela = "Civil"
+              }
+              return downloadFile(fileName,this.inputdata.userData[0].userDNI, this.inputdata.userData[0].userFirstName.split(' ')[0],this.inputdata.userData[0].userLastName.split(' ')[0],escuela)
             }
           ),
           switchMap(
             (proposalBlob) => {
               let fileName: string = ""
+              let studentNames: string = ""
               if(this.inputdata.userData.length > 1){
                 fileName = `${this.inputdata.userData[0].userLastName.split(' ')[0]}${this.inputdata.userData[0].userFirstName.split(' ')[0]} ${this.inputdata.userData[1].userLastName.split(' ')[0]}${this.inputdata.userData[1].userFirstName.split(' ')[0]} PTG.pdf`;
+                studentNames = `Alumnos ${this.inputdata.userData[0].userLastName.split(' ')[0]}${this.inputdata.userData[0].userFirstName.split(' ')[0]} ${this.inputdata.userData[1].userLastName.split(' ')[0]}${this.inputdata.userData[1].userFirstName.split(' ')[0]}`
               }else{
                 fileName = this.inputdata.userData[0].userLastName.split(' ')[0]+this.inputdata.userData[0].userFirstName.split(' ')[0]+' PTG.pdf';
+                studentNames = ` Alumno ${this.inputdata.userData[0].userLastName.split(' ')[0]}${this.inputdata.userData[0].userFirstName.split(' ')[0]}`
               }
               const file: File = new File([proposalBlob], fileName, { type: proposalBlob.type });
               console.log(file)
               this.fileArray.push(file)
-              return this.emailService.sendMultipleEmail(this.fileArray,this.coordinatorData.userEmail,this.academicTutorData.userEmail)
+
+              const emailData: SendEmailRequest = {
+                emailTo: this.academicTutorData.userEmail,
+                emailFrom: this.coordinatorData.userEmail,
+                subject: `Designación Tutor Académico ${this.academicTutorData.userLastName.split(" ")[0]} ${this.academicTutorData.userFirstName.split(" ")[0]} ${studentNames}` ,
+                htmlContent:
+                `
+                Puerto Ordaz,  ${new Date().toLocaleDateString("es-ES", {day: "numeric",month: "long", year: "numeric",})}
+                Buen día estimado Tutor Académico ${this.academicTutorData.userLastName} ${this.academicTutorData.userFirstName}
+                Saludándole cordialmente
+                Adjunto:
+                          	Carta de Designación como Tutor Académico
+                          	Propuesta de Trabajo de Grado aprobada
+                En el enlace:
+                https://drive.google.com/drive/folders/1hlsABemJ6s9rM8ewyw9VnT7TF_-5Oy6o?usp=sharing
+                Encontrará 
+                          	Guía Informe Trabajo Grado IINF Gy, donde se detalla el contenido que debe tener el Informe de Trabajo Grado, el cual usted debe garantizar al emitir la Carta Culminación TG.
+                          	Guía Normas APA Formato - IINF, donde se detalla el formato que debe tener el Informe de Trabajo Grado, el cual usted debe garantizar al emitir la Carta Culminación TG.
+                          	Reglamento Trabajo de Grado de la Facultad de Ingeniería, vigente y que rige lo relativo a la elaboración y presentación del Trabajo de Grado en la Facultad.
+                Documentos que requiere para la realización de la tutoría.
+                Deseándole el mayor de los éxitos en su tutoría
+                Se le convoca a una reunión para tratar puntos relevantes sobre la entrega del informe de Trabajo de Grado, entre Tutores y Alumnos, el día jueves 15 de junio, a las 4 pm, en el laboratorio de Base de Datos.
+                Cualquier consulta o duda estoy a su disposición.
+                Atentamente
+                ${this.coordinatorData.userLastName}, ${this.coordinatorData.userFirstName}
+                `
+              }
+              return this.emailService.sendMultipleEmail(this.fileArray,emailData)
 
             }
           ),
@@ -313,10 +351,41 @@ export class DialogCouncilComponent implements OnInit{
             (fileBlobArray) => {
               console.log(fileBlobArray)
               const observables: Observable<any>[] = []
+
+              let studentNames: string = ""
+              if(this.inputdata.userData.length > 1){
+                studentNames = `Alumnos ${this.inputdata.userData[0].userLastName.split(' ')[0]}${this.inputdata.userData[0].userFirstName.split(' ')[0]} ${this.inputdata.userData[1].userLastName.split(' ')[0]}${this.inputdata.userData[1].userFirstName.split(' ')[0]}`
+              }else{
+                studentNames = ` Alumno ${this.inputdata.userData[0].userLastName.split(' ')[0]}${this.inputdata.userData[0].userFirstName.split(' ')[0]}`
+              }
+
+
               this.inputdata.userData.forEach( (student: any, index: number) => {
                 let file: File = new File([fileBlobArray[index]], `${student.userLastName.split(" ")[0]}${student.userFirstName.split(" ")[0]} Designación Tutor Académico.docx`, { type: fileBlobArray[index].type });
                 console.log(file)
-                observables.push(this.emailService.sendEmail(file,this.coordinatorData.userEmail,student.userEmail))
+                let emailData: SendEmailRequest = {
+                  emailTo: student.userEmail,
+                  emailFrom: this.coordinatorData.userEmail,
+                  subject: `Notificación Aprobación Propuesta de TG ${studentNames}` ,
+                  htmlContent: 
+                  `
+                  Puerto Ordaz, ${new Date().toLocaleDateString("es-ES", {day: "numeric",month: "long", year: "numeric",})}
+                  Buen día estimado(a) ${student.userLastName}, ${student.userFirstName}
+                  Le informo que su Propuesta de Trabajo de Grado, ha sido aprobada en Consejo de Escuela; adjunto Carta de Aprobación de la misma.
+                  En el enlace:
+                            https://drive.google.com/drive/folders/1AvM-Bshb2HZePPBxszrg81Xtdwn-kuOr?usp=sharing
+                            Encontrará la Guía Informe Trabajo Grado IINF Gy, donde se detalla el contenido que debe tener el Informe de Trabajo Grado.
+                  Y en el enlace 
+                            https://drive.google.com/drive/folders/1aa0u-J8Dm6ZdDBKQg4joRbOPEvqb7XVO?usp=sharing
+                            Encontrará la Guía Normas APA Formato - IINF, donde se detalla el formato que debe tener el Informe de Trabajo Grado
+                  También se le envía copia de la designación a su Tutor Académico
+                  Deseándole el mayor de los éxitos
+                  Cualquier consulta o duda estoy a su disposición.
+                  Saludos cordiales
+                  ${this.coordinatorData.userLastName}, ${this.coordinatorData.userFirstName}
+                  `
+                }
+                observables.push(this.emailService.sendEmail(file,emailData))
               })
               return forkJoin(observables)
             }

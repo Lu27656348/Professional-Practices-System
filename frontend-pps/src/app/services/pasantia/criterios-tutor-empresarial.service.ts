@@ -31,6 +31,12 @@ export class CriteriosTutorEmpresarialService {
     return this.http.get(`${environment.apiUrlPasantia}/pasantia/criterios/empresarial/get/by/seccion/${seccionId}`,{headers});
   }
 
+  getEnterpriseTutorSeccionById(seccionId: number){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`${environment.apiUrlPasantia}/pasantia/secciones/empresarial/get/by/${seccionId}`,{headers});
+  }
+
   changeEnterpriseTutorSeccion(seccionId: number, seccion: SeccionInterface){
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
@@ -81,5 +87,30 @@ export class CriteriosTutorEmpresarialService {
       seccionId: seccionId
     }
     return this.http.post(`${environment.apiUrlPasantia}/pasantia/criterios/empresarial/post`,body,{headers});
+  }
+
+
+  obtenerCriteriosEvaluacionTutorEmpresarial(intershipId: number, userDNI: string){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    const body = {
+      intershipId: intershipId,
+      userDNI: userDNI
+    }
+    return this.http.post(`${environment.apiUrlPasantia}/pasantia/obtener/evaluacion/tutor/empresarial`,body,{headers});
+  }
+
+  calificarCriterioEvaluacionTutorEmpresarial(
+    data: 
+    {
+      userDNI: string,
+      intershipId: number,
+      criteriaId: number,
+      criteriaNote: number
+    }
+  ){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.post(`${environment.apiUrlPasantia}/pasantia/calificar/evaluacion/tutor/empresarial`,data,{headers});
   }
 }

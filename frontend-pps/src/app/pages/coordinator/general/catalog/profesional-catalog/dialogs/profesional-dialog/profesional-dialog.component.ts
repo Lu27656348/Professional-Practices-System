@@ -96,7 +96,8 @@ export class ProfesionalDialogComponent {
         userLastName: this.userForm.value.apellidos,
         userEmail: this.userForm.value.correoElectronico + this.emailFormatSelected,
         userPhone: this.userForm.value.telefono,
-        userEmailAlt: null
+        userEmailAlt: null,
+        schoolName: "Ing. Informatica"
       }
       const externalData: CreateExternalRequest = {
         externalPersonnelDNI: "V-" + this.userForm.value.cedula,
@@ -141,7 +142,8 @@ export class ProfesionalDialogComponent {
         userLastName: this.userForm.value.apellidos,
         userEmail: this.userForm.value.correoElectronico,
         userPhone: this.userForm.value.telefono,
-        userEmailAlt: null
+        userEmailAlt: null,
+        schoolName: "Ing. Informatica"
       }
       const professorData: CreateExternalRequest = {
         externalPersonnelDNI: this.userForm.value.cedula,

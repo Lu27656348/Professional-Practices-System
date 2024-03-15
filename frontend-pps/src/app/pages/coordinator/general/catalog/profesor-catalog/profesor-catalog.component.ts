@@ -14,7 +14,7 @@ export class ProfesorCatalogComponent {
 
   professorList: any[] = []
   professorDataList: any[] = []
-  displayedColumns: string[] = ['professorDNI', 'userName', 'schoolName', 'professorProfession', 'check']
+  displayedColumns: string[] = ['professorDNI', 'userName', 'professorProfession', 'check']
 
   constructor(
     private userService: UsersService, 

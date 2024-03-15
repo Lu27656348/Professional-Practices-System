@@ -11,12 +11,14 @@ import { EnterpriseService } from 'src/app/services/enterprise.service';
 import { EmailService } from 'src/app/services/email.service';
 import { EvaluationFormGeneratorService } from 'src/app/form-generator/services/evaluation-form-generator.service';
 import { environment } from 'src/environments/environment';
+import { SendEmailRequest } from 'src/app/interfaces/requests/SendEmailRequest';
+import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
 
 interface ResponseBlob<T> extends Response {
   blob(): Promise<Blob>;
 }
 
-function downloadFile(fileName: string, studentDNI: string | null, userFirstName: string | null, userLastName: string | null) : Observable<Blob> {
+function downloadFile(fileName: string, studentDNI: string | null, userFirstName: string | null, userLastName: string | null,schoolName: string) : Observable<Blob> {
   return from(
     fetch(`${environment.amazonS3}/download/graduatework/report`, {
       method: 'POST',
@@ -27,7 +29,8 @@ function downloadFile(fileName: string, studentDNI: string | null, userFirstName
         fileName: fileName,
         studentDNI: studentDNI,
         userFirstName: userFirstName,
-        userLastName: userLastName
+        userLastName: userLastName,
+        escuela: schoolName
       }]),
       })
   )
@@ -61,6 +64,10 @@ function downloadFile(fileName: string, studentDNI: string | null, userFirstName
   styleUrls: ['./jury-dialog.component.css']
 })
 export class JuryDialogComponent implements OnInit {
+
+  horizontalPosition: MatSnackBarHorizontalPosition = "right";
+  verticalPosition: MatSnackBarVerticalPosition = 'bottom';
+
   inputdata: any = null
 
   jurySelected: any = null;
@@ -89,6 +96,8 @@ export class JuryDialogComponent implements OnInit {
   experimentalOralJuryCriteriaList: any = null
   experimentalOralJurySeccionList: any = null
 
+  criteriosTutorAcademicoPresentacion: any = null
+  criteriosTutorAcademicoinforme: any = null
 
   instrumentalReportTutorCriteriaList: any = null
   instrumentalReportJuryCriteriaList: any = null
@@ -124,8 +133,8 @@ export class JuryDialogComponent implements OnInit {
     private externalService: ExternalPersonnelService,
     private councilService: CouncilService,
     private enterpriseService: EnterpriseService,
-    private formService: EvaluationFormGeneratorService
-  
+    private formService: EvaluationFormGeneratorService,
+    private _snackBar: MatSnackBar,
   ){
     this.inputdata = this.data
     console.log(this.inputdata)
@@ -138,68 +147,143 @@ export class JuryDialogComponent implements OnInit {
       }
     )
 
-    this.graduateworkService.getJuryReportExperimentalCriteria().pipe(
-      switchMap(
-        (juryReportCriteriaList) => {
-          this.experimentalReportJuryCriteriaList = juryReportCriteriaList
-          return this.graduateworkService.getJuryReportExperimentalSeccion()
+    if(this.inputdata.graduateWorkData.graduateWorkType == "EXPERIMENTAL"){
+      this.graduateworkService.getJuryReportExperimentalCriteria(this.inputdata.studentData[0].schoolName).pipe(
+        switchMap(
+          (juryReportCriteriaList) => {
+            this.experimentalReportJuryCriteriaList = juryReportCriteriaList
+            return this.graduateworkService.getJuryReportExperimentalSeccion(this.inputdata.studentData[0].schoolName)
+          }
+        ),
+        switchMap(
+          (juryReportSeccionList) => {
+            this.experimentalReportJurySeccionList = juryReportSeccionList
+            /*
+            this.formService.printEvaluationForm(this.formService.generateGraduateWorkJuryReportEvaluationForm(
+              this.experimentalReportJuryCriteriaList,
+              this.experimentalReportJurySeccionList,
+              "Sistema de Practicas Profesionales",
+              [
+                {
+                  nombre: "Somoza Ledezma, Luis Carlos"
+                }
+              ]
+            ))
+            */
+            return of("Criterios de Jurado / INFORME / EXPERIMENTAL -> Completados")
+          }
+        )
+      ).subscribe({
+        next: (result) => {
+          console.log(result)
         }
-      ),
-      switchMap(
-        (juryReportSeccionList) => {
-          this.experimentalReportJurySeccionList = juryReportSeccionList
-          /*
-          this.formService.printEvaluationForm(this.formService.generateGraduateWorkJuryReportEvaluationForm(
-            this.experimentalReportJuryCriteriaList,
-            this.experimentalReportJurySeccionList,
-            "Sistema de Practicas Profesionales",
-            [
-              {
-                nombre: "Somoza Ledezma, Luis Carlos"
-              }
-            ]
-          ))
-          */
-          return of("Criterios de Jurado / INFORME / EXPERIMENTAL -> Completados")
+      })
+      this.graduateworkService.getJuryOralExperimentalCriteria(this.inputdata.studentData[0].schoolName).pipe(
+        switchMap(
+          (juryOralCriteriaList) => {
+            this.experimentalOralJuryCriteriaList = juryOralCriteriaList
+            return this.graduateworkService.getJuryOralExperimentalSeccion(this.inputdata.studentData[0].schoolName)
+          }
+        ),
+        switchMap(
+          (juryOralSeccionList) => {
+            this.experimentalOralJurySeccionList = juryOralSeccionList
+            /*
+            this.formService.printEvaluationForm(this.formService.generateGraduateWorkJuryOralEvaluationForm(
+              this.experimentalOralJuryCriteriaList,
+              this.experimentalOralJurySeccionList,
+              "Sistema de Practicas Profesionales",
+              [
+                {
+                  nombre: "Somoza Ledezma, Luis Carlos"
+                }
+              ]
+            ))
+            */
+            return of("Criterios de Jurado / ORAL / EXPERIMENTAL -> Completados")
+          }
+        )
+      ).subscribe({
+        next: (result) => {
+          console.log(result)
         }
-      )
-    ).subscribe({
-      next: (result) => {
-        console.log(result)
-      }
-    })
+      })
+      this.graduateworkService.getTutorOraltExperimentalCriteria(this.inputdata.studentData[0].schoolName).subscribe({
+        next: (criteriaList) => {
+          console.log(criteriaList)
+          this.criteriosTutorAcademicoPresentacion = criteriaList
+        }
+      })
+      this.graduateworkService.getTutorReportExperimentalCriteria(this.inputdata.studentData[0].schoolName).subscribe({
+        next: (criteriaList) => {
+          console.log(criteriaList)
+          this.criteriosTutorAcademicoinforme = criteriaList
+        }
+      })
+    }else{
+      console.log("%c", "CRITERIOS DE TIPO INSTRUMENTAL", "color: red");
+      this.graduateworkService.getJuryReportExperimentalCriteria(this.inputdata.studentData[0].schoolName).pipe(
+        switchMap(
+          (juryReportCriteriaList) => {
+            this.experimentalReportJuryCriteriaList = juryReportCriteriaList
+            return this.graduateworkService.getJuryReportExperimentalSeccion(this.inputdata.studentData[0].schoolName)
+          }
+        ),
+        switchMap(
+          (juryReportSeccionList) => {
+            this.experimentalReportJurySeccionList = juryReportSeccionList
+            /*
+            this.formService.printEvaluationForm(this.formService.generateGraduateWorkJuryReportEvaluationForm(
+              this.experimentalReportJuryCriteriaList,
+              this.experimentalReportJurySeccionList,
+              "Sistema de Practicas Profesionales",
+              [
+                {
+                  nombre: "Somoza Ledezma, Luis Carlos"
+                }
+              ]
+            ))
+            */
+            return of("Criterios de Jurado / INFORME / EXPERIMENTAL -> Completados")
+          }
+        )
+      ).subscribe({
+        next: (result) => {
+          console.log(result)
+        }
+      })
+      this.graduateworkService.getJuryOralInstrumentalCriteria(this.inputdata.studentData[0].schoolName).pipe(
+        switchMap(
+          (juryOralCriteriaList) => {
+            this.experimentalOralJuryCriteriaList = juryOralCriteriaList
+            return this.graduateworkService.getJuryOralInstrumentalSeccion(this.inputdata.studentData[0].schoolName)
+          }
+        ),
+        switchMap(
+          (juryOralSeccionList) => {
+            this.experimentalOralJurySeccionList = juryOralSeccionList
+            return of("Criterios de Jurado / ORAL / EXPERIMENTAL -> Completados")
+          }
+        )
+      ).subscribe({
+        next: (result) => {
+          console.log(result)
+        }
+      })
+      this.graduateworkService.getTutorOralInstrumentalCriteria(this.inputdata.studentData[0].schoolName).subscribe({
+        next: (criteriaList) => {
+          console.log(criteriaList)
+          this.criteriosTutorAcademicoPresentacion = criteriaList
+        }
+      })
+      this.graduateworkService.getTutorReportInstrumentalCriteria(this.inputdata.studentData[0].schoolName).subscribe({
+        next: (criteriaList) => {
+          console.log(criteriaList)
+          this.criteriosTutorAcademicoinforme = criteriaList
+        }
+      })
+    }
     
-
-    this.graduateworkService.getJuryOralExperimentalCriteria().pipe(
-      switchMap(
-        (juryOralCriteriaList) => {
-          this.experimentalOralJuryCriteriaList = juryOralCriteriaList
-          return this.graduateworkService.getJuryOralExperimentalSeccion()
-        }
-      ),
-      switchMap(
-        (juryOralSeccionList) => {
-          this.experimentalOralJurySeccionList = juryOralSeccionList
-          /*
-          this.formService.printEvaluationForm(this.formService.generateGraduateWorkJuryOralEvaluationForm(
-            this.experimentalOralJuryCriteriaList,
-            this.experimentalOralJurySeccionList,
-            "Sistema de Practicas Profesionales",
-            [
-              {
-                nombre: "Somoza Ledezma, Luis Carlos"
-              }
-            ]
-          ))
-          */
-          return of("Criterios de Jurado / ORAL / EXPERIMENTAL -> Completados")
-        }
-      )
-    ).subscribe({
-      next: (result) => {
-        console.log(result)
-      }
-    })
 
     this.studentService.getStudentCoordinator(this.inputdata.studentData[0].userDNI).subscribe({
       next: (coordinatorData) => {
@@ -278,7 +362,12 @@ export class JuryDialogComponent implements OnInit {
               observables.push(this.graduateworkService.createJury(this.jurySelected, this.councilSelected, this.inputdata.graduateWorkData.graduateworkid));
               observables.push(this.graduateworkService.createJury(this.jurySelected2, this.councilSelected, this.inputdata.graduateWorkData.graduateworkid));
               /* Recordar agregar reemplazos de profesores en esta secccion */
-              //return forkJoin(observables)
+              return forkJoin(observables)
+              
+            }
+          ),
+          switchMap(
+            (result) => {
               let fileName: string = ""
               if(this.studentList.length > 1){
                 fileName = `${this.studentList[0].userLastName.split(' ')[0]}${this.studentList[0].userFirstName.split(' ')[0]} ${this.studentList[1].userLastName.split(' ')[0]}${this.studentList[1].userFirstName.split(' ')[0]} TG.pdf`;
@@ -286,7 +375,13 @@ export class JuryDialogComponent implements OnInit {
                 fileName = this.studentList[0].userLastName.split(' ')[0]+this.studentList[0].userFirstName.split(' ')[0]+' TG.pdf';
               }
               this.fileName = fileName
-              return downloadFile(fileName,this.studentList[0].userDNI,this.studentList[0].userFirstName, this.studentList[0].userLastName)
+              let escuela
+              if( this.studentList[0].schoolName == "Ing. Informatica"){
+                escuela = "Informática"
+              }else{
+                escuela = "Civil"
+              }
+              return downloadFile(fileName,this.studentList[0].userDNI,this.studentList[0].userFirstName, this.studentList[0].userLastName,escuela)
             }
           ),
           switchMap(
@@ -322,6 +417,7 @@ export class JuryDialogComponent implements OnInit {
               return this.formService.convertDocumentToBlob(
                 this.formService.generateGraduateWorkJuryOralEvaluationForm(
                     this.experimentalOralJuryCriteriaList,
+                    this.experimentalOralJuryCriteriaList.filter( (criteria:any) => criteria.seccionId == 1),
                     this.experimentalOralJurySeccionList,
                     this.inputdata.graduateWorkData.graduateWorkTitle,
                     studentName
@@ -412,13 +508,56 @@ export class JuryDialogComponent implements OnInit {
               return this.formService.convertDocumentToBlob(this.formService.generateGraduateWorkJuryNotification(notificationData))
             }
           ),
+          
           switchMap(
             (juryNotificationBlob) => {
               console.log(juryNotificationBlob)
+              let alumnos;
+              if(this.studentList.length > 1){
+                alumnos = `Alumnos ${this.studentList[0].userLastName.split(" ")[0]}${this.studentList[0].userFirstName.split(" ")[0]} ${this.studentList[1].userLastName.split(" ")[0]}${this.studentList[1].userFirstName.split(" ")[0]} `
+              }else{
+                alumnos = `Alumno ${this.studentList[0].userLastName.split(" ")[0]}${this.studentList[0].userFirstName.split(" ")[0]} `
+              }
               const file: File = new File([juryNotificationBlob], `${this.juryDataList[0].userLastName.split(" ")[0]}${this.juryDataList[0].userFirstName.split(" ")[0]} Designacion Jurado TG.docx`, { type: juryNotificationBlob.type });
               console.log(file)
               this.fileArray.push(file)
-              return this.emailService.sendMultipleEmail(this.fileArray,this.coordinatorData.userEmail,this.juryDataList[0].userEmail)
+              let emailData: SendEmailRequest = {
+                emailTo: this.juryDataList[0].userEmail,
+                emailFrom: this.coordinatorData.userEmail,
+                subject: `Notificación Designación Jurado ${this.juryDataList[0].userLastName.split(" ")[0]} ${this.juryDataList[0].userFirstName.split(" ")[0]} - documentos para evaluación de TG - ${alumnos}` ,
+                htmlContent: 
+                `
+                Puerto Ordaz, ${new Date().toLocaleDateString("es-ES", {day: "numeric",month: "long", year: "numeric",})}                                                         
+                Buen día estimada profesora: ${this.juryDataList[0].userLastName} ${this.juryDataList[0].userFirstName}
+                Usted ha sido designado jurado de Trabajo de Grado. Adjunto su Designación de Jurado
+                Para la revisión y evaluación del mismo dispone de los siguientes documentos:
+                          	Informe del Trabajo de Grado
+                          El cual encontrará en el siguiente enlace
+                          https://drive.google.com/drive/folders/17e0j8uznhK1YkUlT1-Z2JwUHJYYrY-vI?usp=sharing
+                          	Guía para el Jurador Examinador, el cual contiene un extracto del Reglamento de Trabajos de Grado de la Facultad de Ingeniería relativo a evaluación y criterios a ser evaluados.
+                          	Guía Informe Trabajo Grado IINF Gy; en la cual se encuentran los Formatos de Planillas de evaluación del trabajo (Como referencia de los ítems a ser evaluados)
+                          Las cuales encontrará en el siguiente enlace
+                          https://drive.google.com/drive/folders/1AvM-Bshb2HZePPBxszrg81Xtdwn-kuOr?usp=sharing
+                          	Guía Normas APA Formato - IINF Gy; la cual contiene un resumen del formato que deben seguir los alumnos en la elaboración del Informe de Trabajo de Grado. 
+                          La cual encontrará en el siguiente enlace
+                          https://drive.google.com/drive/folders/1aa0u-J8Dm6ZdDBKQg4joRbOPEvqb7XVO?usp=sharing
+
+                Las  Planillas de evaluación con los datos del TG y del (los) estudiante(s) estarán impresas y disponibles para ser retiradas en La Escuela de Ingeniería Informática, cuando usted guste. 
+                Nota: Adicionalmente, las Planillas de evaluación están disponibles en el siguientes enlaces; puede iniciar la evaluación del documento esrito (informe) del TG y el día de la defensa puede continuar la evaluación de la presentación del TG 
+
+                Enlace para la evaluación del Trabajo Escrito: ${environment.basicURL}/generar/planilla/trabajodegrado/informe/${this.inputdata.graduateWorkData.graduateWorkType.toLowerCase()}/${this.juryDataList[0].userDNI}/${this.inputdata.graduateWorkData.graduateworkid}
+
+                Enlace para la evaluación de la Defensa Oral: ${environment.basicURL}/generar/planilla/trabajodegrado/presentacion/${this.inputdata.graduateWorkData.graduateWorkType.toLowerCase()}/${this.juryDataList[0].userDNI}/${this.inputdata.graduateWorkData.graduateworkid}
+
+                El jurado dispone de 5 y máximo 10 días para la lectura y evaluación del Informe del Trabajo de Grado, según artículo 11 del Reglamento de Trabajo de Grado de la Facultad de Ingeniería.
+                La presentación oral será fijada, de acuerdo a la disponibilidad de los participantes; posterior a este acuerdo se le informará el lugar, fecha y hora de la misma.
+                De antemano la Escuela de Ingeniería Informática desea expresarle un especial agradecimiento por su colaboración en la evaluación de este Trabajo de Grado.
+                Saludándole cordialmente
+                Atentamente,
+                ${this.coordinatorData.userLastName}, ${this.coordinatorData.userFirstName}
+                
+                `              }
+              return this.emailService.sendMultipleEmail(this.fileArray,emailData)
             },
           ),
           switchMap(
@@ -447,7 +586,49 @@ export class JuryDialogComponent implements OnInit {
               const file: File = new File([juryNotificationBlob], `${this.juryDataList[1].userLastName.split(" ")[0]}${this.juryDataList[1].userFirstName.split(" ")[0]} Designacion Jurado TG.docx`, { type: juryNotificationBlob.type });
               console.log(file)
               this.fileArray.push(file)
-              return this.emailService.sendMultipleEmail(this.fileArray,this.coordinatorData.userEmail,this.juryDataList[1].userEmail)
+              let studentNames: string = ""
+              if(this.studentList.length > 1){
+                studentNames = `Alumnos ${this.studentList[0].userLastName.split(' ')[0]}${this.studentList[0].userFirstName.split(' ')[0]} ${this.studentList[1].userLastName.split(' ')[0]}${this.studentList[1].userFirstName.split(' ')[0]}`
+              }else{
+                studentNames = ` Alumno ${this.studentList[0].userLastName.split(' ')[0]}${this.studentList[0].userFirstName.split(' ')[0]}`
+              }
+              let emailData: SendEmailRequest = {
+                emailTo: this.juryDataList[1].userEmail,
+                emailFrom: this.coordinatorData.userEmail,
+                subject: `Notificación Designación Jurado ${this.juryDataList[1].userLastName.split(" ")[0]} ${this.juryDataList[1].userFirstName.split(" ")[0]} – documentos para evaluación de TG - ${studentNames}` ,
+                htmlContent: ` 
+                Puerto Ordaz, ${new Date().toLocaleDateString("es-ES", {day: "numeric",month: "long", year: "numeric",})}                                                         
+                Buen día estimada profesora: ${this.juryDataList[1].userLastName} ${this.juryDataList[1].userFirstName}
+                Usted ha sido designado jurado de Trabajo de Grado. Adjunto su Designación de Jurado
+                Para la revisión y evaluación del mismo dispone de los siguientes documentos:
+                          	Informe del Trabajo de Grado
+                          El cual encontrará en el siguiente enlace
+                          https://drive.google.com/drive/folders/17e0j8uznhK1YkUlT1-Z2JwUHJYYrY-vI?usp=sharing
+                          	Guía para el Jurador Examinador, el cual contiene un extracto del Reglamento de Trabajos de Grado de la Facultad de Ingeniería relativo a evaluación y criterios a ser evaluados.
+                          	Guía Informe Trabajo Grado IINF Gy; en la cual se encuentran los Formatos de Planillas de evaluación del trabajo (Como referencia de los ítems a ser evaluados)
+                          Las cuales encontrará en el siguiente enlace
+                          https://drive.google.com/drive/folders/1AvM-Bshb2HZePPBxszrg81Xtdwn-kuOr?usp=sharing
+                          	Guía Normas APA Formato - IINF Gy; la cual contiene un resumen del formato que deben seguir los alumnos en la elaboración del Informe de Trabajo de Grado. 
+                          La cual encontrará en el siguiente enlace
+                          https://drive.google.com/drive/folders/1aa0u-J8Dm6ZdDBKQg4joRbOPEvqb7XVO?usp=sharing
+
+                Las  Planillas de evaluación con los datos del TG y del (los) estudiante(s) estarán impresas y disponibles para ser retiradas en La Escuela de Ingeniería Informática, cuando usted guste. 
+                Nota: Adicionalmente, las Planillas de evaluación están disponibles en el siguientes enlaces; puede iniciar la evaluación del documento esrito (informe) del TG y el día de la defensa puede continuar la evaluación de la presentación del TG 
+
+                Enlace para la evaluación del Trabajo Escrito: ${environment.basicURL}/generar/planilla/trabajodegrado/informe/${this.inputdata.graduateWorkData.graduateWorkType.toLowerCase()}/${this.juryDataList[1].userDNI}/${this.inputdata.graduateWorkData.graduateworkid}
+
+
+                Enlace para la evaluación de la Defensa Oral: ${environment.basicURL}/generar/planilla/trabajodegrado/presentacion/${this.inputdata.graduateWorkData.graduateWorkType.toLowerCase()}/${this.juryDataList[1].userDNI}/${this.inputdata.graduateWorkData.graduateworkid}
+
+                El jurado dispone de 5 y máximo 10 días para la lectura y evaluación del Informe del Trabajo de Grado, según artículo 11 del Reglamento de Trabajo de Grado de la Facultad de Ingeniería.
+                La presentación oral será fijada, de acuerdo a la disponibilidad de los participantes; posterior a este acuerdo se le informará el lugar, fecha y hora de la misma.
+                De antemano la Escuela de Ingeniería Informática desea expresarle un especial agradecimiento por su colaboración en la evaluación de este Trabajo de Grado.
+                Saludándole cordialmente
+                Atentamente,
+                ${this.coordinatorData.userLastName}, ${this.coordinatorData.userFirstName}
+                `
+              }
+              return this.emailService.sendMultipleEmail(this.fileArray,emailData)
             },
           ),
           switchMap(
@@ -478,7 +659,52 @@ export class JuryDialogComponent implements OnInit {
               const file: File = new File([juryNotificationBlob], `${this.juryDataList[2].userLastName.split(" ")[0]}${this.juryDataList[2].userFirstName.split(" ")[0]} Designacion Jurado TG.docx`, { type: juryNotificationBlob.type });
               console.log(file)
               this.fileArray.push(file)
-              return this.emailService.sendMultipleEmail(this.fileArray,this.coordinatorData.userEmail,this.juryDataList[2].userEmail)
+              let studentNames: string = ""
+              if(this.studentList.length > 1){
+                studentNames = `Alumnos ${this.studentList[0].userLastName.split(' ')[0]}${this.studentList[0].userFirstName.split(' ')[0]} ${this.studentList[1].userLastName.split(' ')[0]}${this.studentList[1].userFirstName.split(' ')[0]}`
+              }else{
+                studentNames = ` Alumno ${this.studentList[0].userLastName.split(' ')[0]}${this.studentList[0].userFirstName.split(' ')[0]}`
+              }
+              
+              let emailData: SendEmailRequest = {
+                emailTo: this.juryDataList[2].userEmail,
+                emailFrom: this.coordinatorData.userEmail,
+                subject: ` Notificación Designación Jurado ${this.juryDataList[2].userLastName.split(" ")[0]} ${this.juryDataList[2].userFirstName.split(" ")[0]} – documentos para evaluación de TG - ${studentNames}` ,
+                htmlContent:
+                ` 
+                Puerto Ordaz, ${new Date().toLocaleDateString("es-ES", {day: "numeric",month: "long", year: "numeric",})}                                                         
+                Buen día estimada profesora: ${this.juryDataList[2].userLastName} ${this.juryDataList[2].userFirstName}
+                Usted ha sido designado jurado de Trabajo de Grado. Adjunto su Designación de Jurado
+                Para la revisión y evaluación del mismo dispone de los siguientes documentos:
+                          	Informe del Trabajo de Grado
+                          El cual encontrará en el siguiente enlace
+                          https://drive.google.com/drive/folders/17e0j8uznhK1YkUlT1-Z2JwUHJYYrY-vI?usp=sharing
+                          	Guía para el Jurador Examinador, el cual contiene un extracto del Reglamento de Trabajos de Grado de la Facultad de Ingeniería relativo a evaluación y criterios a ser evaluados.
+                          	Guía Informe Trabajo Grado IINF Gy; en la cual se encuentran los Formatos de Planillas de evaluación del trabajo (Como referencia de los ítems a ser evaluados)
+                          Las cuales encontrará en el siguiente enlace
+                          https://drive.google.com/drive/folders/1AvM-Bshb2HZePPBxszrg81Xtdwn-kuOr?usp=sharing
+                          	Guía Normas APA Formato - IINF Gy; la cual contiene un resumen del formato que deben seguir los alumnos en la elaboración del Informe de Trabajo de Grado. 
+                          La cual encontrará en el siguiente enlace
+                          https://drive.google.com/drive/folders/1aa0u-J8Dm6ZdDBKQg4joRbOPEvqb7XVO?usp=sharing
+
+                Las  Planillas de evaluación con los datos del TG y del (los) estudiante(s) estarán impresas y disponibles para ser retiradas en La Escuela de Ingeniería Informática, cuando usted guste. 
+                Nota: Adicionalmente, las Planillas de evaluación están disponibles en el siguientes enlaces; puede iniciar la evaluación del documento esrito (informe) del TG y el día de la defensa puede continuar la evaluación de la presentación del TG 
+
+                Enlace para la evaluación del Trabajo Escrito: ${environment.basicURL}/generar/planilla/trabajodegrado/informe/${this.inputdata.graduateWorkData.graduateWorkType.toLowerCase()}/${this.juryDataList[2].userDNI}/${this.inputdata.graduateWorkData.graduateworkid}
+
+                Enlace para la evaluación de la Defensa Oral: ${environment.basicURL}/generar/planilla/trabajodegrado/presentacion/${this.inputdata.graduateWorkData.graduateWorkType.toLowerCase()}/${this.juryDataList[2].userDNI}/${this.inputdata.graduateWorkData.graduateworkid}
+
+
+                El jurado dispone de 5 y máximo 10 días para la lectura y evaluación del Informe del Trabajo de Grado, según artículo 11 del Reglamento de Trabajo de Grado de la Facultad de Ingeniería.
+                La presentación oral será fijada, de acuerdo a la disponibilidad de los participantes; posterior a este acuerdo se le informará el lugar, fecha y hora de la misma.
+                De antemano la Escuela de Ingeniería Informática desea expresarle un especial agradecimiento por su colaboración en la evaluación de este Trabajo de Grado.
+                Saludándole cordialmente
+                Atentamente,
+                ${this.coordinatorData.userLastName}, ${this.coordinatorData.userFirstName}
+                `
+              }
+
+              return this.emailService.sendMultipleEmail(this.fileArray,emailData)
             },
           ),
           switchMap(
@@ -510,11 +736,128 @@ export class JuryDialogComponent implements OnInit {
               notificationBlobArray.forEach( (file: any,index: number) => {
                 let fileNotification: File = new File([notificationBlobArray[index]], `${this.studentList[index].userLastName.split(" ")[0]}${this.studentList[index].userFirstName.split(" ")[0]} Designacion Jurado TG.docx`, { type: notificationBlobArray[index].type });
                 console.log(fileNotification)
-                observables.push(this.emailService.sendEmail(fileNotification,this.coordinatorData.userEmail,this.studentList[index].userEmail))
+
+                let emailData: SendEmailRequest = {
+                  emailTo: this.studentList[index].userEmail,
+                  emailFrom: this.coordinatorData.userEmail,
+                  subject: `Notificación Designación Jurado y sugerencias para la presentación de TG - Alumno: ${this.studentList[index].userLastName.split(" ")[0]} ${this.studentList[index].userFirstName.split(" ")[0]}` ,
+                  htmlContent: 
+                  `
+                  Puerto Ordaz,  ${new Date().toLocaleDateString("es-ES", {day: "numeric",month: "long", year: "numeric",})} 
+                  Buen día estimado Alumno ${this.studentList[index].userLastName}, ${this.studentList[index].userFirstName}
+                  Saludándole cordialmente
+                  Adjunto Notificación de designación de Jurado de su Trabajo de Grado y por favor lea el resumen de la dinámica de actividades y responsabilidades para la presentación oral del mismo, que se encuentra en la documentación del TG.
+                  Cualquier duda o consulta estoy a su disposición.
+                  Atentamente
+                  ${this.coordinatorData.userLastName}, ${this.coordinatorData.userFirstName}
+                  `
+                }
+
+
+                observables.push(this.emailService.sendEmail(fileNotification,emailData))
               })
               return forkJoin(observables)
             }
           ),
+          
+          switchMap(
+            (result) => {
+              const observables: Observable<any>[] = []
+              console.log(result)
+              console.log(this.juryDataList)
+              console.log(this.experimentalOralJuryCriteriaList)
+              console.log(this.inputdata.studentData)
+              console.log(this.inputdata.graduateWorkData)
+              this.juryDataList.forEach( (jury:any) => {
+                this.inputdata.studentData.forEach( (student:any) => {
+                  this.experimentalOralJuryCriteriaList.forEach( (criteria:any) => {
+                             /* Tutor */
+                             if(jury.userDNI == this.inputdata.graduateWorkData.graduateWorkAcademicTutor){
+
+  
+                             }else{
+
+                               observables.push(
+                                 this.graduateworkService.addJuryOralEvaluationNote(
+                                   {
+                                     juryDNI: jury.userDNI,
+                                     studentDNI: student.userDNI,
+                                     graduateWorkId: this.inputdata.graduateWorkData.graduateworkid,
+                                     criteriaId: criteria.criteriaId,
+                                     evaluationNote: null
+                                   }
+                                 )
+                               )
+                             }
+                    
+                  })
+                })
+              })
+              
+              this.juryDataList.forEach( (jury:any) => {
+                this.inputdata.studentData.forEach( (student:any) => {
+                  this.experimentalReportJuryCriteriaList.forEach( (criteria:any) => {
+                             /* Tutor */
+                             if(jury.userDNI == this.inputdata.graduateWorkData.graduateWorkAcademicTutor){
+
+  
+                             }else{
+
+                               observables.push(
+                                 this.graduateworkService.addJuryReportEvaluationNote(
+                                   {
+                                     juryDNI: jury.userDNI,
+                                     studentDNI: student.userDNI,
+                                     graduateWorkId: this.inputdata.graduateWorkData.graduateworkid,
+                                     criteriaId: criteria.criteriaId,
+                                     evaluationNote: null
+                                   }
+                                 )
+                               )
+                             }
+                    
+                  })
+                })
+              })
+
+              this.criteriosTutorAcademicoPresentacion.forEach ( (criterio:any) => {
+                this.inputdata.studentData.forEach( (estudiante: any) => {
+                  observables.push(
+                    this.graduateworkService.addTutorOralEvaluationNote(
+                      {
+                        juryDNI: this.tutorData.userDNI,
+                        studentDNI: estudiante.userDNI,
+                        graduateWorkId: this.inputdata.graduateWorkData.graduateworkid,
+                        criteriaId: criterio.criteriaId,
+                        evaluationNote: null
+                      }
+                    )
+                  )
+                })
+              })
+
+              this.criteriosTutorAcademicoinforme.forEach ( (criterio:any) => {
+                this.inputdata.studentData.forEach( (estudiante: any) => {
+                  observables.push(
+                    this.graduateworkService.addTutorReportEvaluationNote(
+                      {
+                        juryDNI: this.tutorData.userDNI,
+                        studentDNI: estudiante.userDNI,
+                        graduateWorkId: this.inputdata.graduateWorkData.graduateworkid,
+                        criteriaId: criterio.criteriaId,
+                        evaluationNote: null
+                      }
+                    )
+                  )
+                })
+              })
+
+
+              this.inputdata.graduateWorkData.graduateWorkAcademicTutor
+              return forkJoin(observables)
+            }
+          ),
+
           switchMap(
             (result) => {
               console.log(result)
@@ -525,7 +868,16 @@ export class JuryDialogComponent implements OnInit {
           next: (result) => {
             console.log(result)
           },
+          error: (error) => {
+            this.cargadoArchivos = false
+            this._snackBar.open("Error durante el envio de documentos", "cerrar",{
+              horizontalPosition: this.horizontalPosition,
+              verticalPosition: this.verticalPosition
+            })
+            throw new Error("Error durante el envio de documentos")
+          },
           complete: () => {
+            console.log("COMPLETADO")
             window.location.href = window.location.href
           }
         })
@@ -572,8 +924,8 @@ export class JuryDialogComponent implements OnInit {
     const observables: Observable<any>[] = []
 
 
-    observables.push(this.graduateworkService.getJuryReportExperimentalCriteria())
-    observables.push(this.graduateworkService.getJuryReportExperimentalSeccion())
+    observables.push(this.graduateworkService.getJuryReportExperimentalCriteria("Ing. Informatica"))
+    observables.push(this.graduateworkService.getJuryReportExperimentalSeccion("Ing. Informatica"))
 
     
     

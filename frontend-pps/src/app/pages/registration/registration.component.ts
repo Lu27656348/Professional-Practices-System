@@ -140,7 +140,8 @@ export class RegistrationComponent implements OnInit {
 	      userLastName: body.userlastname as string,
 	      userEmail: body.useremailucab as string + this.emailFormatSelected as string,
 	      userPhone: body.userphone as string,
-	      userEmailAlt: null
+	      userEmailAlt: null,
+        schoolName: studentBody.studentSchoolName as string
       }
 
       const studentData: CreateStudentRequest = {
@@ -194,7 +195,8 @@ export class RegistrationComponent implements OnInit {
 	      userLastName: body.userlastname as string,
 	      userEmail: body.useremailucab as string + this.emailFormatSelected as string,
 	      userPhone: body.userphone as string,
-	      userEmailAlt: null
+	      userEmailAlt: null,
+        schoolName: professorBody.professorSchoolName as string
       }
       
       const professorData: createProfessorRequest = {
@@ -246,7 +248,8 @@ export class RegistrationComponent implements OnInit {
 	      userLastName: body.userlastname as string,
 	      userEmail: body.useremailucab as string + this.emailFormatSelected,
 	      userPhone: body.userphone as string,
-	      userEmailAlt: null
+	      userEmailAlt: null,
+        schoolName: "Ing. Informatica"
       }
       
       const externalData: CreateExternalRequest = {

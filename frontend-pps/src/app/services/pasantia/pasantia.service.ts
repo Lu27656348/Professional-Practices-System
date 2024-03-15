@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { CreateEvaluationCriteria } from 'src/app/interfaces/requests/CreateEvaluationCriteria';
 import { EvaluateIntershipProposalRequest } from 'src/app/interfaces/requests/EvaluateIntershipProposalRequest';
 import { EvaluateIntershipReportRequest } from 'src/app/interfaces/requests/EvaluateIntershipReportRequest';
 import { environment } from 'src/environments/environment';
@@ -79,9 +80,33 @@ export class PasantiaService {
     return this.http.post(`${environment.apiUrlPasantia}/pasantia/evaluate/report`,evaluation,{headers});
   }
 
-  obtenerEstudiantesPendientesPorPasantia(){
+  obtenerEstudiantesPendientesPorPasantia( schoolName: string ){
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
-    return this.http.get(`${environment.apiUrlPasantia}/pasantia/proposal/pending`,{headers});
+    return this.http.get(`${environment.apiUrlPasantia}/pasantia/proposal/pending/${schoolName}`,{headers});
+  }
+
+  asociarCriterioConEvaluacionDeTutorAcademico(criteriaEvaluationData: CreateEvaluationCriteria){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.post(`${environment.apiUrlPasantia}/pasantia/generar/evaluacion/tutor/academico`,criteriaEvaluationData,{headers});
+  }
+
+  asociarCriterioConEvaluacionDeTutorEmpresarial(criteriaEvaluationData: CreateEvaluationCriteria){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.post(`${environment.apiUrlPasantia}/pasantia/generar/evaluacion/tutor/empresarial`,criteriaEvaluationData,{headers});
+  }
+
+  obtenerCalificacionEvaluacionTutorEmpresarial(intershipId: number,tutorDNI: string){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`${environment.apiUrlPasantia}/pasantia/obtener/calificacion/evaluacion/tutor/empresarial/${intershipId}/${tutorDNI}`,{headers});
+  }
+
+  obtenerCalificacionEvaluacionTutorAcademico(intershipId: number,tutorDNI: string){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`${environment.apiUrlPasantia}/pasantia/obtener/calificacion/evaluacion/tutor/academico/${intershipId}/${tutorDNI}`,{headers});
   }
 }

@@ -7,6 +7,7 @@ import { Observable, forkJoin, of, switchMap } from 'rxjs';
 import { EvaluationFormGeneratorService } from 'src/app/form-generator/services/evaluation-form-generator.service';
 import { ResponseBlob } from 'src/app/interfaces/ResponseBlob';
 import { EvaluateIntershipProposalRequest } from 'src/app/interfaces/requests/EvaluateIntershipProposalRequest';
+import { SendEmailRequest } from 'src/app/interfaces/requests/SendEmailRequest';
 import { CouncilService } from 'src/app/services/council.service';
 import { EmailService } from 'src/app/services/email.service';
 import { EnterpriseService } from 'src/app/services/enterprise.service';
@@ -16,14 +17,14 @@ import { ProfessorsService } from 'src/app/services/professors.service';
 import { UsersService } from 'src/app/services/users.service';
 import { environment } from 'src/environments/environment';
 
-async function descargarPropuestaPasantia(fileName: string,studentDNI: string, userFirstName: string, userLastName: string) {
+async function descargarPropuestaPasantia(fileName: string,studentDNI: string, userFirstName: string, userLastName: string,schoolName: string) {
   try {
     const response = await fetch(`${environment.amazonS3}/download/pasantia/propuesta`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ fileName: fileName,studentDNI: studentDNI, userFirstName: userFirstName, userLastName: userLastName})
+      body: JSON.stringify({ fileName: fileName,studentDNI: studentDNI, userFirstName: userFirstName, userLastName: userLastName,escuela:schoolName})
     } as RequestInit);
 
     const blob = await (response as ResponseBlob<Blob>).blob(); // Type assertion for blobBody
@@ -204,6 +205,7 @@ export class EvaluatePasantiaDialogComponent implements OnInit{
             console.log(schoolData)
             this.schoolCouncilData = schoolData;
             console.log(this.inputdata.pasantia)
+            console.log(this.pasantiaForm.value)
             return this.userService.getUserData(this.pasantiaForm.value.tutorAcademico as string)
           }
         ),
@@ -287,7 +289,7 @@ export class EvaluatePasantiaDialogComponent implements OnInit{
               empresa: this.enterpriseData.enterpriseName as string,
               titulo: this.inputdata.pasantia.intershipTitle,
               fechaInicio: new Date(this.intershipData.intershipStartDate),
-              fechaFin: new Date(this.intershipData.intershipStartDate),
+              fechaFin: new Date(this.fechaCulminacion),
               tutorEmpresarial: this.corporateTutorData.userLastName + ", " + this.corporateTutorData.userFirstName ,
               administrador: `${this.administratorData.userFirstName.split(" ")[0]} ${this.administratorData.userFirstName.split(" ")[1].charAt(0)}. ${this.administratorData.userLastName.split(" ")[0]} `
             }
@@ -301,8 +303,87 @@ export class EvaluatePasantiaDialogComponent implements OnInit{
             console.log(file)
             this.tutorNotification = file
             const observables: Observable<any>[] = []
-            observables.push(this.emailService.sendEmail(this.studentNotification,this.administratorData.userEmail,this.studentData.userEmail))
-            observables.push(this.emailService.sendEmail(this.tutorNotification,this.administratorData.userEmail,this.academicTutorData.userEmail))
+
+            let emailData: SendEmailRequest = {
+              emailTo: this.studentData.userEmail,
+              emailFrom: this.administratorData.userEmail,
+              subject: `Notificación Aprobación Pasantía y Tutor Académico - Procedimiento - Guías ${this.studentData.userLastName.split(" ")[0]}, ${this.studentData.userFirstName.split(" ")[0]}` ,
+              htmlContent: 
+              `
+              Puerto Ordaz, ${new Date().toLocaleDateString("es-ES", {day: "numeric",month: "long", year: "numeric",})}
+
+                        Buen día alumno	
+                        Adjunto: Notificación Aprobación de Pasantía y Tutor Académico, Procedimiento y Guías para el desarrollo de su Pasantía
+
+              En los siguientes enlaces
+              Enlace Documentación Pasantía IINF-Gy
+
+                        https://drive.google.com/drive/folders/1-yydB_0zywTpJgJ3ZS6XybuTvfAKKucM?usp=sharing
+
+              Guía Normas APA Formato - IINF Gy
+
+                        https://drive.google.com/drive/folders/1aa0u-J8Dm6ZdDBKQg4joRbOPEvqb7XVO?usp=sharing
+
+              Encontrará Las guías para el desarrollo de la documentación de Pasantía.
+              También se le envía copia de la designación a su Tutor Académico
+              Deseándole el mayor de los éxitos
+              Cualquier consulta o duda estoy a su disposición.
+              Atentamente, 
+              ${this.administratorData.userLastName}, ${this.administratorData.userFirstName}
+
+              ` 
+            }
+
+            let emailDataV2: SendEmailRequest = {
+              emailTo: this.academicTutorData.userEmail,
+              emailFrom: this.administratorData.userEmail,
+              subject: `Notificación Designación Tutor Académico Pasantía y Documentos Pasantía - Alumno ${this.studentData.userLastName.split(" ")[0]}, ${this.studentData.userFirstName.split(" ")[0]}` ,
+              htmlContent:
+               `
+              Puerto Ordaz,  ${new Date().toLocaleDateString("es-ES", {day: "numeric",month: "long", year: "numeric",})}
+              Buen día Tutor Académico ${this.academicTutorData.userLastName}, ${this.academicTutorData.userFirstName}
+              Saludándole cordialmente
+              Adjunto 
+
+                        	Notificación Designación Tutor Académico Pasantía 
+                        	Propuesta de Pasantía aprobado por el Consejo de Escuela
+                        	Planilla de Evaluación Pasantía Tutor Académico
+
+              Documentos pertinentes para el seguimiento y evaluación de la misma 
+
+                        	Guía Elaboración Informe de Pasantía
+                        	Guía Normas APA Formato - IINF Gy
+
+              La Notificación de Designación, propuesta y Planilla de Evaluación personalizada, de cada alumno, se adjuntan con este documento.
+
+              Las guías están disponibles en el siguiente enlace:
+
+                        Enlace Documentación Pasantía IINF-Gy
+                        https://drive.google.com/drive/folders/1-yydB_0zywTpJgJ3ZS6XybuTvfAKKucM?usp=sharing
+
+                        Guía Normas APA Formato - IINF Gy
+                        https://drive.google.com/drive/folders/1aa0u-J8Dm6ZdDBKQg4joRbOPEvqb7XVO?usp=sharing
+
+              Recordándole que el proceso de Pasantía es:
+
+                        	Seguimiento, cada semana el estudiante debe reportar las actividades y productos obtenidos durante esa semana, utilizando el formato de Informe Actividades Pasantía y usted debe verificarlo. 
+                        	Evaluación, al finalizar la Pasantía, el estudiante le entregará un informe sobre el trabajo realizado, previa evaluación y aprobación del mismo por el Tutor Empresarial. Este informe debe cumplir con lo estipulado en la Guía Elaboración Informe de Pasantía y usted debe verificarlo.
+                        1. Entrega de informe, por parte de los alumnos
+                        los alumnos deben enviarle el informe final de la pasantía, previa evaluación del Tutor Empresarial, el cual usted revisará, en caso de tener alguna observación, se la comunica al alumno.
+                        El Tutor Empresarial debe haberle enviado copia de la planilla de evaluación de la Pasantía, en señal de conformidad con la realización de la Pasantía y de revisión del Informe, sino es así, por favor comuníquese con él.
+                        2. Evaluación de Pasantía
+                        Al estar conforme con el informe, completa la planilla de evaluación personalizada y editable que anexo al presente correo.
+                        3. Envío de Evaluación de Pasantía
+                        Envíe la planilla de evaluación desde su correo institucional al correo ${this.administratorData.userEmail}, con copia al correo del alumno, para que él la adjunte en su informe. Cualquier consulta o duda estoy a su disposición
+                        Atentamente,
+              ${this.administratorData.userLastName}, ${this.administratorData.userFirstName}
+              ` 
+            }
+
+            console.log(emailData)
+            console.log(emailDataV2)
+            observables.push(this.emailService.sendEmail(this.studentNotification,emailData))
+            observables.push(this.emailService.sendEmail(this.tutorNotification,emailDataV2))
             return forkJoin(observables)
           }
         )
@@ -324,6 +405,7 @@ export class EvaluatePasantiaDialogComponent implements OnInit{
                 console.log(result)
               },
               complete: () => {
+                this.cargadoArchivos = false
                 window.location.href = window.location.href
               }
             }
@@ -331,47 +413,7 @@ export class EvaluatePasantiaDialogComponent implements OnInit{
           
         }
       })
-      /*
-      const notificationData = {
-        consejo: this.pasantiaForm.value.consejoEscuela,
-        fechaConsejo: date,
-        propuesta: {
-          tutor_academico: {
-            apellidos: "Bello",
-            nombres: "Frankin"
-          },
-          titulo: "Sistema de Practicas Profesionales",
-          alumno: {apellidos: "Somoza Ledezma", nombres: "Luis Carlos"}
-        },
-        fecha_designacion: date,
-        revisor: "Wladimir SanVicente",
-        correo_administrador: "luiscarlossomoza@gmail.com",
-        administrador: "Luz E. Medina"
-      }
-      this.formGenerator.convertDocumentToBlob(this.formGenerator.generateIntershipCorporateTutorNotification(
-        
-      ))
-      */
-      /*
-      const evaluationData: EvaluateIntershipProposalRequest = {
-        intershipId: this.inputdata.pasantia.intershipId,
-        intershipStatusCode: 20,
-        schoolCouncilId: this.pasantiaForm.value.consejoEscuela as string,
-        schoolCouncilDecision: 'APROBADA',
-	      corporateTutorDNI: this.pasantiaForm.value.tutorAcademico as string,
-      }
-      console.log(evaluationData)
-      this.pasantiaService.evaluarPropuestaPasantia(evaluationData).subscribe(
-        {
-          next: (result) => {
-            console.log(result)
-          },
-          complete: () => {
-            window.location.href = window.location.href
-          }
-        }
-      )
-      */
+
     }else{
       this._snackBar.open("Debe cargar todos los datos", "cerrar",{
         horizontalPosition: this.horizontalPosition,
@@ -383,6 +425,12 @@ export class EvaluatePasantiaDialogComponent implements OnInit{
   descargarPropuestaPasantiaAlumno(){
     console.log(this.studentData)
     const fileName = `${this.studentData.userLastName.split(" ")[0]}${this.studentData.userFirstName.split(" ")[0]} Propuesta Pasantía.pdf`
-    descargarPropuestaPasantia(fileName,this.studentData.userDNI, this.studentData.userFirstName,this.studentData.userLastName)
+    let escuela;
+    if(this.inputdata.user.schoolName == "Ing. Informatica"){
+      escuela = "Informática"
+    }else{
+      escuela = "Civil"
+    }
+    descargarPropuestaPasantia(fileName,this.studentData.userDNI, this.studentData.userFirstName,this.studentData.userLastName,escuela)
   }
 }

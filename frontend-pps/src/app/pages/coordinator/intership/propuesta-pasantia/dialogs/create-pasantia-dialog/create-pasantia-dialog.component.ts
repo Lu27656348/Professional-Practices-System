@@ -80,6 +80,25 @@ export class CreatePasantiaDialogComponent {
       this.userService.getUserData(localUserData.userDNI).subscribe({
         next: (userData) => {
           this.userData = userData
+          this.pasantiaService.obtenerEstudiantesPendientesPorPasantia(this.userData.schoolName).pipe(
+            switchMap(
+              (result: any) => {
+                console.log(result)
+                const observables: Observable<any>[] = []
+                result.forEach( (element: any) => {
+                  observables.push(this.userService.getUserData(element))
+                }); 
+                return forkJoin(observables)
+              }
+            )
+          ).subscribe(
+            {
+              next: (result: any) => {
+                console.log(result)
+                this.studentList = result
+              }
+            }
+          )
         }
       })
     }
@@ -93,25 +112,7 @@ export class CreatePasantiaDialogComponent {
       file: ['',Validators.required]
     })
 
-    this.pasantiaService.obtenerEstudiantesPendientesPorPasantia().pipe(
-      switchMap(
-        (result: any) => {
-          console.log(result)
-          const observables: Observable<any>[] = []
-          result.forEach( (element: any) => {
-            observables.push(this.userService.getUserData(element))
-          }); 
-          return forkJoin(observables)
-        }
-      )
-    ).subscribe(
-      {
-        next: (result: any) => {
-          console.log(result)
-          this.studentList = result
-        }
-      }
-    )
+    
     /*
     this.studentService.getStudentsData().subscribe({
       next: (studentData) => {

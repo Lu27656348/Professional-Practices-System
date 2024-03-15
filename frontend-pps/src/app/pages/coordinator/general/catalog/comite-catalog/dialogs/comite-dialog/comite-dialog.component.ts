@@ -47,7 +47,7 @@ export class ComiteDialogComponent {
         next: (userData) => {
           this.userData = userData
           if(this.userData.schoolName == 'Ing. Informatica'){
-            this.escuela = 'Informatica'
+            this.escuela = 'Informática'
           }else{
             this.escuela = "Civil"
           }
@@ -109,7 +109,7 @@ export class ComiteDialogComponent {
   }
 
   modificarComite(){
-    if(this.comiteForm.valid){
+    if(this.comiteForm.get('committeeDate')){
       const comiteData: CreateCommitteeRequest = {
         committeeId: this.comiteForm.value.committeeId,
         committeeDate: this.comiteForm.value.committeeDate,

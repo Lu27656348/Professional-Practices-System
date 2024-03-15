@@ -31,7 +31,7 @@
   </div>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>Cancel</button>
-  <button mat-button style="background-color: red;"  [mat-dialog-close]="true" cdkFocusInitial (click)="veredictoPropuesta('rechazar')">Rechazar</button>
-  <button mat-button style="background-color: green;"  [mat-dialog-close]="true" cdkFocusInitial (click)="veredictoPropuesta('aprobar')">Aprobar</button>
+  <button mat-button mat-dialog-close *ngIf="cargadoArchivos == false">Cancel</button>
+  <button mat-button style="background-color: red;" cdkFocusInitial (click)="veredictoPropuesta('rechazar')" *ngIf="cargadoArchivos == false">Rechazar</button>
+  <button mat-button style="background-color: green;" cdkFocusInitial (click)="veredictoPropuesta('aprobar')" *ngIf="cargadoArchivos == false">Aprobar</button>
 </mat-dialog-actions>

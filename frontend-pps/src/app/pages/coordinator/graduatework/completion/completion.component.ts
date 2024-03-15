@@ -106,7 +106,7 @@ export class CompletionComponent {
     let studentData;
     let graduateWorkData;
 
-    forkJoin([ this.userService.getUserData(data.studentDNI),this.studentService.getStudentGraduateWork(data.studentDNI), this.graduateworkService.getGraduateWorkById(data.graduateWorkId)])
+    forkJoin([ this.userService.getUserData(data.studentDNI),this.studentService.getStudentGraduateWork(data.studentDNI), this.graduateworkService.getGraduateWorkById(data.graduateworkid)])
     .subscribe(([result1,result2,result3]) => {
       console.log(result1)
       console.log(result2)

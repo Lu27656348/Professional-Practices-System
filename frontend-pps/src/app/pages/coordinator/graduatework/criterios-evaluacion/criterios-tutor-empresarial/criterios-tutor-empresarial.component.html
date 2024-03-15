@@ -1,1 +1,167 @@
-<p>criterios-tutor-empresarial works!</p>
+
+<div style="width: 100%; height: 100%;">
+    <app-navbar></app-navbar>
+  
+    <mat-drawer-container style="width: 100%; background-color: #fbfbfb; margin: 0px 0 px; border: 1px solid #555; height: 77%;">
+        <mat-drawer mode="side" opened style="width: 25%;">
+            
+          <h3 style="margin-left: 25px; margin-top: 15px;"><strong>Procesos</strong></h3>
+          <mat-accordion>
+            <mat-expansion-panel (opened)="panelOpenState = true"
+                                 (closed)="panelOpenState = false">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Etapa de Propuesta
+                </mat-panel-title>
+                <mat-panel-description>
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              <mat-list role="list">
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/proposals">Propuestas</button></mat-list-item>
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/reviewers">Comité</button></mat-list-item>
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/reviewers-evaluation">Evaluación de Revisor</button></mat-list-item>
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/council">Consejo de Escuela</button></mat-list-item>
+              </mat-list>
+            </mat-expansion-panel>
+  
+            <mat-expansion-panel (opened)="panelOpenState = true"
+                                 (closed)="panelOpenState = false">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Etapa de Desarrollo
+                </mat-panel-title>
+                <mat-panel-description>
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              <mat-list role="list">
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/process">En desarrollo</button></mat-list-item>
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/juries">Asignación de Jurado</button></mat-list-item>
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/defenses">Asignación de Defensa</button></mat-list-item>
+              </mat-list>
+            </mat-expansion-panel>
+  
+  
+            <mat-expansion-panel (opened)="panelOpenState = true"
+                                 (closed)="panelOpenState = false">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Etapa de Culminación
+                </mat-panel-title>
+                <mat-panel-description>
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              <mat-list role="list">
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/presentacion">Defensa</button></mat-list-item>
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/completion">Culminación</button></mat-list-item>
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/complete">Completadas</button></mat-list-item>
+              </mat-list>
+            </mat-expansion-panel>
+          </mat-accordion>
+          
+  
+          <mat-divider style="width: 100%;"></mat-divider>
+  
+          <h3 style="margin-left: 25px; margin-top: 15px;"><strong>Secciones y Criterios</strong></h3>
+          <mat-accordion>
+            <mat-expansion-panel (opened)="panelOpenState = true"
+                                 (closed)="panelOpenState = false">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Criterios de Jurado 
+                </mat-panel-title>
+                <mat-panel-description>
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              <mat-list role="list">
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/jurado/presentacion">Presentación</button></mat-list-item>
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/jurado/informe">Informe</button></mat-list-item>
+              </mat-list>
+            </mat-expansion-panel>
+  
+            <mat-expansion-panel (opened)="panelOpenState = true"
+                                 (closed)="panelOpenState = false">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Criterios de Tutor
+                </mat-panel-title>
+                <mat-panel-description>
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              <mat-list role="list">
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/tutor/presentacion">Presentación</button></mat-list-item>
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/tutor/informe">Informe</button></mat-list-item>
+              </mat-list>
+            </mat-expansion-panel>
+  
+  
+            <mat-expansion-panel (opened)="panelOpenState = true"
+                                 (closed)="panelOpenState = false">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Criterios de Adicionales
+                </mat-panel-title>
+                <mat-panel-description>
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              <mat-list role="list">
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/presentacion">Revisor</button></mat-list-item>
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/completion">Tutor Empresarial</button></mat-list-item>
+              </mat-list>
+            </mat-expansion-panel>
+          </mat-accordion>
+   
+        </mat-drawer>
+        <mat-drawer-content>
+        
+     
+                    <div style="width: 100%; background-color: #fbfbfb; display: flex;">
+                        <button mat-raised-button style="background-color: rgb(215, 214, 209); height: 54px;" (click)="generarPlanilla()">
+                            Generar Planilla
+                        </button>
+                        <button mat-raised-button style="background-color: rgb(215, 214, 209); height: 54px;" (click)="crearSecionJurado('EXPERIMENTAL')">
+                            Agregar Criterio
+                        </button>
+                        <mat-form-field style="flex-grow: 1; margin: 0">
+                            <mat-label>Filter</mat-label>
+                            <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
+                        </mat-form-field>
+                    </div>
+                    <table mat-table [dataSource]="criteriaSource" class="mat-elevation-z8" style="margin-top: 0;">
+
+                        <ng-container matColumnDef="seccionId">
+                          <th mat-header-cell *matHeaderCellDef> ID - Criterio </th>
+                          <td mat-cell *matCellDef="let element"> {{element.criteriaId}} </td>
+                        </ng-container>
+                      
+        
+                        <ng-container matColumnDef="seccionName">
+                          <th mat-header-cell *matHeaderCellDef> Nombre </th>
+                          <td mat-cell *matCellDef="let element"> {{element.criteriaName}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="maxNote">
+                            <th mat-header-cell *matHeaderCellDef> Nota Máxima </th>
+                            <td mat-cell *matCellDef="let element"> {{element.maxNote}} </td>
+                        </ng-container>
+        
+                        <ng-container matColumnDef="actions">
+                          <th mat-header-cell *matHeaderCellDef> Editar </th>
+                          <td mat-cell *matCellDef="let element"> 
+                            <button mat-raised-button color="warning" (click)="editarSeccionJurado(element)">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                          </td>
+                        </ng-container>
+                      
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    </table>
+      
+            
+        
+        </mat-drawer-content>
+    </mat-drawer-container>
+  
+    <app-footer></app-footer>
+  </div>
+  

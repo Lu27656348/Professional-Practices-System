@@ -27,6 +27,6 @@
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close *ngIf="cargadoArchivos == false">Cancel</button>
-  <button mat-raised-button color="primary" (click)="agregarComite()" *ngIf="data == null && cargadoArchivos == false">Agregar Consejo</button>
-  <button mat-raised-button color="primary" (click)="modificarComite()" *ngIf="data != null && data.mode == 'EDITAR' && cargadoArchivos == false">Modificar Consejo</button>
+  <button mat-raised-button color="primary" (click)="agregarComite()" *ngIf="data == null && cargadoArchivos == false">Agregar Comité</button>
+  <button mat-raised-button color="primary" (click)="modificarComite()" *ngIf="data != null && data.mode == 'EDITAR' && cargadoArchivos == false">Modificar Comité</button>
 </mat-dialog-actions>

@@ -77,5 +77,42 @@ export class CriteriosTutorAcademicoService {
     return this.http.post(`${environment.apiUrlPasantia}/pasantia/criterios/academico/post`,body,{headers});
   }
 
+  obtenerCriteriosEvaluacionTutorAcademico(intershipId: number, userDNI: string){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    const body = {
+      intershipId: intershipId,
+      userDNI: userDNI
+    }
+    return this.http.post(`${environment.apiUrlPasantia}/pasantia/obtener/evaluacion/tutor/academico`,body,{headers});
+  }
+
+  obtenerSeccionTutorAcademicoById(seccionId: number){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`${environment.apiUrlPasantia}/pasantia/secciones/academico/get/by/${seccionId}`,{headers});
+  }
+
+
+  calificarCriterioEvaluacionTutorAcademico(
+    data: 
+    {
+      userDNI: string,
+      intershipId: number,
+      criteriaId: number,
+      criteriaNote: number
+    }
+  ){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.post(`${environment.apiUrlPasantia}/pasantia/calificar/evaluacion/tutor/academico`,data,{headers});
+  }
+
+  getAcademicTutorSeccionById(seccionId: number){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`${environment.apiUrlPasantia}/pasantia/secciones/academico/get/by/${seccionId}`,{headers});
+  }
+
 
 }

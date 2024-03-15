@@ -1,25 +1,9 @@
 <div style="width: 100%; height: 100%;">
   <app-navbar></app-navbar>
 
-  <mat-drawer-container style="width: 100%; background-color: antiquewhite; margin: 0px 0 px; border: 1px solid #555; height: 77%;">
+  <mat-drawer-container style="width: 100%; background-color: #fbfbfb; margin: 0px 0 px; border: 1px solid #555; height: 77%;">
       <mat-drawer mode="side" opened style="width: 20%;">
           
-          
-          <!--
-        <mat-list role="list">
-          <div mat-subheader><strong>Procesos de Trabajo de Grado</strong></div>
-          <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/proposals">Propuestas</button></mat-list-item>
-          <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/reviewers">Comité</button></mat-list-item>
-          <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/reviewers-evaluation">Evaluación de Revisor</button></mat-list-item>
-          <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/council">Consejo de Escuela</button></mat-list-item>
-          <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/process">En desarrollo</button></mat-list-item>
-          <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/juries">Asignación de Jurado</button></mat-list-item>
-          <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/defenses">Asignación de Defensa</button></mat-list-item>
-          <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/presentacion">Defensa</button></mat-list-item>
-          <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/completion">Culminación</button></mat-list-item>
-          <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/complete">Completadas</button></mat-list-item>
-        </mat-list>
-        -->
         <h3 style="margin-left: 25px; margin-top: 15px;"><strong>Procesos</strong></h3>
         <mat-accordion>
           <mat-expansion-panel (opened)="panelOpenState = true"
@@ -75,24 +59,54 @@
   
           <mat-divider style="width: 100%;"></mat-divider>
   
-          <mat-list role="list">
-              <div mat-subheader><strong>Criterios</strong></div>
-              <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/intership/criteria/corporative/tutor">Tutor Empresarial</button></mat-list-item>
-              <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/intership/criteria/academic/tutor">Tutor Académico</button></mat-list-item>
-          </mat-list>
+          <h3 style="margin-left: 25px; margin-top: 15px;"><strong>Secciones y Criterios</strong></h3>
+        <mat-accordion>
+          <mat-expansion-panel (opened)="panelOpenState = true"
+                               (closed)="panelOpenState = false">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Criterios de Jurado 
+              </mat-panel-title>
+              <mat-panel-description>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <mat-list role="list">
+              <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/jurado/presentacion">Presentación</button></mat-list-item>
+              <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/jurado/informe">Informe</button></mat-list-item>
+            </mat-list>
+          </mat-expansion-panel>
 
-          <mat-divider style="width: 100%;"></mat-divider>
+          <mat-expansion-panel (opened)="panelOpenState = true"
+                               (closed)="panelOpenState = false">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Criterios de Tutor
+              </mat-panel-title>
+              <mat-panel-description>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <mat-list role="list">
+              <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/tutor/presentacion">Presentación</button></mat-list-item>
+              <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/tutor/informe">Informe</button></mat-list-item>
+            </mat-list>
+          </mat-expansion-panel>
 
-          <mat-list role="list">
-              <div mat-subheader><strong>Generadores</strong></div>
-              <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/intership/generator/corporative/tutor/notification">Notificación Designación Revisor</button></mat-list-item>
-              <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/intership/generator/academic/tutor/notification">Notificación Designación Tutor Académico</button></mat-list-item>
-              <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/intership/generator/academic/tutor/notification">Notificación Designación Jurado</button></mat-list-item>
-              <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/intership/generator/corporative/tutor/evaluation">Evaluación Profesor Revisor</button></mat-list-item>
-              <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/intership/generator/academic/tutor/evaluation">Planilla de Propuesta</button></mat-list-item>
-              <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/intership/generator/academic/tutor/evaluation">Evaluación Tutor Oral y Escrita</button></mat-list-item>
-              <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/intership/generator/academic/tutor/evaluation">Planilla de Jurado Oral y Escrita</button></mat-list-item>
-          </mat-list>
+
+          <mat-expansion-panel (opened)="panelOpenState = true"
+                               (closed)="panelOpenState = false">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Criterios de Adicionales
+              </mat-panel-title>
+              <mat-panel-description>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <mat-list role="list">
+              <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/reviewer/criteria">Revisor</button></mat-list-item>
+              <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/corporate/criteria">Tutor Empresarial</button></mat-list-item>
+            </mat-list>
+          </mat-expansion-panel>
+        </mat-accordion>
       
       </mat-drawer>
       <mat-drawer-content>

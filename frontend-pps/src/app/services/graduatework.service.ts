@@ -129,6 +129,12 @@ export class GraduateworkService {
     return this.http.post(`${environment.apiUrl}/graduate-work/list/reviewer/evaluation/criteria`,reviewerEvaluation,{headers});
   }
 
+  getRevierwerCriteriaByModelAndSchool(schoolName: string, criteriaModel: string){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`${environment.apiUrl}/criteria/escuela/${schoolName}/modelo/${criteriaModel}`,{headers});
+  }
+
   approveReviewerEvaluation(reviewerEvaluation: SetReviewerEvaluationRequest){
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
@@ -157,6 +163,12 @@ export class GraduateworkService {
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
     return this.http.post(`${environment.apiUrl}/criteria`,criteriaData,{headers});
+  }
+
+  updateReviewerCriteria (criteriaData: CreateReviewerCriteriaRequest) : Observable<any> {
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.put(`${environment.apiUrl}/criteria`,criteriaData,{headers});
   }
 
   createReviewerEvaluation (reviewerEvaluation: CreateReviewerEvaluationRequest) : Observable<any> {
@@ -269,11 +281,12 @@ export class GraduateworkService {
     return this.http.post(`${environment.apiUrl}/graduate-work/tutor/revision/count`,body,{headers});
   }
 
-  uploadFinalSubmittion ( file : any, studentData: any ) : Observable<any> {
+  uploadFinalSubmittion ( file : any, studentData: any,escuela: string) : Observable<any> {
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
     const formData = new FormData();
     formData.append('file', file);
+    formData.append('escuela', escuela);
     formData.append('studentData', JSON.stringify(studentData));
     return this.http.post(`${environment.amazonS3}/upload/graduatework/final`,formData,{headers});
   }
@@ -461,42 +474,120 @@ export class GraduateworkService {
 
   /* Zona de Criterios y Secciones de Trabajo de Grado */
     /* Evaluaciones de Jurado Principal en Trabajo de Grado Experimental */
-  getJuryReportExperimentalCriteria(){
+  getJuryReportExperimentalCriteria(schoolName: string){
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
-    return this.http.get(`${environment.apiUrl}/graduate-work/juries/report/criteria/experimental`,{headers});
+    return this.http.get(`${environment.apiUrl}/graduate-work/juries/report/criteria/experimental/${schoolName}`,{headers});
   }
 
-  getJuryReportExperimentalSeccion(){
+  getJuryReportExperimentalSeccion(schoolName: string){
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
-    return this.http.get(`${environment.apiUrl}/graduate-work/juries/report/seccion/experimental`,{headers});
+    return this.http.get(`${environment.apiUrl}/graduate-work/juries/report/seccion/experimental/${schoolName}`,{headers});
   }
 
-  getJuryOralExperimentalCriteria(){
+  getJuryOralExperimentalCriteria(schoolName: string){
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
-    return this.http.get(`${environment.apiUrl}/graduate-work/juries/oral/criteria/experimental`,{headers});
+    return this.http.get(`${environment.apiUrl}/graduate-work/juries/oral/criteria/experimental/${schoolName}`,{headers});
   }
 
-  getJuryOralExperimentalSeccion(){
+  getJuryOralExperimentalSeccion(schoolName: string){
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
-    return this.http.get(`${environment.apiUrl}/graduate-work/juries/oral/seccion/experimental`,{headers});
+    return this.http.get(`${environment.apiUrl}/graduate-work/juries/oral/seccion/experimental/${schoolName}`,{headers});
   }
 
 
 
-  getTutorOraltExperimentalCriteria(){
+    /* Evaluaciones de Jurado Principal en Trabajo de Grado Instrumental */
+    getJuryReportInstrumentalCriteria(schoolName: string){
+      const headers = new HttpHeaders();
+      headers.append('Access-Control-Allow-Origin', '*');
+      return this.http.get(`${environment.apiUrl}/graduate-work/juries/report/criteria/instrumental/${schoolName}`,{headers});
+    }
+  
+    getJuryReportInstrumentalSeccion(schoolName: string){
+      const headers = new HttpHeaders();
+      headers.append('Access-Control-Allow-Origin', '*');
+      return this.http.get(`${environment.apiUrl}/graduate-work/juries/report/seccion/instrumental/${schoolName}`,{headers});
+    }
+  
+    getJuryOralInstrumentalCriteria(schoolName: string){
+      const headers = new HttpHeaders();
+      headers.append('Access-Control-Allow-Origin', '*');
+      return this.http.get(`${environment.apiUrl}/graduate-work/juries/oral/criteria/instrumental/${schoolName}`,{headers});
+    }
+  
+    getJuryOralInstrumentalSeccion(schoolName: string){
+      const headers = new HttpHeaders();
+      headers.append('Access-Control-Allow-Origin', '*');
+      return this.http.get(`${environment.apiUrl}/graduate-work/juries/oral/seccion/instrumental/${schoolName}`,{headers});
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+  getTutorOraltExperimentalCriteria(schoolName: string){
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
-    return this.http.get(`${environment.apiUrl}/graduate-work/juries/tutor/oral/criteria/experimental`,{headers});
+    return this.http.get(`${environment.apiUrl}/graduate-work/juries/tutor/oral/criteria/experimental/${schoolName}`,{headers});
   }
-  getTutorReportExperimentalCriteria(){
+  getTutorReportExperimentalCriteria(schoolName: string){
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
-    return this.http.get(`${environment.apiUrl}/graduate-work/juries/tutor/report/criteria/experimental`,{headers});
+    return this.http.get(`${environment.apiUrl}/graduate-work/juries/tutor/report/criteria/experimental/${schoolName}`,{headers});
   }
+
+  getTutorReportExperimentalSeccion(schoolName: string){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`${environment.apiUrl}/graduate-work/juries/tutor/report/seccion/experimental/${schoolName}`,{headers});
+  }
+
+  getTutorOralInstrumentalCriteria(schoolName: string){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`${environment.apiUrl}/graduate-work/juries/tutor/oral/criteria/instrumental/${schoolName}`,{headers});
+  }
+
+  getTutorOralInstrumentalSeccion(schoolName: string){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`${environment.apiUrl}/graduate-work/juries/tutor/oral/seccion/instrumental/${schoolName}`,{headers});
+  }
+
+
+  getTutorReportInstrumentalCriteria(schoolName: string){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`${environment.apiUrl}/graduate-work/juries/tutor/report/criteria/instrumental/${schoolName}`,{headers});
+  }
+
+  getTutorReportInstrumentalSeccion(schoolName: string){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`${environment.apiUrl}/graduate-work/juries/tutor/report/seccion/instrumental/${schoolName}`,{headers});
+  }
+
+
+
+
+
+
+
+
+
+
+
 
   /* Zona de Notas de Trabajo de Grado*/
   setTutorOralFinalNote(juryDNI: string, studentDNI: string, graduateWorkId: string, evaluationNote: number){
@@ -677,6 +768,7 @@ export class GraduateworkService {
     headers.append('Access-Control-Allow-Origin', '*');
     return this.http.post(`${environment.apiUrl}/graduate-work/juries/tutor/add/criteria/note/report`,juryEvaluationData,{headers});
   }
+
   getTutorOralEvaluationNote(juryEvaluationData: GetJuryEvaluationNoteRequest) : Observable<any>{
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
@@ -751,4 +843,6 @@ export class GraduateworkService {
     headers.append('Access-Control-Allow-Origin', '*');
     return this.http.get(`${environment.apiUrl}/graduate-work/culminated/${studentDNI}`,{headers});
   }
+
+  
 }

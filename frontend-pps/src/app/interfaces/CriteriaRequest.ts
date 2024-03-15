@@ -1,5 +1,6 @@
 export interface CriteriaRequest {
     criteriaId: number,
     criteriaName: string,
-    maxNote: number
+    maxNote: number,
+    schoolName?: string
 }

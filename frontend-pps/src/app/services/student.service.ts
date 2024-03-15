@@ -34,6 +34,12 @@ export class StudentService {
     return this.http.get(`${environment.apiUrl}/students/by/school/${schoolName}`,{headers});
   }
 
+  getStudentBySchoolAndValidateGraduateWork( schoolName: string ) : Observable<any> {
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`${environment.apiUrl}/students/by/school/${schoolName}/validate`,{headers});
+  }
+
   getStudentsData() : Observable<any> {
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
@@ -100,11 +106,11 @@ export class StudentService {
               
               const formData = new FormData();
               formData.append('file', newFile);
-              formData.append('userData', JSON.stringify({
+              formData.append('userData', JSON.stringify([{
                 studentDNI: this.firstStudentData.userDNI,
                 userFirstName: this.firstStudentData.userFirstName,
                 userLastName: this.firstStudentData.userLastName
-              }));
+              }]));
               formData.append('escuela',escuela)
 
               return this.http.post(`${environment.amazonS3}/upload`, formData, { headers });
@@ -171,19 +177,25 @@ export class StudentService {
       userDNI: string,
       userFirstName: string,
       userLastName: string
-    }
+    },
+    escuela: string
   ) : Observable<any>{
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('userData', JSON.stringify({
-      studentDNI: studentData.userDNI,
-      userFirstName: studentData.userFirstName,
-      userLastName: studentData.userLastName
-    }));
+    formData.append('userData', JSON.stringify(
+      [
+        {
+          studentDNI: studentData.userDNI,
+          userFirstName: studentData.userFirstName,
+          userLastName: studentData.userLastName
+        }
+      ]
+    ));
 
     formData.append('file', file);
+    formData.append('escuela',escuela)
     return this.http.post(`${environment.amazonS3}/upload`, formData, { headers: headers});
 
   }
@@ -194,7 +206,8 @@ export class StudentService {
       userDNI: string,
       userFirstName: string,
       userLastName: string
-    }[]
+    }[],
+    escuela: string
   ) : Observable<any>{
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
@@ -216,6 +229,7 @@ export class StudentService {
     ));
 
     formData.append('file', file);
+    formData.append('escuela',escuela)
     return this.http.post(`${environment.amazonS3}/upload`, formData, { headers: headers});
 
   }

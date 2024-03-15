@@ -1,5 +1,5 @@
 import { Component, OnInit,Inject } from '@angular/core';
-import { forkJoin, of, switchMap } from 'rxjs';
+import { Observable, forkJoin, of, switchMap } from 'rxjs';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatDialog } from '@angular/material/dialog'
 
@@ -12,6 +12,8 @@ import { ResubmittionComponent } from '../resubmittion/resubmittion.component';
 
 //import { PlanillaPropuestaTEG } from '../../../../../../form-generator/classes/planillaPropuestaTEG'
 import { TegFormService } from 'src/app/form-generator/services/teg-form.service';
+import { EmailService } from 'src/app/services/email.service';
+import { SendEmailRequest } from 'src/app/interfaces/requests/SendEmailRequest';
 
 // Interface for the request body
 interface ValidateFileNameRequest {
@@ -64,7 +66,16 @@ export class ValidationComponent implements OnInit{
   isGrupal: boolean = false;
   cargadoArchivos: boolean = false
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private graduateWorkService: GraduateworkService, private studentService: StudentService,private userService: UsersService, private enterpriseService: EnterpriseService, private dialog: MatDialog, private tegFormService: TegFormService){
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private graduateWorkService: GraduateworkService,
+    private studentService: StudentService,
+    private userService: UsersService,
+    private enterpriseService: EnterpriseService,
+    private dialog: MatDialog, 
+    private tegFormService: TegFormService,
+    private emailService: EmailService
+  ){
 
   }
   ngOnInit(){
@@ -107,6 +118,7 @@ export class ValidationComponent implements OnInit{
 
   obtenerInformePropuesta(){
     let fileName: string = ""
+    this.cargadoArchivos = true
     if(this.inputdata.user.length > 1){
       fileName = `${this.inputdata.user[0].userLastName.split(' ')[0]}${this.inputdata.user[0].userFirstName.split(' ')[0]} ${this.inputdata.user[1].userLastName.split(' ')[0]}${this.inputdata.user[1].userFirstName.split(' ')[0]} PTG.pdf`;
     }else{
@@ -116,11 +128,16 @@ export class ValidationComponent implements OnInit{
     console.log(fileName);
     let escuela;
     if(this.inputdata.userData.schoolName == "Ing. Informatica"){
-      escuela = "Informatica"
+      escuela = "Informática"
     }else{
       escuela = "Civil"
     }
-    downloadFile(fileName,this.inputdata.user[0].userDNI, this.inputdata.user[0].userFirstName.split(' ')[0],this.inputdata.user[0].userLastName.split(' ')[0],escuela);
+    try{
+      downloadFile(fileName,this.inputdata.user[0].userDNI, this.inputdata.user[0].userFirstName.split(' ')[0],this.inputdata.user[0].userLastName.split(' ')[0],escuela);
+      this.cargadoArchivos = false
+    }catch(error){
+      this.cargadoArchivos = false
+    } 
   }
 
   veredictoPropuesta(decision: string){
@@ -128,10 +145,11 @@ export class ValidationComponent implements OnInit{
     if(decision === 'aprobar'){
       this.cargadoArchivos = true;
       this.graduateWorkService.changeStatus(this.inputdata.proposal.graduateworkid,20)
-      .pipe(
+      .pipe
+      (
         switchMap(
           (result) => {
-
+            console.log(result)
             return this.graduateWorkService.approveCoordinatorEvaluation(this.coordinatorData.userDNI,this.inputdata.proposal.graduateworkid)
     
           }
@@ -145,6 +163,7 @@ export class ValidationComponent implements OnInit{
           console.log(error)
         },
         complete: () => {
+          this.cargadoArchivos = false
           window.location.href = window.location.href;
         }
       })

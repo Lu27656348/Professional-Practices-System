@@ -3,5 +3,6 @@ export const environment = {
     apiUrl: 'https://pps-graduatework-restapi-production.up.railway.app',
     apiUrlPasantia: 'https://pps-intership-restapi-production.up.railway.app',
     amazonS3: 'https://pps-amazons3-filesystem-production.up.railway.app',
-    emailAPI: 'https://gmail-microservice-production.up.railway.app'
+    emailAPI: 'https://gmail-microservice-production.up.railway.app',
+    basicURL: 'https://spp-angular-frontend.web.app'
 };

@@ -45,8 +45,8 @@ export class CrearCriterioJuradoEscritoComponent {
         criteriaName: this.CriteriaForm.value.criteriaName,
         maxNote: this.CriteriaForm.value.maxNote,
         schoolName: this.userData.schoolName,
-        criteriaModel: "EXPERIMENTAL",
-        model: "EXPERIMENTAL",
+        criteriaModel: this.data.data.criteriaModel,
+        model: this.data.data.criteriaModel,
         seccionId: this.data.data.seccionId,
         criteriaId: 0,
         criteriaDescription: ""

@@ -48,10 +48,23 @@ export class CriteriosTutorAcademicoService {
     return this.http.put(`${environment.apiUrlPasantia}/pasantia/secciones/academico/put/${seccionId}`,seccion,{headers});
   }
 
+  changeAcademicTutorSeccionStatus(seccionId: number, status: boolean){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.put(`${environment.apiUrlPasantia}/pasantia/secciones/academico/put/${seccionId}/status/${status}`,{headers});
+  }
+
+
   changeAcademicTutorCriteria(criteriaId: number, criteria: CriteriaRequest){
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
     return this.http.put(`${environment.apiUrlPasantia}/pasantia/criterios/academico/put/${criteriaId}`,criteria,{headers});
+  }
+
+  changeAcademicTutorCriteriaStatus(seccionId: number, status: boolean){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.put(`${environment.apiUrlPasantia}/pasantia/criterios/academico/put/${seccionId}/status/${status}`,{headers});
   }
 
   createAcademicTutorSeccion(seccionName: string, maxNote: number, schoolName: string){

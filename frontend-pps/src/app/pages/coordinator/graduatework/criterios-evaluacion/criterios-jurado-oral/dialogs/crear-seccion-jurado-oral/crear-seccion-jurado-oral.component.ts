@@ -17,6 +17,7 @@ export class CrearSeccionJuradoOralComponent {
     private seccionService: CriteriosJuradoOralService,
     @Inject(MAT_DIALOG_DATA) public data: any, 
   ){
+    console.log(this.data)
     const localUser = localStorage.getItem('user')
     if(localUser){
       const localStorageData = JSON.parse(localUser)

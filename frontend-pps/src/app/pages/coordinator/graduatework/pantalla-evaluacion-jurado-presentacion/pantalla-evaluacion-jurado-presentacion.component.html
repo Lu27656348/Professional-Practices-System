@@ -1,5 +1,5 @@
-<div style="display: flex; justify-content: center; background-color: aliceblue; flex-direction: column; height: 100%;">
-    <h1 style="display: flex; align-items: center; justify-content: center; margin-top: 5%;"><strong>Evaluación Tutor </strong></h1>
+<div style="display: flex; justify-content: center; background-color: aliceblue; flex-direction: column; height: 100%;" *ngIf="formularioAbierto">
+    <h1 style="display: flex; align-items: center; justify-content: center; margin-top: 5%;"><strong>Evaluación de Presentacion y Defensa - {{ (esTutorAcademico) ? "Tutor Académico" : "Jurado"}}</strong></h1>
     <p style=" display: flex; align-items: center; justify-content: center;">Bienvenido</p>
     <p style=" display: flex; align-items: center; justify-content: center; margin-bottom: 1%;" >Para generar la planillas selecciona todos los criterios y se creará automáticamente </p>
     <div style=" height: 100%;" >
@@ -615,11 +615,16 @@
           
         </mat-tab>
 
-      </mat-tab-group>
+        </mat-tab-group>
 
       
-    <div style="display: flex; align-items: center; justify-content: flex-end; height: 10%;">
-      <button mat-raised-button color="primary" [disabled]="!allNotesAreSelected" (click)="generarPlanilla()">Generar Planilla</button>
-    </div>
+        <div style="display: flex; align-items: center; justify-content: flex-end; height: 10%;">
+          <button mat-raised-button color="primary" [disabled]="!allNotesAreSelected" (click)="generarPlanilla()">Generar Planilla</button>
+        </div>
   
+    </div>
+</div>
+
+<div *ngIf="!(this.formularioAbierto)" style="display: flex; justify-content: center; align-items: center; height: 100%; width: 100%;"  >
+  <h1><strong>El formulario no se encuentra disponible</strong></h1>
 </div>

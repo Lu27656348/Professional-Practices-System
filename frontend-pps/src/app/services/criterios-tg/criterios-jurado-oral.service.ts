@@ -33,6 +33,12 @@ export class CriteriosJuradoOralService {
     return this.http.get(`${environment.apiUrl}/criterios/jurado/evaluacion/oral/escuela/${schoolName}/modelo/${criteriaModel}/seccion`,{headers});
   }
 
+  getJuradoOralCriteriaByModelAndSchool(schoolName: string, criteriaModel: string) : Observable<any> {
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`${environment.apiUrl}/criterios/jurado/evaluacion/oral/escuela/${schoolName}/modelo/${criteriaModel}`,{headers});
+  }
+
   getJuradoOralCriteriaBySeccion(seccionId: number){
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
@@ -51,6 +57,12 @@ export class CriteriosJuradoOralService {
     headers.append('Access-Control-Allow-Origin', '*');
     console.log(criteriaData)
     return this.http.put(`${environment.apiUrl}/criterios/jurado/evaluacion/oral`,criteriaData,{headers});
+  }
+
+  obtenerCriteriosPresentacionJurado(schoolName: string){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`${environment.apiUrl}/criterios/jurado/evaluacion/oral/${schoolName}`,{headers});
   }
 
 }

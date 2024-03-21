@@ -41,4 +41,10 @@ export class ExternalPersonnelService {
     return this.http.post(`${environment.apiUrl}/external`,externalData,{headers});
   }
 
+  updateExternal( externalData: CreateExternalRequest){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.put(`${environment.apiUrl}/external`,externalData,{headers});
+  }
+
 }

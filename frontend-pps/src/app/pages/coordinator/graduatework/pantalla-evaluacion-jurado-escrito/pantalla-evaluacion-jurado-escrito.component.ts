@@ -19,6 +19,8 @@ import { UsersService } from 'src/app/services/users.service';
   styleUrls: ['./pantalla-evaluacion-jurado-escrito.component.css']
 })
 export class PantallaEvaluacionJuradoEscritoComponent {
+
+    generadorAbierto: boolean = false;
     
     formGroup = this._formBuilder.group({
       firstCtrl: ['', Validators.required],
@@ -27,6 +29,8 @@ export class PantallaEvaluacionJuradoEscritoComponent {
     trabajoDeGrado: any = null;
     tutor: any = null;
     modo: any = null
+
+    tutorAcademico: boolean = false
   
     displayedColumns: string[] = ['criterio'];
   
@@ -117,6 +121,14 @@ export class PantallaEvaluacionJuradoEscritoComponent {
               switchMap(
                 (graduateWorkData) => {
                   this.graduateWorkData = graduateWorkData
+                  if( graduateWorkData.graduateWorkStatusCode == 70 || graduateWorkData.graduateWorkStatusCode == 80 ){
+                    this.generadorAbierto = true
+                  }
+
+                  if(this.graduateWorkData.graduateWorkAcademicTutor == this.tutor){
+                    console.log("Es el tutor academico")
+                    this.tutorAcademico = true
+                  }
                   console.log( this.graduateWorkData)
                   return this.graduateWorkService.getGraduateWorkStudentData(this.graduateWorkData.graduateworkid)
                 }
@@ -295,7 +307,7 @@ export class PantallaEvaluacionJuradoEscritoComponent {
                   
                 }else{
                   console.log("Extraemos todos los criterios y secciones del modo instrumental")
-                  if(this.graduateWorkData.graduateWorkAcademicTutor  == this.tutor){
+                  if(this.graduateWorkData.graduateWorkAcademicTutor == this.tutor){
                     this.graduateWorkService.getTutorReportInstrumentalCriteria(this.studentData[0].schoolName)
                     .pipe(
                       switchMap(

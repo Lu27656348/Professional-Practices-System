@@ -10,6 +10,8 @@ import { UsersService } from 'src/app/services/users.service';
   templateUrl: './crear-criterio-jurado-oral.component.html',
   styleUrls: ['./crear-criterio-jurado-oral.component.css']
 })
+
+
 export class CrearCriterioJuradoOralComponent {
   userData: any = null
 
@@ -38,6 +40,7 @@ export class CrearCriterioJuradoOralComponent {
   })
 
   crearSeccion(){
+
     if(this.CriteriaForm.valid){
       this.cargadoArchivos = true
       console.log(this.CriteriaForm.value)
@@ -45,8 +48,8 @@ export class CrearCriterioJuradoOralComponent {
         criteriaName: this.CriteriaForm.value.criteriaName,
         maxNote: this.CriteriaForm.value.maxNote,
         schoolName: this.userData.schoolName,
-        criteriaModel: "EXPERIMENTAL",
-        model: "EXPERIMENTAL",
+        criteriaModel: this.data.data.criteriaModel,
+        model: this.data.data.criteriaModel,
         seccionId: this.data.data.seccionId,
         criteriaId: 0,
         criteriaDescription: ""

@@ -7,6 +7,7 @@ import { UsersService } from 'src/app/services/users.service';
 import { CrearSeccionJuradoEscritoComponent } from './dialogs/crear-seccion-jurado-escrito/crear-seccion-jurado-escrito.component';
 import { EditarCriterioJuradoEscritoComponent } from './dialogs/editar-criterio-jurado-escrito/editar-criterio-jurado-escrito.component';
 import { EditarSeccionJuradoEscritoComponent } from './dialogs/editar-seccion-jurado-escrito/editar-seccion-jurado-escrito.component';
+import { switchMap, of } from 'rxjs';
 
 @Component({
   selector: 'app-criterios-jurado-escrito',
@@ -26,6 +27,9 @@ export class CriteriosJuradoEscritoComponent {
 
   userData: any = null
 
+  seccionSumE: number = 0;
+  seccionSumI: number = 0;
+
   constructor(
     private criteriaService: CriteriosJuradoEscritoService,
     private userService: UsersService,
@@ -43,6 +47,9 @@ export class CriteriosJuradoEscritoComponent {
               next: (seccionList) => {
                 console.log(seccionList)
                 this.seccionSource = seccionList
+                this.seccionSource.forEach( ( seccion : any ) => {
+                  this.seccionSumE = this.seccionSumE + seccion.maxNote
+                });
               }
             }
           )
@@ -51,6 +58,9 @@ export class CriteriosJuradoEscritoComponent {
               next: (seccionList) => {
                 console.log(seccionList)
                 this.seccionSourceInstrumental = seccionList
+                this.seccionSourceInstrumental.forEach( ( seccion : any ) => {
+                  this.seccionSumI = this.seccionSumI + seccion.maxNote
+                });
               }
             }
           )
@@ -66,7 +76,59 @@ export class CriteriosJuradoEscritoComponent {
     this.seccionSource.filter = filterValue.trim().toLowerCase();
   }
 
-  generarPlanilla(){}
+  generarPlanilla(modo: string){
+    console.log(modo)
+
+      this.criteriaService.getJuradoEscritoCriteriaByModelAndSchool(this.userData.schoolName,modo)
+      .pipe(
+        switchMap(
+          (criteriaList) => {
+            this.criteriaList = criteriaList
+            console.log(this.criteriaList)
+            return this.criteriaService.getJuradoEscritoSeccionByModelAndSchool(this.userData.schoolName,modo)
+          }
+        ),
+        switchMap(
+          (seccionList) => {
+            this.seccionList = seccionList
+            let objetoMenor: any = this.obtenerMenorId(this.criteriaList)
+            console.log(objetoMenor)
+
+            this.criteriaList.forEach ( (criterio:any,index:number) => {
+              this.criteriaList[index].userDNI = ""
+            })
+            
+            this.formGenerator.printEvaluationForm(
+              this.formGenerator.generateGraduateWorkJuryReportEvaluationForm(
+                this.criteriaList,
+                this.seccionList, 
+                "",
+                [{nombre: ""}],
+                ""
+              ),
+              `Planilla Evaluación - Informe - Jurado`
+            )
+            return of("Documento generado exitosamente")
+          }
+        ),
+      )
+      .subscribe({
+        next: (result) => {
+          console.log(result)
+        }
+      })
+      /*
+      this.formGenerator.printEvaluationForm(
+        this.formGenerator.generateGraduateWorkJuryOralEvaluationForm(
+          this.
+        )
+      )
+      */
+   
+
+
+    
+  }
 
   crearSecionJurado(model: string){
     const dialogRef = this.dialog.open(CrearSeccionJuradoEscritoComponent,{
@@ -110,7 +172,15 @@ export class CriteriosJuradoEscritoComponent {
     dialogRef.afterClosed().subscribe(result => {
       console.log(`Dialog result: ${result}`);
     });
-
     
+  }
+
+  obtenerMenorId( arregloCriterios: any ){
+    return arregloCriterios.reduce((menor:any, actual:any) => {
+      if (actual.seccionId < menor.seccionId) {
+        return actual;
+      }
+      return menor;
+    });
   }
 }

@@ -25,6 +25,12 @@ export class CriteriosTutorOralService {
     return this.http.get(`${environment.apiUrl}/criterios/tutor/evaluacion/oral/escuela/${schoolName}/modelo/${criteriaModel}/seccion`,{headers});
   }
 
+  getTutorOralCriteriaByModelAndSchool(schoolName: string, criteriaModel: string) : Observable<any> {
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`${environment.apiUrl}/criterios/tutor/evaluacion/oral/escuela/${schoolName}/modelo/${criteriaModel}`,{headers});
+  }
+
   getTutorOralCriteriaBySeccion(seccionId: number){
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');

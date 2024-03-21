@@ -315,7 +315,16 @@ export class ProfessorReviewerComponent implements OnInit{
                 fechaActual: new Date()
               }
 
-              this.formService.printEvaluationForm(this.formService.generateGraduateWorkReviewerEvaluationForm(criteriaList,formData))
+              let alumnosArchivo;
+              if(this.studentData.length > 1){
+                alumnosArchivo = `Alumnos ${this.studentData[0].userLastName.split(" ")[0]}${this.studentData[0].userFirstName.split(" ")[0]} ${this.studentData[1].userLastName.split(" ")[0]}${this.studentData[1].userFirstName.split(" ")[0]}`
+              }else{
+                alumnosArchivo = `Alumno ${this.studentData[0].userLastName.split(" ")[0]}${this.studentData[0].userFirstName.split(" ")[0]}`
+              }
+              this.formService.printEvaluationForm(
+                this.formService.generateGraduateWorkReviewerEvaluationForm(criteriaList,formData),
+                `Evaluación Propuesta ${(this.graduateWorkData.graduateWorkType == "INSTRUMENTAL") ? "TIG" : "TEG"} - Revisor ${this.reviewerData.userLastName.split(" ")[0] + this.reviewerData.userFirstName.split(" ")[0]} ${alumnosArchivo}`
+              )
               return of("completado")
             }
           )

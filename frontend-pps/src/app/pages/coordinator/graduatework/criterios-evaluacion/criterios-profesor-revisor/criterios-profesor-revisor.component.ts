@@ -46,12 +46,18 @@ export class CriteriosProfesorRevisorComponent {
             next: (result) => {
               console.log(result)
               this.criteriaSource = result
+              this.criteriaSource.forEach( (criterio: any, index: number) => {
+                this.criteriaSource[index].criteriaName = criterio.reviewerCriteriaDescription
+              })
             }
           })
           this.graduateWorkService.getRevierwerCriteriaByModelAndSchool(this.userData.schoolName, "INSTRUMENTAL").subscribe({
             next: (result) => {
               console.log(result)
               this.seccionSourceInstrumental = result
+              this.seccionSourceInstrumental.forEach( (criterio: any, index: number) => {
+                this.seccionSourceInstrumental[index].criteriaName = criterio.reviewerCriteriaDescription
+              })
             }
           })
         }
@@ -66,7 +72,24 @@ export class CriteriosProfesorRevisorComponent {
     this.criteriaSource.filter = filterValue.trim().toLowerCase();
   }
 
-  generarPlanilla(){}
+  generarPlanilla(modo: string){
+
+    this.formGenerator.printEvaluationForm(
+      this.formGenerator.generateGraduateWorkReviewerEvaluationForm(
+        (modo == 'EXPERIMENTAL') ? this.criteriaSource : this.seccionSourceInstrumental,
+        {
+          modalidad: modo, 
+          titulo: "",
+          nombreEmpresa: "",
+          studentData: [{nombreAlumno: "", cedulaAlumno: "",telefono: "", correo: "", empresa: ""}],
+          tutorData: {nombreCompleto: "", profesion: "", experiencia: 0, cargo: "", correo: "", telefono: ""},
+          nombreRevisor: "", 
+          fechaActual: new Date()
+        }
+      ),
+      `Evaluación Propuesta Trabajo ${modo.charAt(0).toUpperCase() + modo.slice(1).toLowerCase()} de Grado`
+    )
+  }
 
   crearSecionJurado(model: string){
     const dialogRef = this.dialog.open(CrearCriterioProfesorRevisorComponent,{

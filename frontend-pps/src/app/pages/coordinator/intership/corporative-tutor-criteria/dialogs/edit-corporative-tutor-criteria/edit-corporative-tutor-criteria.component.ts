@@ -15,8 +15,10 @@ export class EditCorporativeTutorCriteriaComponent implements OnInit{
 
   criteriaList: any = null
   isCriteriaSelected: boolean = false;
-  displayedColumns: string[] = ['criteriaId','criteriaName', 'maxNote', 'check']
+  displayedColumns: string[] = ['criteriaId','criteriaName', 'maxNote', 'check','estado']
 
+  seccionSum: number = 0
+  criteriaSum: number = 0
   constructor(
     private corporativeTutorCriteria: CriteriosTutorEmpresarialService, 
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -24,6 +26,7 @@ export class EditCorporativeTutorCriteriaComponent implements OnInit{
     private dialog: MatDialog
   ){
     console.log(this.data)
+    this.seccionSum = this.data.maxNote
     this.criteriaForm = formBuilder.group({
       criteriaId: new FormControl(),
       criteriaName: new FormControl(),
@@ -31,10 +34,16 @@ export class EditCorporativeTutorCriteriaComponent implements OnInit{
     })
   }
   ngOnInit(): void {
+    console.log(this.data)
     this.corporativeTutorCriteria.getEnterpriseTutorCriteriaBySeccion(this.data.seccionId).subscribe({
       next: (result) => {
         console.log(result)
         this.criteriaList = result
+      },
+      complete: () => {
+        this.criteriaList.filter( (criterio: any) => criterio.status == true ).forEach ( (criterio: any) => {
+          this.criteriaSum = this.criteriaSum + criterio.maxNote
+        })
       }
     })
   }
@@ -75,5 +84,22 @@ export class EditCorporativeTutorCriteriaComponent implements OnInit{
     });
 
     this.ngOnInit()
+  }
+
+  deshabilitarCriterio(element: any){
+    console.log(element)
+    console.log("deshabilitarCriterio")
+    this.corporativeTutorCriteria.changeEnterpriseTutorCriteriaStatus(element.criteriaId,!element.status)
+    .subscribe(
+      {
+        next: (result) => {
+          console.log(result)
+          this.ngOnInit()
+        },
+        complete: () => {
+          window.location.href = window.location.href 
+        }
+      }
+    )
   }
 }

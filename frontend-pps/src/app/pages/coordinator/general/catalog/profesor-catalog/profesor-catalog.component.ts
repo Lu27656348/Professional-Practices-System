@@ -4,6 +4,7 @@ import { Observable, forkJoin, of, switchMap } from 'rxjs';
 import { ProfessorsService } from 'src/app/services/professors.service';
 import { UsersService } from 'src/app/services/users.service';
 import { ProfesorDialogComponent } from './dialogs/profesor-dialog/profesor-dialog.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-profesor-catalog',
@@ -19,7 +20,8 @@ export class ProfesorCatalogComponent {
   constructor(
     private userService: UsersService, 
     private professorService: ProfessorsService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private _snackBar: MatSnackBar,
   ){
     this.professorService.getProfessorsData()
     .pipe(
@@ -88,6 +90,15 @@ export class ProfesorCatalogComponent {
       next: (result) => {
         console.log(result)
         window.location.href = window.location.href
+      },
+      error: (result) => {
+        this._snackBar.open("No se puede eliminar al profesor", "cerrar", {
+          duration: 3000,
+          horizontalPosition: "right",
+          verticalPosition: "bottom"
+        })
+        throw new Error(result.message)
+        
       }
     }) 
   }

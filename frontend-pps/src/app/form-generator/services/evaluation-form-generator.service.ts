@@ -569,16 +569,24 @@ const generarFirma = (rol: string, name: string) => {
                                   new TableRow({
                                       children: [
                                           new TableCell({
-                                              borders: linea_superior,
+                                              borders: sin_bordes,
                                               children: [
                                                   new Paragraph({
                                                       children: [
                                                           new TextRun({
-                                                              text: "Fecha"
-                                                          })
+                                                              text: "Fecha " 
+                                                          }),
                                                       ],
                                                       alignment: AlignmentType.CENTER
                                                   }),
+                                                  new Paragraph({
+                                                    children: [
+                                                        new TextRun({
+                                                            text: new Date().toLocaleDateString()
+                                                        }),
+                                                    ],
+                                                    alignment: AlignmentType.CENTER
+                                                }),
                                               ],
                                               verticalAlign: VerticalAlign.CENTER,
                                               width: {
@@ -604,7 +612,7 @@ const generarFirma = (rol: string, name: string) => {
                                   new TableRow({
                                       children: [
                                           new TableCell({
-                                              borders: linea_superior,
+                                              borders: sin_bordes,
                                               children: [
                                                   new Paragraph({
                                                       children: [
@@ -1390,7 +1398,7 @@ export class EvaluationFormGeneratorService {
                                     new Paragraph({
                                         children: [
                                             new TextRun({
-                                                text: `Total ${seccion.seccionName} ${ seccion?.sum } puntos`
+                                                text: `Total ${seccion.seccionName} ${ (seccion?.sum) ? seccion?.sum :  seccion.maxNote } puntos`
                                             })
                                         ],
                                         alignment: AlignmentType.LEFT
@@ -1513,7 +1521,7 @@ export class EvaluationFormGeneratorService {
     /* Finalmente cargamos la linea de firma */
     TutorEvaluationFormSquema.push(
         giveSpace,
-        generarFirma("Tutor Empresarial","[Inserte Nombre]")
+        generarFirma("Tutor Empresarial",(tableData.nombreTutor) ? tableData.nombreTutor: "[Inserte Nombre]")
     )
 
     const document =  new Document(
@@ -2197,7 +2205,7 @@ generateGraduateWorkReviewerEvaluationForm(
                 }),
             ],
             spacing: {
-                after: 200
+                after: 100
             },
             alignment: AlignmentType.CENTER
         })
@@ -2269,8 +2277,8 @@ generateGraduateWorkReviewerEvaluationForm(
             }),
         ],
         spacing: {
-            after: 200,
-            before: 200
+            after: 100,
+            before: 100
         },
         alignment: AlignmentType.CENTER
     })
@@ -2525,6 +2533,7 @@ generateGraduateWorkReviewerEvaluationForm(
                                 size: "4cm"
                             }
                         }),
+                        /*
                         new TableCell({
                             children: [
                                 new Paragraph({
@@ -2540,6 +2549,7 @@ generateGraduateWorkReviewerEvaluationForm(
                                 size: "4cm"
                             }
                         }),
+                        */
                     ]
                 })
             ]
@@ -5217,6 +5227,7 @@ generateGraduateWorkCriteriaTable(criteriaArray: Criteria[], seccion: Seccion) :
                                 },
                             children: [
                                 new Paragraph({
+                                    style: "letraP",
                                     children: [
                                         new TextRun({
                                             text: seccion.seccionName
@@ -5240,6 +5251,7 @@ generateGraduateWorkCriteriaTable(criteriaArray: Criteria[], seccion: Seccion) :
                 },
                 children: [
                     new Paragraph({
+                        style: "letraP",
                         children: [
                             new TextRun({
                                 text: "Criterios de Evaluación"
@@ -5256,6 +5268,7 @@ generateGraduateWorkCriteriaTable(criteriaArray: Criteria[], seccion: Seccion) :
                 new TableCell({
                     children: [
                         new Paragraph({
+                        style: "letraP",
                         children: [
                             new TextRun({
                                 text: i.toLocaleString()
@@ -5291,6 +5304,7 @@ generateGraduateWorkCriteriaTable(criteriaArray: Criteria[], seccion: Seccion) :
                                                 },
                                                 children: [
                                                     new Paragraph({
+                                                        style: "letraP",
                                                         children: [
                                                             new TextRun({
                                                                 text: criteria.criteriaName
@@ -5307,6 +5321,7 @@ generateGraduateWorkCriteriaTable(criteriaArray: Criteria[], seccion: Seccion) :
                         new TableCell({
                             children: [
                                 new Paragraph({
+                                style: "letraP",
                                 children: [
                                     new CheckBox(
                                         {
@@ -5790,9 +5805,10 @@ generateGraduateWorkJuryReportEvaluationForm(
                                 },
                                 children: [
                                     new Paragraph({
+                                        style: "letraP",
                                         children: [
                                             new TextRun({
-                                                text: `Total ${seccion.seccionName} (Máximo ${seccion.maxNote} puntos)`
+                                                text: `${seccion.seccionName} (Máximo ${seccion.maxNote} puntos)`
                                             })
                                         ],
                                         alignment: AlignmentType.LEFT
@@ -5806,9 +5822,10 @@ generateGraduateWorkJuryReportEvaluationForm(
                                 },
                                 children: [
                                     new Paragraph({
+                                        style: "letraP",
                                         children: [
                                             new TextRun({
-                                                text: `Total ${seccion.seccionName} ${seccion?.sum} puntos`
+                                                text: `Total ${seccion.seccionName} ${(seccion?.sum) ? (seccion?.sum) : 0} puntos`
                                             })
                                         ],
                                         alignment: AlignmentType.RIGHT,
@@ -5847,6 +5864,7 @@ generateGraduateWorkJuryReportEvaluationForm(
                             },
                             children: [
                                 new Paragraph({
+                                    style: "letraP",
                                     children: [
                                         new TextRun({
                                             text: "Total (máximo 60 puntos)"
@@ -5863,6 +5881,7 @@ generateGraduateWorkJuryReportEvaluationForm(
                             },
                             children: [
                                 new Paragraph({
+                                    
                                     children: [
                                         new TextRun({
                                             text: "Puntuacion TOTAL " + this.calculateSeccionSum(seccionArray)  + " puntos."
@@ -5906,7 +5925,7 @@ generateGraduateWorkJuryReportEvaluationForm(
                         },
                         paragraph: {
                             spacing: {
-                                after: 100,
+                                after: 50,
                             },
                         },
                     },
@@ -5947,6 +5966,20 @@ generateGraduateWorkJuryReportEvaluationForm(
                         next: "Normal",
                         run: {
                             size: 15,
+                        },
+                        paragraph: {
+                            spacing: {
+                                line: 276,
+                            },
+                        },
+                    },
+                    {
+                        id: "letraP",
+                        name: "letraP",
+                        basedOn: "Normal",
+                        next: "Normal",
+                        run: {
+                            size: 18,
                         },
                         paragraph: {
                             spacing: {
@@ -6004,7 +6037,7 @@ generateGraduateWorkJuryReportEvaluationForm(
                                         data: this.bannerArrayBuffer,
                                         transformation: {
                                             width: 600,
-                                            height: 15,
+                                            height: 10,
                                         }
                                     }),
                                     
@@ -6012,6 +6045,7 @@ generateGraduateWorkJuryReportEvaluationForm(
                                 alignment:  AlignmentType.CENTER
                             }),
                             new  Paragraph({
+                                style: "reducido",
                                 children: [
                                     new  TextRun({
                                         text: "UNIVERSIDAD CATÓLICA ANDRÉS BELLO – Extensión Guayana",
@@ -6020,6 +6054,7 @@ generateGraduateWorkJuryReportEvaluationForm(
                                 alignment:  AlignmentType.CENTER
                             }),
                             new  Paragraph({
+                                style: "reducido",
                                 children: [
                                     new  TextRun({
                                         text: "Avenida Atlántico, Ciudad Guayana 8050",
@@ -6028,6 +6063,7 @@ generateGraduateWorkJuryReportEvaluationForm(
                                 alignment:  AlignmentType.CENTER
                             }),
                             new  Paragraph({
+                                style: "reducido",
                                 children: [
                                     new  TextRun({
                                         text: "Bolívar, Venezuela. Teléfono: +58-286-6000111"
@@ -6036,6 +6072,7 @@ generateGraduateWorkJuryReportEvaluationForm(
                                 alignment:  AlignmentType.CENTER
                             }),
                             new  Paragraph({
+                                style: "reducido",
                                 children: [
                                     new  TextRun({
                                         text: "URL: http://www.guayanaweb.ucab.edu.ve/escuela-de-ingenieria-informatica.html"
@@ -6175,8 +6212,7 @@ generateGraduateWorkJuryOralEvaluationForm(
             ]
     })
     */
-    console.log(criteriaArray)
-    console.log(seccionArray)
+    console.log(studentNames)
     const TutorEvaluationFormSquema: FileChild[] = []
 
     /* Primero cargamos el titulo de planilla */
@@ -7573,7 +7609,7 @@ generateGraduateWorkJuryStudentNotification(
                                     new Paragraph({
                                         children: [
                                             new TextRun({
-                                                text: `Total ${seccion.seccionName} ${seccion.sum} puntos`
+                                                text: `Total ${seccion.seccionName} ${(seccion.sum) ? seccion.sum : 0} puntos`
                                             })
                                         ],
                                         alignment: AlignmentType.RIGHT,
@@ -7706,7 +7742,7 @@ TutorEvaluationFormSquema.push(
 /* Finalmente cargamos la linea de firma */
 TutorEvaluationFormSquema.push(
     giveSpace,
-    generarFirma("Tutor Académico","[Inserte Nombre]")
+    generarFirma("Tutor Académico",(tableData.nombreTutor) ? tableData.nombreTutor : "[Inserte Nombre]")
 )
 
 const document =  new Document(
@@ -10068,9 +10104,387 @@ return document
     return  from(Packer.toBlob(document))
   }
 
-  printEvaluationForm(document: Document){
+  generateGraduateWorkCorporateTutorEvaluationForm(criteriaArray: Criteria[],seccionArray: Seccion[], tableData: {nombreAlumno: string, cedulaAlumno: string, empresa: string, nombreTutor: string}) : Document {
+    
+    /* Debemos generar tablas por cada una de las secciones recibidas */
+
+    const TutorEvaluationFormSquema: FileChild[] = []
+
+    /* Primero cargamos el titulo de planilla */
+    const formTitle = 
+        new Paragraph({
+            style: "titulo",
+            children: [
+                new TextRun({
+                    text: "Planilla Evaluación Individual Trabajo Instrumental de Grado (TIG) – Tutor Empresarial",
+                    bold: true
+                }),
+            ],
+            spacing: {
+                after: 200
+            },
+            alignment: AlignmentType.CENTER
+        })
+
+    TutorEvaluationFormSquema.push(formTitle)
+
+    /* Luego cargamos la tabla de datos */
+
+    const intershipDataTable: Table = this.generateIntershipDataTable(tableData.nombreAlumno,tableData.cedulaAlumno,tableData.empresa,tableData.nombreTutor);
+    TutorEvaluationFormSquema.push(intershipDataTable)
+
+    /* Cargamos un espacio para separar las tablas */
+
+    const giveSpace = 
+        new Paragraph({
+            children: [
+                new TextRun({
+                    text: ""
+                }),
+            ],
+            spacing: {
+                after: 200,
+                before: 200
+            },
+            alignment: AlignmentType.CENTER
+        })
+
+    TutorEvaluationFormSquema.push(giveSpace)
+
+    /* Ahora por cada seccion que deba contener nuestra planilla vamos a generar una tabla y la insertaremos */
+
+    seccionArray.forEach( (seccion) => {
+        /* Cargamos la tabla de la seccion con cada uno de sus criterios */
+        TutorEvaluationFormSquema.push(this.generateCriteriaEvaluationTable(criteriaArray,seccion))
+        TutorEvaluationFormSquema.push(giveSpace)
+        /* Generamos la tabla resumen que pondera el total de puntos  */
+        TutorEvaluationFormSquema.push(
+            new Table({
+                indent: {
+                    size: 0,
+                    type: WidthType.DXA,
+                },
+                rows: [
+                    new TableRow({
+                        children: [
+                            new TableCell({
+                                width: {
+                                    size: `8.5cm`,
+                                    type:  WidthType.DXA
+                                },
+                                children: [
+                                    new Paragraph({
+                                        children: [
+                                            new TextRun({
+                                                    text: `Total ${seccion.seccionName} Máximo ${seccion.maxNote} puntos)`
+                                            })
+                                        ],
+                                        alignment: AlignmentType.LEFT
+                                    })
+                                ]
+                            }),
+                            new TableCell({
+                                width: {
+                                    size: `8.5cm`,
+                                    type:  WidthType.DXA
+                                },
+                                children: [
+                                    new Paragraph({
+                                        children: [
+                                            new TextRun({
+                                                text: `Total ${seccion.seccionName} ${ (seccion?.sum) ? seccion?.sum :  seccion.maxNote } puntos`
+                                            })
+                                        ],
+                                        alignment: AlignmentType.LEFT
+                                    })
+                                ]
+                            }),
+                        ]
+                    })
+                    
+                ]
+            }),
+            giveSpace
+        )
+    })
+
+    /* Finalmente cargamos la tabla de ponderacion final */
+    TutorEvaluationFormSquema.push(
+        new Table({
+            indent: {
+                size: 0,
+                type: WidthType.DXA,
+            },
+            rows: [
+                new TableRow({
+                    children: [
+                        new TableCell({
+                            width: {
+                                size: `8.5cm`,
+                                type:  WidthType.DXA
+                            },
+                            children: [
+                                new Paragraph({
+                                    children: [
+                                        new TextRun({
+                                            text: "Total (máximo 20 puntos)"
+                                        })
+                                    ],
+                                    alignment: AlignmentType.LEFT
+                                })
+                            ]
+                        }),
+                        new TableCell({
+                            width: {
+                                size: `8.5cm`,
+                                type:  WidthType.DXA
+                            },
+                            children: [
+                                new Paragraph({
+                                    children: [
+                                        new TextRun({
+                                            text: `Puntuacion TOTAL ${this.calculateSeccionSum(seccionArray)} puntos.`
+                                        })
+                                    ],
+                                    alignment: AlignmentType.LEFT
+                                })
+                            ]
+                        }),
+                    ]
+                })
+                
+            ]
+        })
+    )
+
+    /* Cargamos el cuadro de observaciones */
+    TutorEvaluationFormSquema.push(
+        giveSpace,
+        new Table({
+            indent: {
+                size: 0,
+                type: WidthType.DXA,
+            },
+            rows: [
+                new TableRow({
+                    children: [
+                        new TableCell({
+                            width: {
+                                size: `16cm`,
+                                type:  WidthType.DXA
+                            },
+                            children: [
+                                new Paragraph({
+                                    children: [
+                                        new TextRun({
+                                            text: "Observaciones: ",
+                                            bold: true
+                                        })
+                                    ],
+                                    alignment: AlignmentType.LEFT
+                                })
+                            ]
+                        })
+                    ]
+                }),
+                new TableRow({
+                    children: [
+                        new TableCell({
+                            width: {
+                                size: `16cm`,
+                                type:  WidthType.DXA
+                            },
+                            children: [
+                                new Paragraph({
+                                    children: [
+                                        new TextRun({
+                                            text: "[Insertar observaciones aqui] "
+                                        })
+                                    ],
+                                    alignment: AlignmentType.LEFT
+                                })
+                            ]
+                        })
+                    ]
+                }),
+                
+            ]
+        })
+    )
+
+    /* Finalmente cargamos la linea de firma */
+    TutorEvaluationFormSquema.push(
+        giveSpace,
+        generarFirma("Tutor Empresarial",(tableData.nombreTutor) ? tableData.nombreTutor: "[Inserte Nombre]")
+    )
+
+    const document =  new Document(
+        {
+            creator: "Luis C. Somoza & Wladimir San Vicente",
+            title: "Evaluación Individual Pasantía – Tutor Empresarial",
+            description: "Evaluación Individual Pasantía – Tutor Empresarial",
+            styles: {
+                default: {
+                    heading1: {
+                        run: {
+                            size: 30,
+                            bold: true,
+                            italics: true,
+                            color: "FF0000",
+                        },
+                        paragraph: {
+                            spacing: {
+                                after: 200,
+                            },
+                        },
+                    },
+                },
+                paragraphStyles: [
+                    {
+                        id: "titulo",
+                        name: "Aside",
+                        basedOn: "Normal",
+                        next: "Normal",
+                        run: {
+                            size: 24,
+                        },
+                        paragraph: {
+                            spacing: {
+                                line: 276,
+                            },
+                        },
+                    },
+                    {
+                        id: "aside",
+                        name: "Aside",
+                        basedOn: "Normal",
+                        next: "Normal",
+                        run: {
+                            size: 22,
+                        },
+                        paragraph: {
+                            spacing: {
+                                line: 276,
+                            },
+                        },
+                    },
+                    {
+                        id: "reducido",
+                        name: "Reducido",
+                        basedOn: "Normal",
+                        next: "Normal",
+                        run: {
+                            size: 15,
+                        },
+                        paragraph: {
+                            spacing: {
+                                line: 276,
+                            },
+                        },
+                    },
+                    {
+                        id: "despedida",
+                        name: "Despedida",
+                        basedOn: "Normal",
+                        next: "Normal",
+                        run: {
+                            size: 26,
+                        },
+                        paragraph: {
+                            spacing: {
+                                line: 276,
+                            },
+                        },
+                    }
+                ]
+            },
+            sections: [{
+                properties: {
+                    type:  SectionType.CONTINUOUS
+                },
+                headers: {
+                    default: new  Header({
+                        children: [
+                            new  Paragraph({
+                            children: [
+                                
+                                new  ImageRun({
+                                    data: this.imageArraBuffer,
+                                    transformation: {
+                                        width: 400,
+                                        height: 100,
+                                    },
+                                })
+                                
+                            ],
+                                alignment:  AlignmentType.LEFT
+                            })
+                        ],
+                    }),
+                },
+                footers: {
+                    default: new  Footer({
+                        children: [
+                            new  Paragraph({
+                                children: [
+                                    
+                                    new  ImageRun({
+                                        data: this.bannerArrayBuffer,
+                                        transformation: {
+                                            width: 600,
+                                            height: 15,
+                                        }
+                                    }),
+                                    
+                                ],
+                                alignment:  AlignmentType.CENTER
+                            }),
+                            new  Paragraph({
+                                children: [
+                                    new  TextRun({
+                                        text: "UNIVERSIDAD CATÓLICA ANDRÉS BELLO – Extensión Guayana",
+                                    })
+                                ],
+                                alignment:  AlignmentType.CENTER
+                            }),
+                            new  Paragraph({
+                                children: [
+                                    new  TextRun({
+                                        text: "Avenida Atlántico, Ciudad Guayana 8050",
+                                    })
+                                ],
+                                alignment:  AlignmentType.CENTER
+                            }),
+                            new  Paragraph({
+                                children: [
+                                    new  TextRun({
+                                        text: "Bolívar, Venezuela. Teléfono: +58-286-6000111"
+                                    })
+                                ],
+                                alignment:  AlignmentType.CENTER
+                            }),
+                            new  Paragraph({
+                                children: [
+                                    new  TextRun({
+                                        text: "URL: http://www.guayanaweb.ucab.edu.ve/escuela-de-ingenieria-informatica.html"
+                                    })
+                                ],
+                                alignment:  AlignmentType.CENTER
+                            })
+                        ],
+                    }),
+                },
+                children: TutorEvaluationFormSquema
+            }]
+        }
+    )
+    return document
+    
+  }
+
+  printEvaluationForm(document: Document, name: string = "Prototipo de Planilla I"){
     Packer.toBlob(document).then( blob => {
-      saveAs(blob, "Prototipo de Planilla I"+".docx");
+      saveAs(blob, name+".docx");
      //console.log("Documento creado de forma exitosa en el navegador");
     });
   }

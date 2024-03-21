@@ -93,6 +93,8 @@ export class PantallaEvaluacionJuradoPresentacionComponent {
 
   criteriosComunesSum: number = 0
 
+  formularioAbierto: boolean = false;
+
   constructor(
     private _formBuilder: FormBuilder,
     private route: ActivatedRoute,
@@ -127,6 +129,17 @@ export class PantallaEvaluacionJuradoPresentacionComponent {
             switchMap(
               (graduateWorkData) => {
                 this.graduateWorkData = graduateWorkData
+
+                const fechaActual = new Date()
+                const fechaDefensa = new Date(this.graduateWorkData.graduateWorkDefenseDate)
+
+                console.log(fechaActual)
+                console.log(fechaDefensa)
+
+                if(fechaActual >= fechaDefensa){
+                  this.formularioAbierto = true
+                }
+                console.log( this.formularioAbierto)
                 console.log( this.graduateWorkData)
                 if(this.graduateWorkData.graduateWorkAcademicTutor == this.tutor){
                   this.esTutorAcademico = true

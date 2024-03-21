@@ -104,8 +104,8 @@
                 </mat-panel-description>
               </mat-expansion-panel-header>
               <mat-list role="list">
-                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/presentacion">Revisor</button></mat-list-item>
-                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/completion">Tutor Empresarial</button></mat-list-item>
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/reviewer/criteria">Revisor</button></mat-list-item>
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduate-work/corporate/criteria">Tutor Empresarial</button></mat-list-item>
               </mat-list>
             </mat-expansion-panel>
           </mat-accordion>
@@ -116,10 +116,10 @@
             <mat-tab-group>
                 <mat-tab label="Experimental">
                     <div style="width: 100%; background-color: #fbfbfb; display: flex;">
-                        <button mat-raised-button style="background-color: rgb(215, 214, 209); height: 54px;" (click)="generarPlanilla()">
+                        <button mat-raised-button style="background-color: rgb(215, 214, 209); height: 54px;" (click)="generarPlanilla('EXPERIMENTAL')">
                             Generar Planilla
                         </button>
-                        <button mat-raised-button style="background-color: rgb(215, 214, 209); height: 54px;" (click)="crearSecionJurado('EXPERIMENTAL')">
+                        <button mat-raised-button style="background-color: rgb(215, 214, 209); height: 54px;" (click)="crearSecionJurado('EXPERIMENTAL')" [disabled]="seccionSumE >= 40">
                             Agregar Sección
                         </button>
                         <mat-form-field style="flex-grow: 1; margin: 0">
@@ -169,10 +169,10 @@
                 </mat-tab>    
                 <mat-tab label="Instrumental">
                     <div style="width: 100%; background-color: aliceblue; display: flex;">
-                        <button mat-raised-button style="background-color: rgb(215, 214, 209); height: 54px;" (click)="generarPlanilla()">
+                        <button mat-raised-button style="background-color: rgb(215, 214, 209); height: 54px;" (click)="generarPlanilla('INSTRUMENTAL')">
                             Generar Planilla
                         </button>
-                        <button mat-raised-button style="background-color: rgb(215, 214, 209); height: 54px;" (click)="crearSecionJurado('INSTRUMENTAL')">
+                        <button mat-raised-button style="background-color: rgb(215, 214, 209); height: 54px;" (click)="crearSecionJurado('INSTRUMENTAL')" [disabled]="seccionSumI >= 40">
                             Agregar Sección
                         </button>
                         <mat-form-field style="flex-grow: 1; margin: 0">

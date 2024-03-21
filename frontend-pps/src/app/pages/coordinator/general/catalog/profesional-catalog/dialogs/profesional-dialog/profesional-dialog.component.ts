@@ -42,7 +42,13 @@ export class ProfesionalDialogComponent {
 
   enterpriseList: any = null;
 
-  constructor(private _snackBar: MatSnackBar,private userService: UsersService, private externalService: ExternalPersonnelService,@Inject(MAT_DIALOG_DATA) public data: any, private enterpriseService: EnterpriseService){
+  constructor(
+    private _snackBar: MatSnackBar,
+    private userService: UsersService,
+    private externalService: ExternalPersonnelService,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private enterpriseService: EnterpriseService
+  ){
     this.enterpriseService.getEnterprises().subscribe({
       next: (enterpriseList) => {
         this.enterpriseList = enterpriseList
@@ -56,10 +62,10 @@ export class ProfesionalDialogComponent {
         cedula: this.data.data.userDNI,
         nombres: this.data.data.userFirstName,
         apellidos: this.data.data.userLastName,
-        correoElectronico: this.data.data.userEmail,
+        correoElectronico: this.data.data.userEmail.split("@")[0],
         telefono: this.data.data.userPhone
       })
-      
+      this.emailFormatSelected = "@"+this.data.data.userEmail.split("@")[1]
       this.externalForm.setValue({
         empresa: this.data.data.enterpriseData.enterpriseid,
         profesion: this.data.data.externalData.externalPersonnelProfession,
@@ -112,12 +118,21 @@ export class ProfesionalDialogComponent {
       this.userService.createUser(userData).pipe(
         switchMap(
           (userResult) => {
+            console.log(userResult)
             return this.externalService.createExternal(externalData)
           }
         )
       ).subscribe({
         next: (result) => {
           console.log(result)
+        },
+        error: (result) => {
+          console.log(result)
+          this._snackBar.open("Error en la creacion de un profesional", "cerrar",{
+            horizontalPosition: this.horizontalPosition,
+            verticalPosition: this.verticalPosition,
+          })
+          throw new Error(result.message)
         },
         complete: () => {
           window.location.href = window.location.href
@@ -140,7 +155,7 @@ export class ProfesionalDialogComponent {
 	      userPassword: "Hola",
         userFirstName: this.userForm.value.nombres,
         userLastName: this.userForm.value.apellidos,
-        userEmail: this.userForm.value.correoElectronico,
+        userEmail: this.userForm.value.correoElectronico + this.emailFormatSelected,
         userPhone: this.userForm.value.telefono,
         userEmailAlt: null,
         schoolName: "Ing. Informatica"
@@ -155,10 +170,10 @@ export class ProfesionalDialogComponent {
       }
       console.log(userData)
       console.log(professorData)
-      this.userService.createUser(userData).pipe(
+      this.userService.updateUser(userData).pipe(
         switchMap(
           (userResult) => {
-            return this.externalService.createExternal(professorData)
+            return this.externalService.updateExternal(professorData)
           }
         )
       ).subscribe({

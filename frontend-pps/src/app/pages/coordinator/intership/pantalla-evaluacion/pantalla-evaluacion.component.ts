@@ -431,7 +431,9 @@ export class PantallaEvaluacionComponent implements OnInit{
             this.criteriaList,
             this.seccionList,
             data
-          ))
+          ),
+          `${this.studentData.userLastName.split(" ")[0] + this.studentData.userFirstName.split(" ")[0]} Evaluación Pasantía Tutor ${this.modo.charAt(0).toUpperCase() + this.modo.slice(1)} ${this.tutorData.userLastName.split(" ")[0] + this.tutorData.userFirstName.split(" ")[0]}`
+          )
           
         }
       })
@@ -524,7 +526,9 @@ export class PantallaEvaluacionComponent implements OnInit{
             this.criteriaList,
             this.seccionList,
             data
-          ))
+          ),
+          `${this.studentData.userLastName.split(" ")[0] + this.studentData.userFirstName.split(" ")[0]} Evaluación Pasantía Tutor ${this.modo.charAt(0).toUpperCase() + this.modo.slice(1)} ${this.tutorData.userLastName.split(" ")[0] + this.tutorData.userFirstName.split(" ")[0]}`
+          )
           
         }
       })

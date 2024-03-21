@@ -47,6 +47,9 @@ export class CriteriosTutorEmpresarialComponent {
             next: (criteriaList) => {
               console.log(criteriaList)
               this.criteriaSource = criteriaList
+              this.criteriaSource.forEach( (criterio: any, index: number) => {
+                this.criteriaSource[index].seccionId = 1
+              })
             }
           })
         }
@@ -61,7 +64,29 @@ export class CriteriosTutorEmpresarialComponent {
     this.criteriaSource.filter = filterValue.trim().toLowerCase();
   }
 
-  generarPlanilla(){}
+  generarPlanilla(){
+    this.formGenerator.printEvaluationForm(
+      this.formGenerator.generateGraduateWorkCorporateTutorEvaluationForm(
+        this.criteriaSource,
+        [
+          {
+            seccionId: 1,
+            seccionName: "Desempeño dentro de la Empresa",
+            maxNote: 20,
+          }
+        ],
+        {
+          nombreAlumno: "",
+          cedulaAlumno: "",
+          empresa: "",
+          nombreTutor: ""
+        }
+
+      ),
+      `Planilla Evaluación Individual Trabajo Instrumental de Grado (TIG) – Tutor Empresarial`
+    )
+
+  }
 
   crearSecionJurado(model: string){
     const dialogRef = this.dialog.open(CrearCriterioTutorEmpresarialComponent,{

@@ -25,6 +25,11 @@ export class CriteriosJuradoEscritoService {
     return this.http.get(`${environment.apiUrl}/criterios/jurado/evaluacion/escrita/escuela/${schoolName}/modelo/${criteriaModel}/seccion`,{headers});
   }
 
+  getJuradoEscritoCriteriaByModelAndSchool(schoolName: string, criteriaModel: string) : Observable<any> {
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`${environment.apiUrl}/criterios/jurado/evaluacion/escrita/escuela/${schoolName}/modelo/${criteriaModel}`,{headers});
+  }
   getJuradoEscritoCriteriaBySeccion(seccionId: number){
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');

@@ -7,6 +7,7 @@ import { UsersService } from 'src/app/services/users.service';
 import { CrearSeccionTutorOralComponent } from './dialogs/crear-seccion-tutor-oral/crear-seccion-tutor-oral.component';
 import { EditarCriterioTutorOralComponent } from './dialogs/editar-criterio-tutor-oral/editar-criterio-tutor-oral.component';
 import { EditarSeccionTutorOralComponent } from './dialogs/editar-seccion-tutor-oral/editar-seccion-tutor-oral.component';
+import { switchMap, of } from 'rxjs';
 
 @Component({
   selector: 'app-criterios-tutor-oral',
@@ -26,6 +27,9 @@ export class CriteriosTutorOralComponent {
 
   userData: any = null
 
+  seccionSumE: number = 0;
+  seccionSumI: number = 0;
+
   constructor(
     private criteriaService: CriteriosTutorOralService,
     private userService: UsersService,
@@ -43,6 +47,9 @@ export class CriteriosTutorOralComponent {
               next: (seccionList) => {
                 console.log(seccionList)
                 this.seccionSource = seccionList
+                this.seccionSource.forEach( ( seccion : any ) => {
+                  this.seccionSumE = this.seccionSumE + seccion.maxNote
+                });
               }
             }
           )
@@ -51,6 +58,9 @@ export class CriteriosTutorOralComponent {
               next: (seccionList) => {
                 console.log(seccionList)
                 this.seccionSourceInstrumental = seccionList
+                this.seccionSourceInstrumental.forEach( ( seccion : any ) => {
+                  this.seccionSumI = this.seccionSumI + seccion.maxNote
+                });
               }
             }
           )
@@ -66,7 +76,50 @@ export class CriteriosTutorOralComponent {
     this.seccionSource.filter = filterValue.trim().toLowerCase();
   }
 
-  generarPlanilla(){}
+  generarPlanilla(modo: string){
+    console.log(modo)
+    this.criteriaService.getTutorOralCriteriaByModelAndSchool(this.userData.schoolName,modo)
+      .pipe(
+        switchMap(
+          (criteriaList) => {
+            this.criteriaList = criteriaList
+            console.log(this.criteriaList)
+            return this.criteriaService.getTutorOralSeccionByModelAndSchool(this.userData.schoolName,modo)
+          }
+        ),
+        switchMap(
+          (seccionList) => {
+            this.seccionList = seccionList
+            let objetoMenor: any = this.obtenerMenorId(this.criteriaList)
+            console.log(objetoMenor)
+
+            this.criteriaList.forEach ( (criterio:any,index:number) => {
+              this.criteriaList[index].userDNI = ""
+            })
+            
+            this.formGenerator.printEvaluationForm(
+              this.formGenerator.generateGraduateWorkJuryOralEvaluationForm(
+                this.criteriaList.filter( (criterio) => criterio.seccionId != objetoMenor.seccionId ),
+                this.criteriaList.filter( (criterio) => criterio.seccionId == objetoMenor.seccionId ),
+                this.seccionList,
+                "",
+                [{
+                  nombre: "",
+                  userDNI: ""
+                }]
+              ),
+              `Planilla Evaluación - Presentación - Tutor`
+            )
+            return of("Documento generado exitosamente")
+          }
+        ),
+      )
+      .subscribe({
+        next: (result) => {
+          console.log(result)
+        }
+      })
+  }
 
   crearSecionJurado(model: string){
     const dialogRef = this.dialog.open(CrearSeccionTutorOralComponent,{
@@ -112,5 +165,14 @@ export class CriteriosTutorOralComponent {
     });
 
     
+  }
+
+  obtenerMenorId( arregloCriterios: any ){
+    return arregloCriterios.reduce((menor:any, actual:any) => {
+      if (actual.seccionId < menor.seccionId) {
+        return actual;
+      }
+      return menor;
+    });
   }
 }

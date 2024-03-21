@@ -43,10 +43,22 @@ export class CriteriosTutorEmpresarialService {
     return this.http.put(`${environment.apiUrlPasantia}/pasantia/secciones/empresarial/put/${seccionId}`,seccion,{headers});
   }
 
+  changeEnterpriseTutorSeccionStatus(seccionId: number, status: boolean){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.put(`${environment.apiUrlPasantia}/pasantia/secciones/empresarial/put/${seccionId}/status/${status}`,{headers});
+  }
+
   changeEnterpriseTutorCriteria(criteriaId: number, criteria: CriteriaRequest){
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
     return this.http.put(`${environment.apiUrlPasantia}/pasantia/criterios/empresarial/put/${criteriaId}`,criteria,{headers});
+  }
+
+  changeEnterpriseTutorCriteriaStatus(criteriaId: number, status: boolean){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.put(`${environment.apiUrlPasantia}/pasantia/criterios/empresarial/put/${criteriaId}/status/${status}`,{headers});
   }
 
 

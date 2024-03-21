@@ -131,6 +131,13 @@
         <mat-divider style="width: 100%;"></mat-divider>
       </mat-drawer>
       <mat-drawer-content>
+        <div style="width: 100%; display: flex;">
+
+          <button mat-raised-button (click)="generarReporteTrabajoGrado()">
+            Generar Reporte de Propuesta de TG
+          </button>
+
+        </div>    
         <table mat-table [dataSource]="reviewerData" class="mat-elevation-z8">
 
           <!--- Note that these columns can be defined in any order.

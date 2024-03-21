@@ -184,7 +184,7 @@ export class CargarEvaluacionesDialogComponent {
             },
             complete: () => {
               this.cargadoArchivos = false
-              //window.location.href = window.location.href
+              window.location.href = window.location.href
             }
           })
         }

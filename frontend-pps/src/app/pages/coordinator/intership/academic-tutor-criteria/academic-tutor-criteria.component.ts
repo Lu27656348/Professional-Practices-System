@@ -20,13 +20,15 @@ import { EditAcademicTutorCriteriaComponent } from './dialogs/edit-academic-tuto
   styleUrls: ['./academic-tutor-criteria.component.css']
 })
 export class AcademicTutorCriteriaComponent {
-  displayedColumns: string[] = ['seccionId', 'seccionName', 'maxNote','actions','criteria'];
+  displayedColumns: string[] = ['seccionId', 'seccionName', 'maxNote','actions','criteria','deshabilitar'];
   dataSource: any = null
 
   seccionList: SeccionInterface[] = []
   criteriaList: any[] = []
 
   userData: any = null
+
+  seccionSum: number = 0
 
   constructor(
     private corporateCriteriaService: CriteriosTutorAcademicoService, 
@@ -49,6 +51,9 @@ export class AcademicTutorCriteriaComponent {
           (seccionList) => {
             console.log(seccionList)
             this.seccionList = seccionList
+            this.seccionList.filter( (seccion:any) => seccion.status == true).forEach( (seccion:any) => {
+              this.seccionSum = this.seccionSum + seccion.maxNote
+            })
             this.dataSource = new MatTableDataSource(seccionList)
             return this.corporateCriteriaService.getAllAcademicTutorCriteriaBySchool(this.userData.schoolName)
           }
@@ -129,7 +134,7 @@ export class AcademicTutorCriteriaComponent {
             empresa: "",
             nombreTutor: ""
           }
-          this.formGenerator.printEvaluationForm(this.formGenerator.generateIntershipAcademicTutorEvaluationForm(criteriaArray,this.seccionList,data))
+          this.formGenerator.printEvaluationForm(this.formGenerator.generateIntershipAcademicTutorEvaluationForm(criteriaArray.filter( (seccion: any) => seccion.status == true),this.seccionList.filter( (seccion: any) => seccion.status == true),data),"Evaluación Pasantía Tutor Académico")
           return of("todo bien")
         }
       ),
@@ -140,5 +145,21 @@ export class AcademicTutorCriteriaComponent {
       }
   })
     
+  }
+
+  deshabilitarSeccion(element: any){
+    //this.corporateCriteriaService.changeEnterpriseTutorSeccionStatus()
+    console.log("deshabilitarSeccion")
+    console.log(element)
+    this.corporateCriteriaService.changeAcademicTutorSeccionStatus(element.seccionId, !element.status)
+    .subscribe({
+      next: (result) => {
+        console.log(result)
+      },
+      complete: () => {
+        window.location.href = window.location.href
+      }
+    })
+
   }
 }

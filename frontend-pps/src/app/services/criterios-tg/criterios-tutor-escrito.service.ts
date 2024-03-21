@@ -25,6 +25,12 @@ export class CriteriosTutorEscritoService {
     return this.http.get(`${environment.apiUrl}/criterios/tutor/evaluacion/escrita/escuela/${schoolName}/modelo/${criteriaModel}/seccion`,{headers});
   }
 
+  getTutorEscritoCriteriaByModelAndSchool(schoolName: string, criteriaModel: string) : Observable<any> {
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`${environment.apiUrl}/criterios/tutor/evaluacion/escrita/escuela/${schoolName}/modelo/${criteriaModel}`,{headers});
+  }
+
   getTutorEscritoCriteriaBySeccion(seccionId: number){
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');

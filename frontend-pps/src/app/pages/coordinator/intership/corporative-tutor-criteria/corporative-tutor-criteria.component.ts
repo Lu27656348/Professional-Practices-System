@@ -24,13 +24,15 @@ interface SeccionInterface {
   styleUrls: ['./corporative-tutor-criteria.component.css']
 })
 export class CorporativeTutorCriteriaComponent implements OnInit{
-  displayedColumns: string[] = ['seccionId', 'seccionName', 'maxNote','actions','criteria'];
+  displayedColumns: string[] = ['seccionId', 'seccionName', 'maxNote','actions','criteria','deshabilitar'];
   dataSource: any = null
 
   seccionList: SeccionInterface[] = []
   criteriaList: any[] = []
 
   userData: any = null
+
+  seccionSum: number = 0
 
   constructor(
     private corporateCriteriaService: CriteriosTutorEmpresarialService,
@@ -53,6 +55,9 @@ export class CorporativeTutorCriteriaComponent implements OnInit{
           (seccionList) => {
             console.log(seccionList)
             this.seccionList = seccionList
+            this.seccionList.filter((seccion:any) => seccion.status).forEach ( (seccion: any) => {
+              this.seccionSum = this.seccionSum + seccion.maxNote
+            })
             this.dataSource = new MatTableDataSource(seccionList)
             return this.corporateCriteriaService.getAllEnterpriseTutorCriteriaBySchool(this.userData.schoolName)
           }
@@ -63,6 +68,7 @@ export class CorporativeTutorCriteriaComponent implements OnInit{
           next: (criteriaList) => {
             console.log(criteriaList)
             this.criteriaList = criteriaList
+            console.log(this.seccionSum)
           }
         }
       )
@@ -137,7 +143,7 @@ export class CorporativeTutorCriteriaComponent implements OnInit{
             empresa: "",
             nombreTutor: ""
           }
-          this.formGenerator.printEvaluationForm(this.formGenerator.generateIntershipCorporateTutorEvaluationForm(criteriaArray,this.seccionList,data))
+          this.formGenerator.printEvaluationForm(this.formGenerator.generateIntershipCorporateTutorEvaluationForm(criteriaArray.filter( (seccion:any) => seccion.status),this.seccionList.filter( (seccion:any) => seccion.status),data),"Planilla Evaluación Pasantía Tutor Empresarial")
           return of("todo bien")
         }
       ),
@@ -148,5 +154,21 @@ export class CorporativeTutorCriteriaComponent implements OnInit{
       }
   })
     
+  }
+
+  deshabilitarSeccion(element: any){
+    //this.corporateCriteriaService.changeEnterpriseTutorSeccionStatus()
+    console.log("deshabilitarSeccion")
+    console.log(element)
+    this.corporateCriteriaService.changeEnterpriseTutorSeccionStatus(element.seccionId, !element.status)
+    .subscribe({
+      next: (result) => {
+        console.log(result)
+      },
+      complete: () => {
+        window.location.href = window.location.href
+      }
+    })
+
   }
 }

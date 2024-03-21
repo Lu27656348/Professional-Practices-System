@@ -1,5 +1,5 @@
 <div style="display: flex; justify-content: center; background-color: aliceblue; flex-direction: column; height: 100%;">
-    <h1 style="display: flex; align-items: center; justify-content: center; margin-top: 5%;"><strong>Evaluación Tutor </strong></h1>
+    <h1 style="display: flex; align-items: center; justify-content: center; margin-top: 5%;"><strong>Evaluación tutor {{modo}}</strong></h1>
     <p style=" display: flex; align-items: center; justify-content: center;">Bienvenido</p>
     <p style=" display: flex; align-items: center; justify-content: center; margin-bottom: 1%;" >Para generar la planillas selecciona todos los criterios y se creará automáticamente </p>
     <div style=" height: 100%;" >
@@ -48,7 +48,7 @@
                         <td mat-cell *matCellDef="let element" >
                             <mat-checkbox *ngIf="3 <= element.maxNote" (change)="onCheckboxChange(element, 3)" [checked]="element.selectedCheckBoxIndex === 3"></mat-checkbox>
                         </td>
-                        <td mat-footer-cell *matFooterCellDef> {{totalSum}} / 20</td>
+                        <td mat-footer-cell *matFooterCellDef></td>
                       </ng-container>
         
                       <ng-container matColumnDef="4" *ngIf="notaMaxima >= 4">

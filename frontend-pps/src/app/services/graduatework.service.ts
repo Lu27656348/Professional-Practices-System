@@ -382,14 +382,15 @@ export class GraduateworkService {
     return this.http.get(`${environment.apiUrl}/graduate-work/remaining/days/${graduateWorkId}`,{headers});
   }
 
-  createJury( professorDNI: string,schoolCouncilId: string, graduateWorkId: string, juryType: string = 'PRINCIPAL') : Observable<any>{
+  createJury( professorDNI: string,schoolCouncilId: string, graduateWorkId: string, juryType: string = 'PRINCIPAL', reemplazo: string = "") : Observable<any>{
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
     const body = {
       "graduateWorkId": graduateWorkId,
       "schoolCouncilId": schoolCouncilId,
       "professorDNI": professorDNI,
-      "juryType": juryType
+      "juryType": juryType,
+      "reemplazo": reemplazo
     } 
     console.log(body)
     return this.http.post(`${environment.apiUrl}/graduate-work/create/jury`,body,{headers});
@@ -842,6 +843,12 @@ export class GraduateworkService {
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');
     return this.http.get(`${environment.apiUrl}/graduate-work/culminated/${studentDNI}`,{headers});
+  }
+
+  generarReportePropuestas(schoolName: string){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`${environment.apiUrl}/graduate-work/generar/reporte/propuestas/${schoolName}`,{headers});
   }
 
   

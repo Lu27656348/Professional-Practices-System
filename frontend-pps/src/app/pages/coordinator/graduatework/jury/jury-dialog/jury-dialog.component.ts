@@ -222,29 +222,18 @@ export class JuryDialogComponent implements OnInit {
       })
     }else{
       console.log("%c", "CRITERIOS DE TIPO INSTRUMENTAL", "color: red");
-      this.graduateworkService.getJuryReportExperimentalCriteria(this.inputdata.studentData[0].schoolName).pipe(
+
+      this.graduateworkService.getJuryReportInstrumentalCriteria(this.inputdata.studentData[0].schoolName).pipe(
         switchMap(
-          (juryReportCriteriaList) => {
-            this.experimentalReportJuryCriteriaList = juryReportCriteriaList
-            return this.graduateworkService.getJuryReportExperimentalSeccion(this.inputdata.studentData[0].schoolName)
+          (juryOralCriteriaList) => {
+            this.experimentalReportJuryCriteriaList = juryOralCriteriaList
+            return this.graduateworkService.getJuryReportInstrumentalSeccion(this.inputdata.studentData[0].schoolName)
           }
         ),
         switchMap(
-          (juryReportSeccionList) => {
-            this.experimentalReportJurySeccionList = juryReportSeccionList
-            /*
-            this.formService.printEvaluationForm(this.formService.generateGraduateWorkJuryReportEvaluationForm(
-              this.experimentalReportJuryCriteriaList,
-              this.experimentalReportJurySeccionList,
-              "Sistema de Practicas Profesionales",
-              [
-                {
-                  nombre: "Somoza Ledezma, Luis Carlos"
-                }
-              ]
-            ))
-            */
-            return of("Criterios de Jurado / INFORME / EXPERIMENTAL -> Completados")
+          (juryOralSeccionList) => {
+            this.experimentalReportJurySeccionList = juryOralSeccionList
+            return of("Criterios de Jurado / ORAL / EXPERIMENTAL -> Completados")
           }
         )
       ).subscribe({
@@ -252,6 +241,7 @@ export class JuryDialogComponent implements OnInit {
           console.log(result)
         }
       })
+
       this.graduateworkService.getJuryOralInstrumentalCriteria(this.inputdata.studentData[0].schoolName).pipe(
         switchMap(
           (juryOralCriteriaList) => {
@@ -270,6 +260,7 @@ export class JuryDialogComponent implements OnInit {
           console.log(result)
         }
       })
+
       this.graduateworkService.getTutorOralInstrumentalCriteria(this.inputdata.studentData[0].schoolName).subscribe({
         next: (criteriaList) => {
           console.log(criteriaList)
@@ -287,6 +278,7 @@ export class JuryDialogComponent implements OnInit {
 
     this.studentService.getStudentCoordinator(this.inputdata.studentData[0].userDNI).subscribe({
       next: (coordinatorData) => {
+        console.log(coordinatorData)
         this.coordinatorData = coordinatorData
       }
     })
@@ -359,8 +351,8 @@ export class JuryDialogComponent implements OnInit {
               this.studentList = studentList
               const observables: Observable<any>[] = [];
               observables.push(this.graduateworkService.createJury(this.inputdata.graduateWorkData.graduateWorkAcademicTutor, this.councilSelected, this.inputdata.graduateWorkData.graduateworkid,'TUTOR'));
-              observables.push(this.graduateworkService.createJury(this.jurySelected, this.councilSelected, this.inputdata.graduateWorkData.graduateworkid));
-              observables.push(this.graduateworkService.createJury(this.jurySelected2, this.councilSelected, this.inputdata.graduateWorkData.graduateworkid));
+              observables.push(this.graduateworkService.createJury(this.jurySelected, this.councilSelected, this.inputdata.graduateWorkData.graduateworkid,'PRINCIPAL',this.jurySelected3));
+              observables.push(this.graduateworkService.createJury(this.jurySelected2, this.councilSelected, this.inputdata.graduateWorkData.graduateworkid,'PRINCIPAL',this.jurySelected4));
               /* Recordar agregar reemplazos de profesores en esta secccion */
               return forkJoin(observables)
               
@@ -413,11 +405,14 @@ export class JuryDialogComponent implements OnInit {
                   }
                 )
               } )
-
+              console.log(this.experimentalOralJuryCriteriaList)
+              console.log(this.obtenerMenorId(this.experimentalOralJuryCriteriaList))
+              console.log(this.experimentalOralJuryCriteriaList.filter( (criteria:any) => criteria.seccionId == this.obtenerMenorId(this.experimentalOralJuryCriteriaList).seccionId),
+              )
               return this.formService.convertDocumentToBlob(
                 this.formService.generateGraduateWorkJuryOralEvaluationForm(
                     this.experimentalOralJuryCriteriaList,
-                    this.experimentalOralJuryCriteriaList.filter( (criteria:any) => criteria.seccionId == 1),
+                    this.experimentalOralJuryCriteriaList.filter( (criteria:any) => criteria.seccionId == this.obtenerMenorId(this.experimentalOralJuryCriteriaList).seccionId),
                     this.experimentalOralJurySeccionList,
                     this.inputdata.graduateWorkData.graduateWorkTitle,
                     studentName
@@ -464,19 +459,25 @@ export class JuryDialogComponent implements OnInit {
           switchMap(
             (juryDataList) => {
               console.log(juryDataList)
+
+
               this.juryDataList = juryDataList
 
               this.juryDataList.forEach( (jury:any) => {
-                if(jury.userDNI = this.inputdata.graduateWorkData.graduateWorkAcademicTutor){
+                if(jury.userDNI == this.inputdata.graduateWorkData.graduateWorkAcademicTutor){
                   this.tutorData = jury
                 }
-                if(jury.userDNI = this.jurySelected){
+                if(jury.userDNI == this.jurySelected){
                   this.juryData = jury
                 }
-                if(jury.userDNI = this.jurySelected2){
+                if(jury.userDNI == this.jurySelected2){
                   this.jury2Data = jury
                 }
               })
+
+              console.log(this.tutorData)
+              console.log(this.juryData)
+              console.log(this.jury2Data)
               const observables: Observable<any>[] = [];
 
               const studentData: any = [];
@@ -528,7 +529,7 @@ export class JuryDialogComponent implements OnInit {
                 htmlContent: 
                 `
                 Puerto Ordaz, ${new Date().toLocaleDateString("es-ES", {day: "numeric",month: "long", year: "numeric",})}                                                         
-                Buen día estimada profesora: ${this.juryDataList[0].userLastName} ${this.juryDataList[0].userFirstName}
+                Buen día estimada profeso(a)r: ${this.juryDataList[0].userLastName} ${this.juryDataList[0].userFirstName}
                 Usted ha sido designado jurado de Trabajo de Grado. Adjunto su Designación de Jurado
                 Para la revisión y evaluación del mismo dispone de los siguientes documentos:
                           	Informe del Trabajo de Grado
@@ -598,7 +599,7 @@ export class JuryDialogComponent implements OnInit {
                 subject: `Notificación Designación Jurado ${this.juryDataList[1].userLastName.split(" ")[0]} ${this.juryDataList[1].userFirstName.split(" ")[0]} – documentos para evaluación de TG - ${studentNames}` ,
                 htmlContent: ` 
                 Puerto Ordaz, ${new Date().toLocaleDateString("es-ES", {day: "numeric",month: "long", year: "numeric",})}                                                         
-                Buen día estimada profesora: ${this.juryDataList[1].userLastName} ${this.juryDataList[1].userFirstName}
+                Buen día estimada profeso(a)r: ${this.juryDataList[1].userLastName} ${this.juryDataList[1].userFirstName}
                 Usted ha sido designado jurado de Trabajo de Grado. Adjunto su Designación de Jurado
                 Para la revisión y evaluación del mismo dispone de los siguientes documentos:
                           	Informe del Trabajo de Grado
@@ -869,6 +870,7 @@ export class JuryDialogComponent implements OnInit {
             console.log(result)
           },
           error: (error) => {
+            console.log(error)
             this.cargadoArchivos = false
             this._snackBar.open("Error durante el envio de documentos", "cerrar",{
               horizontalPosition: this.horizontalPosition,
@@ -937,5 +939,14 @@ export class JuryDialogComponent implements OnInit {
         //this.formService.printEvaluationForm())
       }
     })
+  }
+
+  obtenerMenorId( arregloCriterios: any ){
+    return arregloCriterios.reduce((menor:any, actual:any) => {
+      if (actual.seccionId < menor.seccionId) {
+        return actual;
+      }
+      return menor;
+    });
   }
 }

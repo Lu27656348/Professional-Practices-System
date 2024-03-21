@@ -7,6 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { EvaluationFormGeneratorService } from 'src/app/form-generator/services/evaluation-form-generator.service';
 import { EditarSeccionJuradoOralComponent } from './dialogs/editar-seccion-jurado-oral/editar-seccion-jurado-oral.component';
 import { EditarCriterioJuradoOralComponent } from './dialogs/editar-criterio-jurado-oral/editar-criterio-jurado-oral.component';
+import { of, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-criterios-jurado-oral',
@@ -27,6 +28,9 @@ export class CriteriosJuradoOralComponent {
 
   userData: any = null
 
+  seccionSumE: number = 0;
+  seccionSumI: number = 0;
+
   constructor(
     private criteriaService: CriteriosJuradoOralService,
     private userService: UsersService,
@@ -44,6 +48,9 @@ export class CriteriosJuradoOralComponent {
               next: (seccionList) => {
                 console.log(seccionList)
                 this.seccionSource = seccionList
+                this.seccionSource.forEach( ( seccion : any ) => {
+                  this.seccionSumE = this.seccionSumE + seccion.maxNote
+                });
               }
             }
           )
@@ -52,6 +59,9 @@ export class CriteriosJuradoOralComponent {
               next: (seccionList) => {
                 console.log(seccionList)
                 this.seccionSourceInstrumental = seccionList
+                this.seccionSourceInstrumental.forEach( ( seccion : any ) => {
+                  this.seccionSumI = this.seccionSumI + seccion.maxNote
+                });
               }
             }
           )
@@ -67,7 +77,62 @@ export class CriteriosJuradoOralComponent {
     this.seccionSource.filter = filterValue.trim().toLowerCase();
   }
 
-  generarPlanilla(){}
+  generarPlanilla(modo: string){
+    console.log(modo)
+
+      this.criteriaService.getJuradoOralCriteriaByModelAndSchool(this.userData.schoolName,modo)
+      .pipe(
+        switchMap(
+          (criteriaList) => {
+            this.criteriaList = criteriaList
+            console.log(this.criteriaList)
+            return this.criteriaService.getJuradoOralSeccionByModelAndSchool(this.userData.schoolName,modo)
+          }
+        ),
+        switchMap(
+          (seccionList) => {
+            this.seccionList = seccionList
+            let objetoMenor: any = this.obtenerMenorId(this.criteriaList)
+            console.log(objetoMenor)
+
+            this.criteriaList.forEach ( (criterio:any,index:number) => {
+              this.criteriaList[index].userDNI = ""
+            })
+            
+            this.formGenerator.printEvaluationForm(
+              this.formGenerator.generateGraduateWorkJuryOralEvaluationForm(
+                this.criteriaList.filter( (criterio) => criterio.seccionId != objetoMenor.seccionId ),
+                this.criteriaList.filter( (criterio) => criterio.seccionId == objetoMenor.seccionId ),
+                this.seccionList,
+                "",
+                [{
+                  nombre: "",
+                  userDNI: ""
+                }]
+              ),
+              `Planilla Evaluación - Presentación - Jurado`
+            )
+            return of("Documento generado exitosamente")
+          }
+        ),
+      )
+      .subscribe({
+        next: (result) => {
+          console.log(result)
+        }
+      })
+      /*
+      this.formGenerator.printEvaluationForm(
+        this.formGenerator.generateGraduateWorkJuryOralEvaluationForm(
+          this.
+        )
+      )
+      */
+   
+
+
+    
+  }
 
   crearSecionJurado(model: string){
     const dialogRef = this.dialog.open(CrearSeccionJuradoOralComponent,{
@@ -104,7 +169,7 @@ export class CriteriosJuradoOralComponent {
       width: '60%', 
       data: {
         user: this.userData,
-        data: element
+        data: element,
       }
     })
 
@@ -115,5 +180,13 @@ export class CriteriosJuradoOralComponent {
     
   }
 
+  obtenerMenorId( arregloCriterios: any ){
+    return arregloCriterios.reduce((menor:any, actual:any) => {
+      if (actual.seccionId < menor.seccionId) {
+        return actual;
+      }
+      return menor;
+    });
+  }
 
 }

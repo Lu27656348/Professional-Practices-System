@@ -55,9 +55,10 @@ export class ProfesionalCatalogComponent {
       switchMap( 
         (enterpriseList) => {
           console.log(enterpriseList)
+          console.log(this.externalDataList)
           this.externalDataList.forEach( (external: any, index: any) => {
             enterpriseList.forEach( (enterprise: any) => {
-              if(external.enterpriseId == enterprise.enterpriseId){
+              if(external.externalData.externalPersonnelEnterpriseId == enterprise.enterpriseid){
                 this.externalDataList[index].enterpriseData = enterprise
               }
             })

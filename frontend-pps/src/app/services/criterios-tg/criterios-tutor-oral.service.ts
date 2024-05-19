@@ -65,4 +65,19 @@ export class CriteriosTutorOralService {
     console.log(criteriaData)
     return this.http.put(`${environment.apiUrl}/criterios/tutor/evaluacion/oral`,criteriaData,{headers});
   }
+
+
+  changeTutorOralSeccionStatus(seccionId: number){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.put(`${environment.apiUrl}/criterios/tutor/evaluacion/oral/seccion/${seccionId}/status`,{headers});
+  }
+
+  changeTutorOralCriteriaStatus(criteriaId: number){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.put(`${environment.apiUrl}/criterios/tutor/evaluacion/oral/${criteriaId}/status`,{headers});
+  }
+
+  
 }

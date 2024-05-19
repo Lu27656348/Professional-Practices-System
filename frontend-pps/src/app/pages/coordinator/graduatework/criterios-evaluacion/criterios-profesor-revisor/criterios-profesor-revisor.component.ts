@@ -10,6 +10,7 @@ import { EditarSeccionJuradoEscritoComponent } from '../criterios-jurado-escrito
 import { GraduateworkService } from 'src/app/services/graduatework.service';
 import { CrearCriterioProfesorRevisorComponent } from './dialogs/crear-criterio-profesor-revisor/crear-criterio-profesor-revisor.component';
 import { EditarCriterioProfesorRevisorComponent } from './dialogs/editar-criterio-profesor-revisor/editar-criterio-profesor-revisor.component';
+import { CriteriosProfesorRevisorService } from 'src/app/services/criterios-tg/criterios-profesor-revisor.service';
 
 @Component({
   selector: 'app-criterios-profesor-revisor',
@@ -19,7 +20,7 @@ import { EditarCriterioProfesorRevisorComponent } from './dialogs/editar-criteri
 export class CriteriosProfesorRevisorComponent {
   panelOpenState: boolean = false
 
-  displayedColumns: string[] = ['seccionId', 'seccionName','actions'];
+  displayedColumns: string[] = ['seccionId', 'seccionName','actions','estado'];
   criteriaSource: any = null
   seccionSourceInstrumental: any = null
 
@@ -34,6 +35,7 @@ export class CriteriosProfesorRevisorComponent {
     private userService: UsersService,
     private dialog: MatDialog,
     private formGenerator: EvaluationFormGeneratorService,
+    private criteriaService: CriteriosProfesorRevisorService
   ){
     const localUser = localStorage.getItem('user')
     if(localUser){
@@ -76,7 +78,7 @@ export class CriteriosProfesorRevisorComponent {
 
     this.formGenerator.printEvaluationForm(
       this.formGenerator.generateGraduateWorkReviewerEvaluationForm(
-        (modo == 'EXPERIMENTAL') ? this.criteriaSource : this.seccionSourceInstrumental,
+        (modo == 'EXPERIMENTAL') ? this.criteriaSource.filter( (criterio : any) => criterio.status ) : this.seccionSourceInstrumental.filter( (criterio : any) => criterio.status ),
         {
           modalidad: modo, 
           titulo: "",
@@ -118,6 +120,22 @@ export class CriteriosProfesorRevisorComponent {
     dialogRef.afterClosed().subscribe(result => {
       console.log(`Dialog result: ${result}`);
     });
+  }
+
+  deshabilitarCriterio(element: any){
+    console.log(element)
+    console.log("deshabilitarCriterio")
+    this.criteriaService.changeProfesorRevisorCriteriaStatus(element.reviewerCriteriaId)
+    .subscribe(
+      {
+        next: (result) => {
+          console.log(result)
+        },
+        complete: () => {
+          window.location.href = window.location.href 
+        }
+      }
+    )
   }
 
 }

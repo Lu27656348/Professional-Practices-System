@@ -20,7 +20,7 @@ import { switchMap, of } from 'rxjs';
 export class CriteriosTutorEscritoComponent {
   panelOpenState: boolean = false
 
-  displayedColumns: string[] = ['seccionId', 'seccionName', 'maxNote','actions','criteria'];
+  displayedColumns: string[] = ['seccionId', 'seccionName', 'maxNote','actions','criteria','deshabilitar'];
   seccionSource: any = null
   seccionSourceInstrumental: any = null
 
@@ -102,8 +102,8 @@ export class CriteriosTutorEscritoComponent {
             
             this.formGenerator.printEvaluationForm(
               this.formGenerator.generateGraduateWorkJuryReportEvaluationForm(
-                this.criteriaList,
-                this.seccionList,
+                this.criteriaList.filter( (criterio: any) => criterio.status),
+                this.seccionList.filter( (criterio: any) => criterio.status),
                 "",
                 [{
                   nombre: ""
@@ -175,5 +175,24 @@ export class CriteriosTutorEscritoComponent {
       }
       return menor;
     });
+  }
+
+  deshabilitarSeccion(element: any){
+
+    console.log("deshabilitarSeccion")
+    console.log(element)
+
+    
+    this.criteriaService.changeTutorEscritoSeccionStatus(element.seccionId)
+    .subscribe({
+      next: (result) => {
+        console.log(result)
+      },
+      complete: () => {
+        window.location.href = window.location.href
+      }
+    })
+    
+
   }
 }

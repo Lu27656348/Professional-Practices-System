@@ -66,12 +66,12 @@ export class ProfesorDialogComponent {
         cedula: this.data.data.userDNI,
         nombres: this.data.data.userFirstName,
         apellidos: this.data.data.userLastName,
-        correoElectronico: this.data.data.userEmail,
+        correoElectronico: this.data.data.userEmail.split("@")[0],
         telefono: this.data.data.userPhone
       })
       this.userForm?.get('cedula')?.disable();
       this.professorForm.setValue({
-        escuela: this.data.data.professorData.professorSchoolName,
+        escuela: this.data.data.schoolName,
         profesion: this.data.data.professorData.professorProfession,
         experiencia: this.data.data.professorData.professorWorkExperience,
         graduacion: new Date(this.data.data.professorData.professorGraduationYear),
@@ -158,7 +158,8 @@ export class ProfesorDialogComponent {
   }
 
   modificarProfesor(){
-    console.log(this.userForm?.get('cedula')?.value)
+    console.log(this.userForm?.value)
+    console.log(this.professorForm?.value)
     if(
       this.professorForm?.get('escuela')?.valid &&
       this.professorForm?.get('profesion')?.valid &&

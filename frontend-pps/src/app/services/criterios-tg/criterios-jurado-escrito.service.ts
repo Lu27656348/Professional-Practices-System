@@ -65,5 +65,16 @@ export class CriteriosJuradoEscritoService {
     return this.http.put(`${environment.apiUrl}/criterios/jurado/evaluacion/escrita`,criteriaData,{headers});
   }
 
+  changeJuradoEscritoSeccionStatus(seccionId: number){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.put(`${environment.apiUrl}/criterios/jurado/evaluacion/escrita/seccion/${seccionId}/status`,{headers});
+  }
+
+  changeJuradoEscritoCriteriaStatus(seccionId: number){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.put(`${environment.apiUrl}/criterios/jurado/evaluacion/escrita/${seccionId}/status`,{headers});
+  }
 
 }

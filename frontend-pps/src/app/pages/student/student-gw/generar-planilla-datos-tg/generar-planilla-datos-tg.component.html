@@ -1,0 +1,82 @@
+
+<div style="width: 100%; height: 100%;">
+    <app-navbar></app-navbar>
+  
+    <mat-drawer-container style="width: 100%; margin: 0px 0 px; border: 1px solid #555; height: 77%;">
+        <mat-drawer mode="side" opened style="width: 20%;">
+            
+            
+            <mat-list role="list">
+                <div mat-subheader><strong>Generadores</strong></div>
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/graduatework/generar/planilla/datos">Planilla de Datos</button></mat-list-item>
+            </mat-list>
+  
+            <mat-divider></mat-divider>
+  
+        </mat-drawer>
+        <mat-drawer-content>
+
+            <form [formGroup]="trabajoDeGradoForm" class="container" style="display: flex; justify-content: center; flex-direction: column; background-color: #fbfbfb; width: 100%;">
+                <h1 style="display: flex; justify-content: center;"><strong>Seleccione los datos</strong></h1>
+
+                <mat-form-field style="width: 100%;">
+                    <mat-label>Modalidad</mat-label>
+                    <mat-select formControlName = "modalidad" [(value)]="modalidadSelected">
+                    <mat-option value="INSTRUMENTAL"> Instrumental </mat-option>
+                    <mat-option value="EXPERIMENTAL"> Experimental </mat-option>
+                </mat-select>
+                </mat-form-field>
+
+                <mat-form-field style="width: 100%;">
+                    <mat-label>Caracter</mat-label>
+                    <mat-select [(value)]="caracterSelected">
+                    <mat-option value="INDIVIDUAL"> Individual </mat-option>
+                    <mat-option value="GRUPAL"> Grupal </mat-option>
+                </mat-select>
+                </mat-form-field>
+                
+                <mat-form-field style="width: 100%;" *ngIf="caracterSelected === 'GRUPAL'">
+                    <mat-label>Compañero</mat-label>
+                    <mat-select formControlName = "alumno2">
+                    <mat-option *ngFor="let estudiante of estudianteList" [value]="estudiante.userDNI">
+                        {{ estudiante.userLastName + ", " + estudiante.userFirstName }} 
+                    </mat-option>
+                </mat-select>
+                </mat-form-field>
+
+                <mat-form-field style="width: 100%;">
+                    <mat-label>Empresa</mat-label>
+                    <mat-select formControlName = "empresaId" (selectionChange)="onSelectionChange()" [(value)]="empresaSelected">
+                    <mat-option *ngFor="let empresa of empresaList" [value]="empresa.enterpriseid">
+                        {{ empresa.enterpriseName }} 
+                    </mat-option>
+                </mat-select>
+                </mat-form-field>
+         
+                <mat-form-field style="width: 100%;" *ngIf= "empresaSelected && modalidadSelected == 'INSTRUMENTAL'" >
+                    <mat-label>Tutor Empresarial</mat-label>
+                    <mat-select formControlName = "tutorId">
+                    <mat-option *ngFor="let external of externalList" [value]="external.userDNI">
+                        {{  external.userLastName + ", " + external.userFirstName  + "/ " + external.userDNI}} 
+                    </mat-option>
+                </mat-select>
+                </mat-form-field>
+
+                <mat-form-field style="width: 100%;" *ngIf= "empresaSelected && modalidadSelected == 'EXPERIMENTAL'" >
+                    <mat-label>Tutor Académico</mat-label>
+                    <mat-select formControlName = "tutorId">
+                    <mat-option *ngFor="let professor of professorList" [value]="professor.userDNI">
+                        {{  professor.userLastName + ", " + professor.userFirstName }} 
+                    </mat-option>
+                </mat-select>
+                </mat-form-field>
+
+                <button mat-raised-button color = "primary" class="full-width" type="submit" (click)="generarPlanilla()">Generar </button>
+            </form>
+        </mat-drawer-content>
+    </mat-drawer-container>
+  
+    <app-footer></app-footer>
+  </div>
+  
+  

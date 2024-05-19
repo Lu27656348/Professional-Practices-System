@@ -4,14 +4,40 @@
   <p *ngIf="cargadoArchivos == false"><strong>Seleccione el Profesor Revisor</strong></p>
   <mat-divider *ngIf="cargadoArchivos == false"></mat-divider>
   <form [formGroup]="reviewerForm" *ngIf="cargadoArchivos == false">
-    <mat-form-field style="width: 100%;">
+    <div style="display: flex; flex-direction: column ;">
+      <mat-form-field style="width: 100%;" *ngIf="listaRevisores.length == 0">
         <mat-label>Profesor Revisor</mat-label>
-        <mat-select [value]="reviewerSelected" formControlName = "reviewer" (selectionChange)="onSelectionChange()">
+        <mat-select [value]="reviewerSelected" formControlName = "reviewer" (selectionChange)="onSelectionChange()" >
             <mat-option *ngFor="let professor of professorsList" [value]="professor.userDNI">
                 {{ professor.userlastname + ', ' + professor.userfirstname }} 
             </mat-option>
         </mat-select>
-    </mat-form-field >
+      </mat-form-field >
+      <div *ngIf="listaRevisores.length > 0">
+        <mat-form-field style="width: 100%;" *ngFor="let revisor of listaRevisores">
+          <mat-label>Profesor Revisor</mat-label>
+          <mat-select [value]="revisor" >
+              <mat-option *ngFor="let professor of professorsList" [value]="professor.userDNI">
+                  {{ professor.userlastname + ', ' + professor.userfirstname }} 
+              </mat-option>
+          </mat-select>
+        </mat-form-field >
+        <mat-form-field style="width: 100%;">
+          <mat-label>Profesor Revisor</mat-label>
+          <mat-select [value]="reviewerSelected" (selectionChange)="agregarRevisorALista($event)">
+              <mat-option *ngFor="let professor of professorsList" [value]="professor.userDNI">
+                  {{ professor.userlastname + ', ' + professor.userfirstname }} 
+              </mat-option>
+          </mat-select>
+        </mat-form-field >
+      </div>
+      <button mat-button *ngIf="isCivil" (click)="agregarRevisor()">
+        <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="add">
+          add
+        </mat-icon>
+      </button>
+    </div>
+    
   </form>
 
   <p *ngIf="cargadoArchivos == false"><strong>Seleccione el Cómite de Trabajo de Grado</strong></p>
@@ -19,7 +45,7 @@
   <form [formGroup]="committeeForm" *ngIf="cargadoArchivos == false">
     <mat-form-field style="width: 100%;">
         <mat-label>Comite de Trabajo de Grado</mat-label>
-        <mat-select [value]="committeeSelected" formControlName = "committeeId" (selectionChange)="onSelectionChange()">
+        <mat-select [value]="committeeSelected" formControlName = "committeeId">
             <mat-option *ngFor="let committee of committeeList" [value]="committee.committeeId">
                 {{  
                     committee.committeeId

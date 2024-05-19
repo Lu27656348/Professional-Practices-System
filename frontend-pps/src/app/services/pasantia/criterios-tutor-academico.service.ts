@@ -73,7 +73,8 @@ export class CriteriosTutorAcademicoService {
     const body = {
       seccionName: seccionName,
       maxNote: maxNote,
-      schoolName: schoolName
+      schoolName: schoolName,
+      status: true
     }
     return this.http.post(`${environment.apiUrlPasantia}/pasantia/secciones/academico/post`,body,{headers});
   }
@@ -85,7 +86,8 @@ export class CriteriosTutorAcademicoService {
       criteriaName: criteriaName,
       maxNote: maxNote,
       schoolName: schoolName,
-      seccionId: seccionId
+      seccionId: seccionId,
+      status: true
     }
     return this.http.post(`${environment.apiUrlPasantia}/pasantia/criterios/academico/post`,body,{headers});
   }

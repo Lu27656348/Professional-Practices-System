@@ -116,7 +116,11 @@ export class ReviewerEvaluationDialogComponent {
     this.graduateWorkService.getGraduateWorkReviewer(this.inputdata.gw.graduateWorkId).pipe(
       switchMap(
         (reviewerDNI) => {
-          return this.userService.getUserData(reviewerDNI.professorDNI)
+          const observables: Observable<any>[] = []
+          reviewerDNI.forEach( (revisor:any) => {
+            observables.push(this.userService.getUserData(revisor.professorDNI))
+          })
+          return forkJoin(observables)
         }
       )
     ).subscribe({
@@ -171,64 +175,71 @@ export class ReviewerEvaluationDialogComponent {
         })
         throw new Error("El archivo debe ser en formato PDF ")
       }
-      
-      this.graduateWorkService.approveReviewerEvaluation(
-        {
-          professorDNI: this.reviewerData.userDNI,
-          graduateWorkId: this.inputdata.gw.graduateWorkId,
-          comments: null
-        }
-      ).pipe(
-        switchMap(
-          (result) => {
-            console.log(result)
-            let fileNameFormatted;
-            if(this.inputdata.user.length > 1){
-              fileNameFormatted = `${this.inputdata.user[0].userLastName.split(" ")[0]}${this.inputdata.user[0].userFirstName.split(" ")[0]} ${this.inputdata.user[0].userLastName.split(" ")[1]}${this.inputdata.user[1].userFirstName.split(" ")[0]} Evaluación Propuesta ${this.reviewerData.userLastName.split(" ")[0]}${this.reviewerData.userFirstName.split(" ")[0]}.pdf`
-            }else{
-              fileNameFormatted = `${this.inputdata.user[0].userLastName.split(" ")[0]}${this.inputdata.user[0].userFirstName.split(" ")[0]} Evaluación Propuesta ${this.reviewerData.userLastName.split(" ")[0]}${this.reviewerData.userFirstName.split(" ")[0]}.pdf`
+      const observables: Observable<any>[] = []
+      this.reviewerData.forEach( (revisor:any) => {
+        observables.push(
+          this.graduateWorkService.approveReviewerEvaluation(
+            {
+              professorDNI: revisor.userDNI,
+              graduateWorkId: this.inputdata.gw.graduateWorkId,
+              comments: null
             }
-           return this.documentService.copyFileAndRename(this.currentFile,fileNameFormatted)
-          }
-        ),
-        switchMap(
-          (newFile) => {
-            if(this.inputdata.user.length > 1){
-              const studentData = [
-                {
+          ).pipe(
+            switchMap(
+              (result) => {
+                console.log(result)
+                let fileNameFormatted;
+                if(this.inputdata.user.length > 1){
+                  fileNameFormatted = `${this.inputdata.user[0].userLastName.split(" ")[0]}${this.inputdata.user[0].userFirstName.split(" ")[0]} ${this.inputdata.user[0].userLastName.split(" ")[1]}${this.inputdata.user[1].userFirstName.split(" ")[0]} Evaluación Propuesta ${revisor.userLastName.split(" ")[0]}${revisor.userFirstName.split(" ")[0]}.pdf`
+                }else{
+                  fileNameFormatted = `${this.inputdata.user[0].userLastName.split(" ")[0]}${this.inputdata.user[0].userFirstName.split(" ")[0]} Evaluación Propuesta ${revisor.userLastName.split(" ")[0]}${revisor.userFirstName.split(" ")[0]}.pdf`
+                }
+               return this.documentService.copyFileAndRename(this.currentFile,fileNameFormatted)
+              }
+            ),
+            switchMap(
+              (newFile) => {
+                if(this.inputdata.user.length > 1){
+                  const studentData = [
+                    {
+                      userDNI: this.inputdata.user[0].userDNI,
+                      userLastName: this.inputdata.user[0].userLastName,
+                      userFirstName: this.inputdata.user[0].userFirstName
+                    },
+                    {
+                      userDNI: this.inputdata.user[1].userDNI,
+                      userLastName: this.inputdata.user[1].userLastName,
+                      userFirstName: this.inputdata.user[1].userFirstName
+                    },
+                  ]
+                  let escuela;
+                  if( this.graduateWorkStudentData[0].schoolName == "Ing. Informatica"){
+                    escuela = "Informática"
+                  }else{
+                    escuela = "Civil"
+                  }
+                  return this.studentService.cargarArchivoPropuestaDoble(newFile as File, studentData,escuela)
+                }
+                const studentData = {
                   userDNI: this.inputdata.user[0].userDNI,
                   userLastName: this.inputdata.user[0].userLastName,
                   userFirstName: this.inputdata.user[0].userFirstName
-                },
-                {
-                  userDNI: this.inputdata.user[1].userDNI,
-                  userLastName: this.inputdata.user[1].userLastName,
-                  userFirstName: this.inputdata.user[1].userFirstName
-                },
-              ]
-              let escuela;
-              if( this.graduateWorkStudentData[0].schoolName == "Ing. Informatica"){
-                escuela = "Informática"
-              }else{
-                escuela = "Civil"
+                }
+                let escuela;
+                  if( this.graduateWorkStudentData[0].schoolName == "Ing. Informatica"){
+                    escuela = "Informática"
+                  }else{
+                    escuela = "Civil"
+                  }
+                return this.studentService.cargarArchivoPropuesta(newFile as File, studentData,escuela)
               }
-              return this.studentService.cargarArchivoPropuestaDoble(newFile as File, studentData,escuela)
-            }
-            const studentData = {
-              userDNI: this.inputdata.user[0].userDNI,
-              userLastName: this.inputdata.user[0].userLastName,
-              userFirstName: this.inputdata.user[0].userFirstName
-            }
-            let escuela;
-              if( this.graduateWorkStudentData[0].schoolName == "Ing. Informatica"){
-                escuela = "Informática"
-              }else{
-                escuela = "Civil"
-              }
-            return this.studentService.cargarArchivoPropuesta(newFile as File, studentData,escuela)
-          }
+            )
+          )
         )
-      ).subscribe({
+      }) 
+
+      forkJoin(observables)
+      .subscribe({
         next: (result) => {
           console.log(result)
         },

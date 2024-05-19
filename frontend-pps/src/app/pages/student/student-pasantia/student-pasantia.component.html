@@ -7,27 +7,20 @@
             
             <mat-list role="list">
                 <div mat-subheader><strong>Generadores</strong></div>
-                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;">Planilla de Datos</button></mat-list-item>
+                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" routerLink="/intership/generar/planilla/datos">Planilla de Datos</button></mat-list-item>
             </mat-list>
 
             <mat-divider></mat-divider>
-
-            <mat-list role="list">
-                <div mat-subheader><strong>Documentos</strong></div>
-                <mat-list-item role="listitem"> <button mat-raised-button style="width: 100%;" ></button></mat-list-item>
-            </mat-list>
-
  
-        
         </mat-drawer>
         <mat-drawer-content>
-            <div style="width: 100%; height: 100%; background-color: antiquewhite; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+            <div style="width: 100%; height: 100%; background-color: #fbfbfb; display: flex; align-items: center; justify-content: center; flex-direction: column;">
                 <h2 *ngIf="currentPasantia == null">Estimado estudiante usted no ha comenzado el proceso de Pasantía</h2>
                 <h2 *ngIf="currentPasantia != null && currentPasantia.intershipStatusCode == 10">Su Propuesta de Pasantía se encuentra Pendiente por Evaluacion en Consejo de Escuela</h2>
                 <h1 *ngIf="currentPasantia != null && currentPasantia.intershipStatusCode == 20">Pasantía en desarrollo</h1>
                   
                       <section class="example-section" *ngIf="currentPasantia != null && currentPasantia.intershipStatusCode == 20">
-                        <p>Ha transcurrido {{((totalDays - daysRemaining)*100/totalDays).toFixed(2)}}%  del tiempo para la entrega final le quedan {{daysRemaining}} dias</p>
+                        <p>Ha transcurrido {{((daysRemaining)*100/totalDays).toFixed(2)}}%  del tiempo para la entrega final le quedan {{totalDays - daysRemaining}} dias</p>
                         <mat-progress-bar
                             class="example-margin"
                             color="primary"

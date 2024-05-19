@@ -161,7 +161,19 @@
                                     <mat-icon>arrow_forward</mat-icon>
                                 </button>
                             </td>
-                          </ng-container>
+                        </ng-container>
+
+                        <ng-container matColumnDef="deshabilitar">
+                          <th mat-header-cell *matHeaderCellDef> Deshabilitar </th>
+                          <td mat-cell *matCellDef="let element"> 
+                              <button mat-raised-button color="warn" (click)="deshabilitarSeccion(element)" *ngIf="element.status == false">
+                                <mat-icon>lock</mat-icon>
+                              </button>
+                              <button mat-raised-button style="background-color: #57d306;" (click)="deshabilitarSeccion(element)" *ngIf="element.status == true">
+                                <mat-icon>lock_open</mat-icon>
+                              </button>
+                          </td>
+                        </ng-container>
                       
                         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
@@ -214,7 +226,19 @@
                                     <mat-icon>arrow_forward</mat-icon>
                                 </button>
                             </td>
-                          </ng-container>
+                        </ng-container>
+
+                        <ng-container matColumnDef="deshabilitar">
+                          <th mat-header-cell *matHeaderCellDef> Deshabilitar </th>
+                          <td mat-cell *matCellDef="let element"> 
+                              <button mat-raised-button color="warn" (click)="deshabilitarSeccion(element)" *ngIf="element.status == false">
+                                <mat-icon>lock</mat-icon>
+                              </button>
+                              <button mat-raised-button style="background-color: #57d306;" (click)="deshabilitarSeccion(element)" *ngIf="element.status == true">
+                                <mat-icon>lock_open</mat-icon>
+                              </button>
+                          </td>
+                        </ng-container>
                       
                         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>

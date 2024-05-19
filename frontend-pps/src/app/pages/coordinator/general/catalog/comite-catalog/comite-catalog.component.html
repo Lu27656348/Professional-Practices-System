@@ -28,7 +28,7 @@
                     <td mat-cell *matCellDef="let element"> {{element.committeeId}} </td>
                   </ng-container>
                   <ng-container matColumnDef="fechaComite">
-                    <th mat-header-cell *matHeaderCellDef> Fecha de Comite </th>
+                    <th mat-header-cell *matHeaderCellDef> Fecha de Comité </th>
                     <td mat-cell *matCellDef="let element"> {{element.committeeDateFormatted }} </td>
                   </ng-container>
                   <ng-container matColumnDef="check">
@@ -36,9 +36,11 @@
                     <td mat-cell *matCellDef="let element">
                         
                         <button mat-raised-button style="background-color: #faf314;" (click)="editarRegistro(element)">
+                            Editar
                             <mat-icon>edit</mat-icon>
                         </button>
                         <button mat-raised-button color="warn" (click)="eliminarRegistro(element)">
+                            Eliminar
                             <mat-icon>delete</mat-icon>
                         </button>
                 

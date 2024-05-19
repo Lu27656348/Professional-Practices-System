@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { switchMap, Observable, forkJoin } from 'rxjs';
+import { switchMap, Observable, forkJoin, of } from 'rxjs';
 import { GraduateworkService } from 'src/app/services/graduatework.service';
 import { LoginService } from 'src/app/services/login.service';
 import { StudentService } from 'src/app/services/student.service';
@@ -32,41 +32,8 @@ export class CompletadasComponent {
   displayedColumns: string[] = ['graduateWorkId', 'graduateWorkTitle', 'studentDNI', 'symbol',"check"];
 
   constructor(private loginService: LoginService,private router: Router,private userService: UsersService, private graduateworkService: GraduateworkService, private dialog: MatDialog, private studentService: StudentService){
-    this.graduateworkService.getGraduateWorkByStatus(100)
-    .pipe(
-      switchMap(
-        (data: any) => {
-          console.log(data)
-          this.reviewerData = [...data]
-          const observables: Observable<any>[] = []
-          this.reviewerData.forEach( (proposal:any) => {
-            observables.push(this.graduateworkService.getGraduateWorkStudentData(proposal.graduateworkid))
-          })
-          return forkJoin(observables)
-        }
-      )
-    )
-    .subscribe({
-      next: (data: any) => {
-        this.reviewerData.forEach( (proposal:any,indexP: number) => {
-          let authors = ""; 
-          data[indexP].forEach( (author: any, index: number) => {
-           console.log(data[indexP])
-           if(index == 0){
-             authors = authors + author.userLastName.split(" ")[0]+ author.userFirstName.split(" ")[0] + "/";
-           }else{
-             authors = authors + author.userLastName.split(" ")[0]+ author.userFirstName.split(" ")[0];
-           } 
-           console.log(data[indexP][0])
-           this.reviewerData[indexP].studentDNI = data[indexP][0].userDNI;
-          })
-          this.reviewerData[indexP].authors = authors;
-         })
-      },
-      error: (error: any) => {
-        console.log(error)
-      }
-    })
+
+    
 
     const userString = localStorage.getItem('user')
     const rolesString = localStorage.getItem('roles')
@@ -91,6 +58,57 @@ export class CompletadasComponent {
 
 
       console.log(this.localUser);
+
+      this.userService.getUserData( this.localUser.userDNI ).pipe(
+        switchMap(
+          (localUserData) => {
+            this.graduateworkService.getGraduateWorkByStatusAndSchhol(100,localUserData.schoolName )
+            .pipe(
+              switchMap(
+                (data: any) => {
+                  console.log(data)
+                  this.reviewerData = [...data]
+                  const observables: Observable<any>[] = []
+                  this.reviewerData.forEach( (proposal:any) => {
+                    observables.push(this.graduateworkService.getGraduateWorkStudentData(proposal.graduateworkid))
+                  })
+                  return forkJoin(observables)
+                }
+              )
+            )
+            .subscribe({
+              next: (data: any) => {
+                this.reviewerData.forEach( (proposal:any,indexP: number) => {
+                  let authors = ""; 
+                  data[indexP].forEach( (author: any, index: number) => {
+                  console.log(data[indexP])
+                  if(index == 0){
+                    authors = authors + author.userLastName.split(" ")[0]+ author.userFirstName.split(" ")[0] + "/";
+                  }else{
+                    authors = authors + author.userLastName.split(" ")[0]+ author.userFirstName.split(" ")[0];
+                  } 
+                  console.log(data[indexP][0])
+                  this.reviewerData[indexP].studentDNI = data[indexP][0].userDNI;
+                  })
+                  this.reviewerData[indexP].authors = authors;
+                })
+              },
+              error: (error: any) => {
+                console.log(error)
+              }
+            })
+            return of("completado")
+          }
+        )
+      )
+      .subscribe(
+        {
+          complete: () => {
+            console.log("completado")
+          }
+        }
+      )
+      
 
 
     }else{

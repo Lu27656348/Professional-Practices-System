@@ -16,7 +16,7 @@ export class EditarCriterioJuradoOralComponent {
 
   criteriaList: any = null
   isCriteriaSelected: boolean = false;
-  displayedColumns: string[] = ['criteriaId','criteriaName', 'maxNote', 'check']
+  displayedColumns: string[] = ['criteriaId','criteriaName', 'maxNote', 'check','estado']
 
   constructor(
     private juryCriteria: CriteriosJuradoOralService, 
@@ -87,4 +87,20 @@ export class EditarCriterioJuradoOralComponent {
     
   }
   
+  deshabilitarCriterio(element: any){
+    console.log(element)
+    console.log("deshabilitarCriterio")
+    this.juryCriteria.changeJuradoOralCriteriaStatus(element.criteriaId)
+    .subscribe(
+      {
+        next: (result) => {
+          console.log(result)
+          this.ngOnInit()
+        },
+        complete: () => {
+          window.location.href = window.location.href 
+        }
+      }
+    )
+  }
 }

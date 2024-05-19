@@ -9,6 +9,7 @@ import { UsersService } from 'src/app/services/users.service';
 import { EmailService } from 'src/app/services/email.service';
 import { forEach } from 'lodash';
 import { SendEmailRequest } from 'src/app/interfaces/requests/SendEmailRequest';
+import { EnterpriseService } from 'src/app/services/enterprise.service';
 
 @Component({
   selector: 'app-defense-dialog',
@@ -28,9 +29,12 @@ export class DefenseDialogComponent {
 
   localUserData: any = null
 
-  administratorData: any = null
+  administratorData: any = null;
+  academicTutorData: any = null;
 
   cargadoArchivos: boolean = false;
+
+  enterpriseData: any = null;
 
   myForm = new FormGroup({
     date: new FormControl(),
@@ -43,7 +47,8 @@ export class DefenseDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: any, 
     private graduateWorkService: GraduateworkService,
     private userService: UsersService,
-    private emailService: EmailService
+    private emailService: EmailService,
+    private enterpriseService: EnterpriseService
   ){
     this.inputdata = this.data
     console.log(this.inputdata)
@@ -51,6 +56,21 @@ export class DefenseDialogComponent {
     if(localUser){
       const localUserData = JSON.parse(localUser)
       console.log(localUserData)
+      this.enterpriseService.getEnterpriseById(this.inputdata.graduateWorkData.graduateWorkEnterprise).subscribe({
+        next: (enterpriseData) => {
+          this.enterpriseData = enterpriseData
+          console.log(this.enterpriseData)
+        }
+      })
+      this.userService.getUserData(this.inputdata.graduateWorkData.graduateWorkAcademicTutor).subscribe
+      (
+        {
+          next: (academicTutorData) => {
+            this.academicTutorData = academicTutorData
+            console.log(this.academicTutorData)
+          }
+        }
+      )
       this.userService.getUserData(localUserData.userDNI).subscribe
       (
         {

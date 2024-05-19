@@ -17,7 +17,7 @@ import { switchMap, of } from 'rxjs';
 export class CriteriosJuradoEscritoComponent {
   panelOpenState: boolean = false
 
-  displayedColumns: string[] = ['seccionId', 'seccionName', 'maxNote','actions','criteria'];
+  displayedColumns: string[] = ['seccionId', 'seccionName', 'maxNote','actions','criteria','deshabilitar'];
   seccionSource: any = null
   seccionSourceInstrumental: any = null
 
@@ -100,8 +100,8 @@ export class CriteriosJuradoEscritoComponent {
             
             this.formGenerator.printEvaluationForm(
               this.formGenerator.generateGraduateWorkJuryReportEvaluationForm(
-                this.criteriaList,
-                this.seccionList, 
+                this.criteriaList.filter( (criterio: any) => criterio.status),
+                this.seccionList.filter( (criterio: any) => criterio.status), 
                 "",
                 [{nombre: ""}],
                 ""
@@ -182,5 +182,24 @@ export class CriteriosJuradoEscritoComponent {
       }
       return menor;
     });
+  }
+
+  deshabilitarSeccion(element: any){
+
+    console.log("deshabilitarSeccion")
+    console.log(element)
+
+    
+    this.criteriaService.changeJuradoEscritoSeccionStatus(element.seccionId)
+    .subscribe({
+      next: (result) => {
+        console.log(result)
+      },
+      complete: () => {
+        window.location.href = window.location.href
+      }
+    })
+    
+
   }
 }

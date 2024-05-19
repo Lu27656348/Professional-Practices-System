@@ -12,7 +12,7 @@ import { EmpresaDialogComponent } from './dialogs/empresa-dialog/empresa-dialog.
 export class EmpresaCatalogComponent {
 
   enterpriseList: any[] = []
-  displayedColumns: string[] = ['enterpriseId', 'enterpriseName', 'enterpriseDescription', 'enterpriseAddress', 'check']
+  displayedColumns: string[] = ['enterpriseName', 'enterpriseDescription', 'enterpriseAddress', 'check']
 
   constructor(
     private userService: UsersService, 

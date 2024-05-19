@@ -30,6 +30,8 @@ export class AcademicTutorCriteriaComponent {
 
   seccionSum: number = 0
 
+  isCriteriaListEmpty: boolean = true
+
   constructor(
     private corporateCriteriaService: CriteriosTutorAcademicoService, 
     private dialog: MatDialog,
@@ -63,6 +65,9 @@ export class AcademicTutorCriteriaComponent {
         next: (result) => {
           console.log(result)
           this.criteriaList = result
+          if(this.criteriaList.length > 0){
+            this.isCriteriaListEmpty = false
+          }
         }
       })
     }  

@@ -297,10 +297,10 @@ export class ProfessorReviewerComponent implements OnInit{
               })
     
               const tutorDataFormatted = {
-                nombreCompleto: this.tutorData.userLastName + this.tutorData.userFirstName, 
+                nombreCompleto: this.tutorData.userLastName + ", " + this.tutorData.userFirstName, 
                 profesion: (this.graduateWorkData.graduateWorkType == "INSTRUMENTAL") ? this.tutorData.tutorDescription.externalPersonnelProfession : this.tutorData.tutorDescription.professorProfession, 
                 experiencia: (this.graduateWorkData.graduateWorkType == "INSTRUMENTAL") ? this.tutorData.tutorDescription.externalPersonnelWorkExperience : this.tutorData.tutorDescription.professorWorkExperience, 
-                cargo: (this.graduateWorkData.graduateWorkType == "INSTRUMENTAL") ? "Falta el cargo en la tabla de Externo" : this.tutorData.tutorDescription.professorRole, 
+                cargo: (this.graduateWorkData.graduateWorkType == "INSTRUMENTAL") ? this.tutorData.tutorDescription.externalPersonnelWorkRole : this.tutorData.tutorDescription.professorRole, 
                 correo: this.tutorData.userEmail, 
                 telefono: this.tutorData.userPhone
               }

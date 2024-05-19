@@ -17,7 +17,7 @@ import { switchMap, of } from 'rxjs';
 export class CriteriosTutorOralComponent {
   panelOpenState: boolean = false
 
-  displayedColumns: string[] = ['seccionId', 'seccionName', 'maxNote','actions','criteria'];
+  displayedColumns: string[] = ['seccionId', 'seccionName', 'maxNote','actions','criteria','deshabilitar'];
   seccionSource: any = null
   seccionSourceInstrumental: any = null
 
@@ -99,8 +99,8 @@ export class CriteriosTutorOralComponent {
             
             this.formGenerator.printEvaluationForm(
               this.formGenerator.generateGraduateWorkJuryOralEvaluationForm(
-                this.criteriaList.filter( (criterio) => criterio.seccionId != objetoMenor.seccionId ),
-                this.criteriaList.filter( (criterio) => criterio.seccionId == objetoMenor.seccionId ),
+                this.criteriaList.filter( (criterio) => criterio.seccionId != objetoMenor.seccionId && criterio.status),
+                this.criteriaList.filter( (criterio) => criterio.seccionId == objetoMenor.seccionId && criterio.status),
                 this.seccionList,
                 "",
                 [{
@@ -174,5 +174,24 @@ export class CriteriosTutorOralComponent {
       }
       return menor;
     });
+  }
+
+  deshabilitarSeccion(element: any){
+
+    console.log("deshabilitarSeccion")
+    console.log(element)
+
+    
+    this.criteriaService.changeTutorOralSeccionStatus(element.seccionId)
+    .subscribe({
+      next: (result) => {
+        console.log(result)
+      },
+      complete: () => {
+        window.location.href = window.location.href
+      }
+    })
+    
+
   }
 }

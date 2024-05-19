@@ -66,4 +66,15 @@ export class CriteriosTutorEscritoService {
     return this.http.put(`${environment.apiUrl}/criterios/tutor/evaluacion/escrita`,criteriaData,{headers});
   }
 
+  changeTutorEscritoSeccionStatus(seccionId: number){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.put(`${environment.apiUrl}/criterios/tutor/evaluacion/escrita/seccion/${seccionId}/status`,{headers});
+  }
+
+  changeTutorEscritoCriteriaStatus(criteriaId: number){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.put(`${environment.apiUrl}/criterios/tutor/evaluacion/escrita/${criteriaId}/status`,{headers});
+  }
 }

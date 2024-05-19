@@ -84,7 +84,8 @@ export class CriteriosTutorEmpresarialService {
     const body = {
       seccionName: seccionName,
       maxNote: maxNote,
-      schoolName: schoolName
+      schoolName: schoolName,
+      status: true
     }
     return this.http.post(`${environment.apiUrlPasantia}/pasantia/secciones/empresarial/post`,body,{headers});
   }
@@ -96,7 +97,8 @@ export class CriteriosTutorEmpresarialService {
       criteriaName: criteriaName,
       maxNote: maxNote,
       schoolName: schoolName,
-      seccionId: seccionId
+      seccionId: seccionId,
+      status: true
     }
     return this.http.post(`${environment.apiUrlPasantia}/pasantia/criterios/empresarial/post`,body,{headers});
   }

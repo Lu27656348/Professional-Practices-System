@@ -31,6 +31,8 @@ export class ReviewerEvaluationComponent {
   userName: String = '';
   user: any = {};
 
+  localUserData: any = null
+
   reviewerData: any = [];
 
   proposal: any[] = [];
@@ -46,42 +48,7 @@ export class ReviewerEvaluationComponent {
     private studentService: StudentService,
     private enterpriseService: EnterpriseService
   ){
-    this.graduateworkService.getReviewersPending().pipe(
-      switchMap(
-        (data) => {
-          this.reviewerData = [...data]
-          console.log(this.reviewerData)
-          const observables: Observable<any>[] = []
-          this.reviewerData.forEach( (proposal:any) => {
-            observables.push(this.graduateworkService.getGraduateWorkStudentData(proposal.graduateWorkId))
-          })
-          return forkJoin(observables)
-        }
-      )
-    )
     
-    .subscribe({
-      next: (data: any) => {
-        console.log(data)
-        this.reviewerData.forEach( (proposal:any,indexP: number) => {
-          let authors = ""; 
-          data[indexP].forEach( (author: any, index: number) => {
-           console.log(data[indexP])
-           if(index == 0){
-             authors = authors + author.userLastName.split(" ")[0]+ author.userFirstName.split(" ")[0] + "/";
-           }else{
-             authors = authors + author.userLastName.split(" ")[0]+ author.userFirstName.split(" ")[0];
-           } 
-           console.log(data[indexP][0])
-           this.reviewerData[indexP].studentDNI = data[indexP][0].userDNI;
-          })
-          this.reviewerData[indexP].authors = authors;
-         })
-      },
-      error: (error: any) => {
-        console.log(error)
-      }
-    })
 
     const userString = localStorage.getItem('user')
     const rolesString = localStorage.getItem('roles')
@@ -106,6 +73,51 @@ export class ReviewerEvaluationComponent {
 
 
       console.log(this.localUser);
+      this.userService.getUserData(this.localUser.userDNI).pipe(
+        switchMap(
+          (localUserData) => {
+            console.log(localUserData)
+            this.localUserData = localUserData
+            return this.graduateworkService.getReviewersPending()
+          }
+        ),
+        switchMap(
+          (data) => {
+            this.reviewerData = [...data]
+            console.log(this.reviewerData)
+            const observables: Observable<any>[] = []
+            this.reviewerData.forEach( (proposal:any) => {
+              observables.push(this.graduateworkService.getGraduateWorkStudentData(proposal.graduateWorkId))
+            })
+            return forkJoin(observables)
+          }
+        )
+      )
+      .subscribe({
+        next: (data: any) => {
+          console.log(data)
+          this.reviewerData.forEach( (proposal:any,indexP: number) => {
+            let authors = ""; 
+            data[indexP].forEach( (author: any, index: number) => {
+             console.log(data[indexP])
+             if(index == 0){
+               authors = authors + author.userLastName.split(" ")[0]+ author.userFirstName.split(" ")[0] + "/";
+             }else{
+               authors = authors + author.userLastName.split(" ")[0]+ author.userFirstName.split(" ")[0];
+             } 
+             console.log(data[indexP][0])
+             this.reviewerData[indexP].studentDNI = data[indexP][0].userDNI;
+             this.reviewerData[indexP].studentData = data[indexP][0]
+            })
+            this.reviewerData[indexP].authors = authors;
+           })
+           console.log(this.reviewerData)
+           this.reviewerData = this.reviewerData.filter( (revisor: any) => revisor.studentData.schoolName == this.localUserData.schoolName)
+        },
+        error: (error: any) => {
+          console.log(error)
+        }
+      })
 
 
     }else{

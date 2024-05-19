@@ -426,13 +426,6 @@ export class PantallaEvaluacionJuradoPresentacionComponent {
                         })
                       });
   
-                     
-                      for (let index = 0; index <= this.notaMaxima; index++) {
-                        this.displayedColumns.push(index.toString())
-                      }
-                      for (let index = 0; index <= this.notaMaximaV2; index++) {
-                        this.displayedColumnsV2.push(index.toString())
-                      }
                       console.log(this.displayedColumns)
                       console.log("La Nota mas alta es: ", this.notaMaxima)
                     }

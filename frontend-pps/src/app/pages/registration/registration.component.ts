@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators,FormGroup, FormControl } from "@angular/forms";
+import { FormBuilder, Validators,FormGroup, FormControl, AbstractControl, ValidatorFn } from "@angular/forms";
 import { Router } from '@angular/router';
 import { Subscription,forkJoin,of,pipe,switchMap  } from 'rxjs';
 
@@ -65,7 +65,22 @@ export class RegistrationComponent implements OnInit {
     "Noveno",
     "Decimo"
   ];
+
   semesterSelected: any = null;
+
+  passwordMatchValidator(passwordControl: AbstractControl): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const password = passwordControl.value;
+      const confirmation = control.value;
+
+      if (password !== confirmation) {
+        return { 'passwordMismatch': true }; // Key for custom error message
+      }
+
+      return null; // Successful validation
+    };
+  }
+
 
   registerForm = this.formBuilder.group({
     userDNI: ['',[Validators.required,Validators.pattern(/^[0-9]+$/)]],
@@ -297,7 +312,8 @@ export class RegistrationComponent implements OnInit {
 
   nextStep(){
     console.log("nextStep()")
-    if(this.registerForm.valid){
+    if(this.registerForm.valid && this.registerForm.value.password == this.registerForm.value.passwordConfirmation){
+      this.isNextStep = true;
       const body = this.registerForm.value;
       console.log(body);
       if(body.useremailucab){
@@ -328,8 +344,21 @@ export class RegistrationComponent implements OnInit {
       /*
     
       */
+    }else {
+      if(this.registerForm.value.password == this.registerForm.value.passwordConfirmation){
+        this._snackBar.open("Hay errores en el formulario, revise los datos", "cerrar",{
+          horizontalPosition: "right",
+          verticalPosition: "bottom"
+        })
+      }else{
+        this._snackBar.open("Las contraseñas no coinciden", "cerrar",{
+          horizontalPosition: "right",
+          verticalPosition: "bottom"
+        })
+      }
     }
-    this.isNextStep = true;
+    
+    
 
   }
 }

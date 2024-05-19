@@ -18,7 +18,7 @@ export class CriteriosJuradoOralComponent {
 
   panelOpenState: boolean = false
 
-  displayedColumns: string[] = ['seccionId', 'seccionName', 'maxNote','actions','criteria'];
+  displayedColumns: string[] = ['seccionId', 'seccionName', 'maxNote','actions','criteria','deshabilitar'];
   seccionSource: any = null
   seccionSourceInstrumental: any = null
 
@@ -101,8 +101,8 @@ export class CriteriosJuradoOralComponent {
             
             this.formGenerator.printEvaluationForm(
               this.formGenerator.generateGraduateWorkJuryOralEvaluationForm(
-                this.criteriaList.filter( (criterio) => criterio.seccionId != objetoMenor.seccionId ),
-                this.criteriaList.filter( (criterio) => criterio.seccionId == objetoMenor.seccionId ),
+                this.criteriaList.filter( (criterio) => criterio.seccionId != objetoMenor.seccionId && criterio.status ),
+                this.criteriaList.filter( (criterio) => criterio.seccionId == objetoMenor.seccionId && criterio.status ),
                 this.seccionList,
                 "",
                 [{
@@ -187,6 +187,25 @@ export class CriteriosJuradoOralComponent {
       }
       return menor;
     });
+  }
+
+  deshabilitarSeccion(element: any){
+
+    console.log("deshabilitarSeccion")
+    console.log(element)
+
+    
+    this.criteriaService.changeJuradoOralSeccionStatus(element.seccionId)
+    .subscribe({
+      next: (result) => {
+        console.log(result)
+      },
+      complete: () => {
+        window.location.href = window.location.href
+      }
+    })
+    
+
   }
 
 }

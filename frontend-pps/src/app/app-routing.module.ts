@@ -50,6 +50,8 @@ import { CriteriosTutorEmpresarialComponent } from './pages/coordinator/graduate
 import { PantallaEvaluacionComponent } from './pages/coordinator/intership/pantalla-evaluacion/pantalla-evaluacion.component';
 import { PantallaEvaluacionJuradoPresentacionComponent } from './pages/coordinator/graduatework/pantalla-evaluacion-jurado-presentacion/pantalla-evaluacion-jurado-presentacion.component';
 import { PantallaEvaluacionJuradoEscritoComponent } from './pages/coordinator/graduatework/pantalla-evaluacion-jurado-escrito/pantalla-evaluacion-jurado-escrito.component';
+import { GenerarPlanillaDatosTGComponent } from './pages/student/student-gw/generar-planilla-datos-tg/generar-planilla-datos-tg.component';
+import { GenerarPlanillaDatosPComponent } from './pages/student/student-pasantia/generar-planilla-datos-p/generar-planilla-datos-p.component';
 //import { AcademicTutorCriteriaComponent } from './pages/coordinator/intership/academic-tutor-criteria/academic-tutor-criteria.component';
 
 const routes: Routes = [
@@ -255,6 +257,16 @@ const routes: Routes = [
   {
     path: "generar/planilla/trabajodegrado/informe/:modo/:tutor/:graduateWorkId",
     component: PantallaEvaluacionJuradoEscritoComponent
+  },
+  /* Generador de Planilla de Datos TG */
+  {
+    path: "graduatework/generar/planilla/datos",
+    component: GenerarPlanillaDatosTGComponent
+  },
+  /* Generador de Planilla de Datos Pasantia */
+  {
+    path: "intership/generar/planilla/datos",
+    component: GenerarPlanillaDatosPComponent
   },
   /* En caso de una ruta no definida */
   {

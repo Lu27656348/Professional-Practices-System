@@ -34,6 +34,8 @@ export class CorporativeTutorCriteriaComponent implements OnInit{
 
   seccionSum: number = 0
 
+  isCriteriaListEmpty: boolean = true
+
   constructor(
     private corporateCriteriaService: CriteriosTutorEmpresarialService,
     private dialog: MatDialog,
@@ -68,6 +70,9 @@ export class CorporativeTutorCriteriaComponent implements OnInit{
           next: (criteriaList) => {
             console.log(criteriaList)
             this.criteriaList = criteriaList
+            if(this.criteriaList.length > 0){
+              this.isCriteriaListEmpty = false
+            }
             console.log(this.seccionSum)
           }
         }

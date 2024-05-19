@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>Crear seccion de Tutor Academico</h2>
+<h2 mat-dialog-title>Agregar Criterio a Sección de Tutor Academico</h2>
 <mat-dialog-content class="mat-typography">
     <form [formGroup]="academicCriteriaForm" style="display: flex; flex-direction: column;" *ngIf="cargadoArchivos == false">
 
@@ -22,5 +22,5 @@
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close *ngIf="cargadoArchivos == false">Cancel</button>
-  <button mat-raised-button (click) = "crearSeccion()" color="primary" *ngIf="cargadoArchivos == false" mat-dialog-close>Crear Seccion</button>
+  <button mat-raised-button (click) = "crearSeccion()" color="primary" *ngIf="cargadoArchivos == false" mat-dialog-close>Agregar Criterio</button>
 </mat-dialog-actions>

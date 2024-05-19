@@ -72,6 +72,7 @@
                         <td mat-cell *matCellDef="let element" >
                             <mat-checkbox *ngIf="6 <= element.maxNote" (change)="onCheckboxChange(element, 6)" [checked]="element.selectedCheckBoxIndex === 6"></mat-checkbox>
                         </td>
+                        <td mat-footer-cell *matFooterCellDef> </td>
                       </ng-container>
 
                       <ng-container matColumnDef="7" *ngIf="notaMaxima >= 7">
@@ -79,6 +80,7 @@
                         <td mat-cell *matCellDef="let element" >
                             <mat-checkbox *ngIf="7 <= element.maxNote" (change)="onCheckboxChange(element, 7)" [checked]="element.selectedCheckBoxIndex === 7"></mat-checkbox>
                         </td>
+                        <td mat-footer-cell *matFooterCellDef> </td>
                       </ng-container>
 
                       <ng-container matColumnDef="8" *ngIf="notaMaxima >= 8">
@@ -86,6 +88,7 @@
                         <td mat-cell *matCellDef="let element" >
                             <mat-checkbox *ngIf="8 <= element.maxNote" (change)="onCheckboxChange(element, 8)" [checked]="element.selectedCheckBoxIndex === 8"></mat-checkbox>
                         </td>
+                        <td mat-footer-cell *matFooterCellDef> </td>
                       </ng-container>
 
                       <ng-container matColumnDef="9" *ngIf="notaMaxima >= 9">
@@ -93,6 +96,7 @@
                         <td mat-cell *matCellDef="let element" >
                             <mat-checkbox *ngIf="9 <= element.maxNote" (change)="onCheckboxChange(element, 9)" [checked]="element.selectedCheckBoxIndex === 9"></mat-checkbox>
                         </td>
+                        <td mat-footer-cell *matFooterCellDef> </td>
                       </ng-container>
 
                       <ng-container matColumnDef="10" *ngIf="notaMaxima >= 10">
@@ -100,20 +104,7 @@
                         <td mat-cell *matCellDef="let element" >
                             <mat-checkbox *ngIf="10 <= element.maxNote" (change)="onCheckboxChange(element, 10)" [checked]="element.selectedCheckBoxIndex === 10"></mat-checkbox>
                         </td>
-                      </ng-container>
-
-                      <ng-container matColumnDef="11" *ngIf="notaMaxima >= 11">
-                        <th mat-header-cell *matHeaderCellDef> 11 </th>
-                        <td mat-cell *matCellDef="let element" >
-                            <mat-checkbox *ngIf="11 <= element.maxNote" (change)="onCheckboxChange(element, 11)" [checked]="element.selectedCheckBoxIndex === 11"></mat-checkbox>
-                        </td>
-                      </ng-container>
-
-                      <ng-container matColumnDef="12" *ngIf="notaMaxima >= 12">
-                        <th mat-header-cell *matHeaderCellDef> 12 </th>
-                        <td mat-cell *matCellDef="let element" >
-                            <mat-checkbox *ngIf="12 <= element.maxNote" (change)="onCheckboxChange(element, 12)" [checked]="element.selectedCheckBoxIndex === 12"></mat-checkbox>
-                        </td>
+                        <td mat-footer-cell *matFooterCellDef> </td>
                       </ng-container>
         
                     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -228,7 +219,39 @@
                       </td>
                       <td mat-footer-cell *matFooterCellDef> </td>
                     </ng-container>
+
+                    <ng-container matColumnDef="11" *ngIf="notaMaxima >= 11">
+                      <th mat-header-cell *matHeaderCellDef> 11 </th>
+                      <td mat-cell *matCellDef="let element" >
+                          <mat-checkbox *ngIf="11 <= element.maxNote" (change)="onCheckboxChange(element, 11)" [checked]="element.selectedCheckBoxIndex === 11"></mat-checkbox>
+                      </td>
+                      <td mat-footer-cell *matFooterCellDef> </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="12" *ngIf="notaMaxima >= 12">
+                      <th mat-header-cell *matHeaderCellDef> 12 </th>
+                      <td mat-cell *matCellDef="let element" >
+                          <mat-checkbox *ngIf="12 <= element.maxNote" (change)="onCheckboxChange(element, 12)" [checked]="element.selectedCheckBoxIndex === 12"></mat-checkbox>
+                      </td>
+                      <td mat-footer-cell *matFooterCellDef> </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="13" *ngIf="notaMaxima >= 13">
+                      <th mat-header-cell *matHeaderCellDef> 13 </th>
+                      <td mat-cell *matCellDef="let element" >
+                          <mat-checkbox *ngIf="13 <= element.maxNote" (change)="onCheckboxChange(element, 13)" [checked]="element.selectedCheckBoxIndex === 13"></mat-checkbox>
+                      </td>
+                      <td mat-footer-cell *matFooterCellDef> </td>
+                    </ng-container>
       
+                    <ng-container matColumnDef="14" *ngIf="notaMaxima >= 14">
+                      <th mat-header-cell *matHeaderCellDef> 14 </th>
+                      <td mat-cell *matCellDef="let element" >
+                          <mat-checkbox *ngIf="14 <= element.maxNote" (change)="onCheckboxChange(element, 14)" [checked]="element.selectedCheckBoxIndex === 14"></mat-checkbox>
+                      </td>
+                      <td mat-footer-cell *matFooterCellDef> </td>
+                    </ng-container>
+
                   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                   <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>

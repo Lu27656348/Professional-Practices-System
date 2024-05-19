@@ -350,6 +350,8 @@ export class JuryDialogComponent implements OnInit {
               console.log(studentList)
               this.studentList = studentList
               const observables: Observable<any>[] = [];
+
+              console.log(this.councilSelected)
               observables.push(this.graduateworkService.createJury(this.inputdata.graduateWorkData.graduateWorkAcademicTutor, this.councilSelected, this.inputdata.graduateWorkData.graduateworkid,'TUTOR'));
               observables.push(this.graduateworkService.createJury(this.jurySelected, this.councilSelected, this.inputdata.graduateWorkData.graduateworkid,'PRINCIPAL',this.jurySelected3));
               observables.push(this.graduateworkService.createJury(this.jurySelected2, this.councilSelected, this.inputdata.graduateWorkData.graduateworkid,'PRINCIPAL',this.jurySelected4));
@@ -411,7 +413,7 @@ export class JuryDialogComponent implements OnInit {
               )
               return this.formService.convertDocumentToBlob(
                 this.formService.generateGraduateWorkJuryOralEvaluationForm(
-                    this.experimentalOralJuryCriteriaList,
+                    this.experimentalOralJuryCriteriaList.filter( (contenido: any ) => contenido.status ),
                     this.experimentalOralJuryCriteriaList.filter( (criteria:any) => criteria.seccionId == this.obtenerMenorId(this.experimentalOralJuryCriteriaList).seccionId),
                     this.experimentalOralJurySeccionList,
                     this.inputdata.graduateWorkData.graduateWorkTitle,
@@ -436,8 +438,8 @@ export class JuryDialogComponent implements OnInit {
 
               return this.formService.convertDocumentToBlob(
                 this.formService.generateGraduateWorkJuryReportEvaluationForm(
-                  this.experimentalReportJuryCriteriaList,
-                  this.experimentalReportJurySeccionList,
+                  this.experimentalReportJuryCriteriaList.filter( (contenido: any ) => contenido.status ),
+                  this.experimentalReportJurySeccionList.filter( (contenido: any ) => contenido.status ),
                   this.inputdata.graduateWorkData.graduateWorkTitle,
                   studentName
                 )

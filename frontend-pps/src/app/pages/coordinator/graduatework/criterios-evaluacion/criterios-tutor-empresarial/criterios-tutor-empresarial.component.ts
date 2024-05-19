@@ -18,7 +18,7 @@ import { CrearCriterioTutorEmpresarialComponent } from './crear-criterio-tutor-e
 export class CriteriosTutorEmpresarialComponent {
   panelOpenState: boolean = false
 
-  displayedColumns: string[] = ['seccionId', 'seccionName','maxNote','actions'];
+  displayedColumns: string[] = ['seccionId', 'seccionName','maxNote','actions','estado'];
   criteriaSource: any = null
   seccionSourceInstrumental: any = null
 
@@ -67,7 +67,7 @@ export class CriteriosTutorEmpresarialComponent {
   generarPlanilla(){
     this.formGenerator.printEvaluationForm(
       this.formGenerator.generateGraduateWorkCorporateTutorEvaluationForm(
-        this.criteriaSource,
+        this.criteriaSource.filter( (criterio:any) => criterio.status),
         [
           {
             seccionId: 1,
@@ -115,6 +115,24 @@ export class CriteriosTutorEmpresarialComponent {
     dialogRef.afterClosed().subscribe(result => {
       console.log(`Dialog result: ${result}`);
     });
+  }
+
+  deshabilitarCriterio(element: any){
+    console.log(element)
+    console.log("deshabilitarCriterio")
+    
+    this.criteriaService.cambiarEstadoCriterioTutorEmpresarial(element.criteriaId)
+    .subscribe(
+      {
+        next: (result) => {
+          console.log(result)
+        },
+        complete: () => {
+          window.location.href = window.location.href 
+        }
+      }
+    )
+    
   }
 
 }

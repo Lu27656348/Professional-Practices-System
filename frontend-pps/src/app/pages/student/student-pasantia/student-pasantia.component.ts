@@ -26,7 +26,7 @@ export class StudentPasantiaComponent {
             let fechaInicio = new Date();
             let fechaComienzo = new Date(this.currentPasantia.intershipStartDate as number);
             let fechaFinal = new Date(this.currentPasantia.intershipCompletionDate as number);
-            this.daysRemaining = Math.floor((fechaFinal.getTime() - fechaInicio.getTime()) / (1000 * 60 * 60 * 24));
+            this.daysRemaining = Math.floor((fechaInicio.getTime() - fechaComienzo.getTime()) / (1000 * 60 * 60 * 24));
             this.totalDays = Math.floor((fechaFinal.getTime() - fechaComienzo.getTime()) / (1000 * 60 * 60 * 24));
             console.log(this.daysRemaining)
             console.log(this.totalDays)

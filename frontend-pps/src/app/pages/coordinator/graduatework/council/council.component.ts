@@ -191,9 +191,13 @@ export class CouncilComponent implements OnInit{
       ),
       switchMap(
         (reviewerList) => {
+          console.log(reviewerList)
           const observables: Observable<any>[] = []
-          reviewerList.forEach( (revisor) => {
-            observables.push(this.userService.getUserData(revisor.professorDNI))
+          reviewerList.forEach( (revisorList) => {
+            revisorList.forEach( (revisor:any) => {
+              observables.push(this.userService.getUserData(revisor.professorDNI))
+            })
+            
           })
           this.reviewerList = reviewerList
           return forkJoin(observables)
@@ -204,20 +208,27 @@ export class CouncilComponent implements OnInit{
           console.log(this.reviewerList)
           console.log(reviewerDataList)
           this.reviewerList.forEach( ( revisor: any, index: number ) => {
-            reviewerDataList.forEach( (revisorData: any) => {
-              if(revisor.professorDNI == revisorData.userDNI){
-                console.log("ENCONTRADO")
-                this.reviewerList[index].revisorData = revisorData
-                this.reviewerList[index].revisorData.revisionDate = new Date(revisor.revisionDate)
-              }
+            reviewerDataList.forEach( (revisorDataFromList: any) => {
+              revisor.forEach( (revisorData:any,indexP: number) => {
+                if(revisorData.professorDNI == revisorDataFromList.userDNI){
+                  console.log("ENCONTRADO")
+                  this.reviewerList[indexP][index].revisorData = revisorDataFromList
+                  this.reviewerList[indexP][index].revisorData.revisionDate = new Date(revisorData.revisionDate)
+                }
+              })
+              
             })
             
           });
+          console.log(this.reviewerList)
           this.councilData.forEach( ( trabajoGrado: any, index: number ) => {
             this.reviewerList.forEach( ( revisor:any ) => {
-              if( trabajoGrado.graduateWorkId == revisor.graduateWorkId ){
-                this.councilData[index].revisorData = revisor.revisorData
-              }
+              revisor.forEach( (revisorData: any, indexP: number) => {
+                if( trabajoGrado.graduateWorkId == revisorData.graduateWorkId ){
+                  this.councilData[index].revisorData = revisorData.revisorData
+                }
+              })
+              
             })
           });
           return of(this.councilData)
@@ -225,8 +236,10 @@ export class CouncilComponent implements OnInit{
       )
     ).subscribe({
       next: (result: any) => {
-
+        
         console.log(result)
+        console.log(this.localUserData)
+        this.councilData = this.councilData.filter( (trabajoDeGrado:any) => trabajoDeGrado.studentData[0].schoolName == this.localUserData.schoolName)
 
   
       },
@@ -702,6 +715,7 @@ export class CouncilComponent implements OnInit{
             wrapText: true
           } 
 
+          console.log(tg.revisorData)
           sheet.getCell(`L${indiceActual}`).value = tg.revisorData.userLastName + ", " +  tg.revisorData.userFirstName
           sheet.getCell(`L${indiceActual}`).font = {
             name: 'Trebuchet MS',

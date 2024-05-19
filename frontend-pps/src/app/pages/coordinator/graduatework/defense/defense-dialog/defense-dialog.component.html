@@ -11,8 +11,8 @@
   <mat-divider *ngIf="cargadoArchivos == false"></mat-divider>
   <p *ngIf="cargadoArchivos == false">{{'Título: ' + inputdata.graduateWorkData.graduateWorkTitle }}</p>
   <p *ngIf="cargadoArchivos == false">{{'Tipo: ' + inputdata.graduateWorkData.graduateWorkType }}</p>
-  <p *ngIf="cargadoArchivos == false">{{'Organización donde se realizará: UCAB' }}</p>
-  <p *ngIf="cargadoArchivos == false">{{'Posible tutor academico: Medina, Luz E.'}}</p>
+  <p *ngIf="cargadoArchivos == false">{{'Organización donde se realizará: ' + enterpriseData?.enterpriseName }}</p>
+  <p *ngIf="cargadoArchivos == false">{{'Tutor Académico Asignado: ' + academicTutorData?.userLastName + ", " + academicTutorData?.userFirstName}}</p>
 
   <p *ngIf="cargadoArchivos == false"><strong>Seleccione la fecha y la hora de la defensa</strong></p>
   <mat-divider *ngIf="cargadoArchivos == false"></mat-divider>

@@ -3,6 +3,7 @@ import { Validators, FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { switchMap, Observable, forkJoin, of } from 'rxjs';
 import { EvaluationFormGeneratorService } from 'src/app/form-generator/services/evaluation-form-generator.service';
+import { CriteriosJuradoEscritoService } from 'src/app/services/criterios-tg/criterios-jurado-escrito.service';
 import { DocumentService } from 'src/app/services/document.service';
 import { EnterpriseService } from 'src/app/services/enterprise.service';
 import { ExternalPersonnelService } from 'src/app/services/external-personnel.service';
@@ -33,6 +34,7 @@ export class PantallaEvaluacionJuradoEscritoComponent {
     tutorAcademico: boolean = false
   
     displayedColumns: string[] = ['criterio'];
+    displayedColumnsV2: string[] = ['criterio'];
   
     seccionList: any[] = [
       {
@@ -100,7 +102,8 @@ export class PantallaEvaluacionJuradoEscritoComponent {
       private externalPersonnelService: ExternalPersonnelService,
       private professorService: ProfessorsService,
       private enterpriseService: EnterpriseService,
-      private graduateWorkService: GraduateworkService
+      private graduateWorkService: GraduateworkService,
+      private criteriaService: CriteriosJuradoEscritoService
     ){
       this.route.params.subscribe(
         params => {
@@ -228,14 +231,14 @@ export class PantallaEvaluacionJuradoEscritoComponent {
 
                   }else{
 
-                    this.graduateWorkService.getJuryReportExperimentalCriteria(this.studentData[0].schoolName)
+                    this.criteriaService.getJuradoEscritoCriteriaByModelAndSchool(this.studentData[0].schoolName,"EXPERIMENTAL")
                     .pipe(
                       switchMap(
                         (criteriaList: any) => {
                           console.log(criteriaList)
                           const mayuscula: string  = this.modo.toUpperCase()
                           console.log(mayuscula)
-                          this.criteriaList = criteriaList.filter( (criteriaData: any) => criteriaData.schoolName == this.studentData[0].schoolName && criteriaData.criteriaModel == mayuscula)
+                          this.criteriaList = criteriaList;
                           console.log(this.criteriaList)
                           this.criteriaList.forEach((criteria: any, index: number) => {
                             this.criteriaList[index].selectedCheckBox = false;
@@ -317,7 +320,11 @@ export class PantallaEvaluacionJuradoEscritoComponent {
                           console.log(mayuscula)
                           this.criteriaList = criteriaList.filter( (criteriaData: any) => criteriaData.schoolName == this.studentData[0].schoolName && criteriaData.criteriaModel == mayuscula)
                           console.log(this.criteriaList)
-  
+                          this.notaMaxima = this.obtenerNotaMaxima(this.criteriaList)
+                          for (let index = 0; index <= this.notaMaxima; index++) {
+                            this.displayedColumns.push(index.toString())
+                          }
+                          console.log(this.displayedColumns)
                           this.criteriaList.forEach((criteria: any, index: number) => {
                             this.criteriaList[index].selectedCheckBox = false;
                             this.criteriaList[index].selectedCheckBoxIndex = null;
@@ -374,30 +381,31 @@ export class PantallaEvaluacionJuradoEscritoComponent {
                           })
                         });
                         console.log(this.dataSourceV2)
-                        this.notaMaxima = this.obtenerNotaMaxima(this.criteriaList)
-                        for (let index = 0; index <= this.notaMaxima; index++) {
-                          this.displayedColumns.push(index.toString())
-                        }
-                        console.log(this.displayedColumns)
-                        console.log("La Nota mas alta es: ", this.notaMaxima)
                       }
                     })
                   }else{
-                    this.graduateWorkService.getJuryReportInstrumentalCriteria(this.studentData[0].schoolName)
+                    
+                    console.log("INSTRUMENTAL CON JURADO NORAML")
+                    this.criteriaService.getJuradoEscritoCriteriaByModelAndSchool(this.studentData[0].schoolName,"INSTRUMENTAL")
                     .pipe(
                       switchMap(
                         (criteriaList: any) => {
                           console.log(criteriaList)
                           const mayuscula: string  = this.modo.toUpperCase()
                           console.log(mayuscula)
-                          this.criteriaList = criteriaList.filter( (criteriaData: any) => criteriaData.schoolName == this.studentData[0].schoolName && criteriaData.criteriaModel == mayuscula)
+                          this.criteriaList = criteriaList
                           console.log(this.criteriaList)
+                          this.notaMaxima = this.obtenerNotaMaxima(criteriaList)
+                          for (let index = 0; index <= this.notaMaxima; index++) {
+                            this.displayedColumns.push(index.toString())
+                          }
+                          console.log(this.displayedColumns)
   
                           this.criteriaList.forEach((criteria: any, index: number) => {
                             this.criteriaList[index].selectedCheckBox = false;
                             this.criteriaList[index].selectedCheckBoxIndex = null;
                           })
-  
+
                           this.criteriaList.forEach((criteria: any, index: number) => {
                             /* Si no tengo elementos en mi arreglo inserto la primera seccion */
                             if(this.seccionExperiment.length == 0){
@@ -429,8 +437,9 @@ export class PantallaEvaluacionJuradoEscritoComponent {
                           });
           
                           console.log(this.seccionExperiment)
+                          
                           this.dataSourceV2 = this.seccionExperiment
-                          return this.graduateWorkService.getJuryReportInstrumentalSeccion(this.studentData[0].schoolName)
+                          return this.criteriaService.getJuradoEscritoSeccionByModelAndSchool(this.studentData[0].schoolName,"INSTRUMENTAL")
                         }
                       )
                     )
@@ -449,12 +458,7 @@ export class PantallaEvaluacionJuradoEscritoComponent {
                           })
                         });
                         console.log(this.dataSourceV2)
-                        this.notaMaxima = this.obtenerNotaMaxima(this.criteriaList)
-                        for (let index = 0; index <= this.notaMaxima; index++) {
-                          this.displayedColumns.push(index.toString())
-                        }
-                        console.log(this.displayedColumns)
-                        console.log("La Nota mas alta es: ", this.notaMaxima)
+
                       }
                     })
                   }

@@ -48,6 +48,42 @@ export class DesarrolloTGComponent {
     private studentService: StudentService,
     private enterpriseService: EnterpriseService
   ){
+    
+
+    const userString = localStorage.getItem('user')
+    const rolesString = localStorage.getItem('roles')
+
+    if(userString && rolesString){
+      console.log("LOCAL STORAGE")
+
+      this.localUser = JSON.parse(userString);
+      
+      this.data = {...this.localUser.user}
+
+      const rolesRequest = JSON.parse(rolesString);
+      console.log(rolesRequest)
+
+      for (let i = 0; i < rolesRequest.length; i++) {
+        this.roles.push(rolesRequest[i]);
+      }
+      console.log(this.roles)
+
+      this.roleSelected = this.userService.getMode();
+      this.isRoleSelected = true;
+
+
+      console.log(this.localUser);
+      this.userService.getUserData(this.localUser.userDNI).subscribe({
+        next: (coordinatorData) => {
+          this.coordinatorData = coordinatorData
+        }
+      })
+
+
+    }else{
+      this.router.navigateByUrl("");
+    }
+
     this.graduateworkService.getGraduateWorkByStatus(50).pipe(
       switchMap(
         (data) => {
@@ -73,7 +109,11 @@ export class DesarrolloTGComponent {
              } 
              console.log(data[indexP][0])
              this.councilData[indexP].studentDNI = data[indexP][0].userDNI;
-             
+             console.log(author)
+             console.log(proposal)
+             if(author.graduateWorkId == proposal.graduateworkid){
+              this.councilData[indexP].studentData = data[indexP]
+             }
             })
             let fechaFinal = new Date(proposal.schoolCouncilApprovalDate as number);
             fechaFinal.setDate(fechaFinal.getDate() + 150);
@@ -193,9 +233,13 @@ export class DesarrolloTGComponent {
       ),
       switchMap(
         (reviewerList) => {
+          console.log(reviewerList)
           const observables: Observable<any>[] = []
-          reviewerList.forEach( (revisor) => {
-            observables.push(this.userService.getUserData(revisor.professorDNI))
+          reviewerList.forEach( (revisorList) => {
+            revisorList.forEach( (revisor:any) => {
+              observables.push(this.userService.getUserData(revisor.professorDNI))
+            })
+            
           })
           this.reviewerList = reviewerList
           return forkJoin(observables)
@@ -206,20 +250,43 @@ export class DesarrolloTGComponent {
           console.log(this.reviewerList)
           console.log(reviewerDataList)
           this.reviewerList.forEach( ( revisor: any, index: number ) => {
-            reviewerDataList.forEach( (revisorData: any) => {
-              if(revisor.professorDNI == revisorData.userDNI){
-                console.log("ENCONTRADO")
-                this.reviewerList[index].revisorData = revisorData
-                this.reviewerList[index].revisorData.revisionDate = new Date(revisor.revisionDate)
-              }
+            reviewerDataList.forEach( (revisorDataFromList: any) => {
+              revisor.forEach( (revisorData:any,indexP: number) => {
+                if(revisorData.professorDNI == revisorDataFromList.userDNI){
+                  console.log("ENCONTRADO")
+                  this.reviewerList[indexP][index].revisorData = revisorDataFromList
+                  this.reviewerList[indexP][index].revisorData.revisionDate = new Date(revisorData.revisionDate)
+                }
+              })
+              
             })
             
           });
+          console.log(this.reviewerList)
           this.councilData.forEach( ( trabajoGrado: any, index: number ) => {
             this.reviewerList.forEach( ( revisor:any ) => {
-              if( trabajoGrado.graduateworkid == revisor.graduateWorkId ){
-                this.councilData[index].revisorData = revisor.revisorData
-              }
+              revisor.forEach( (revisorData: any, indexP: number) => {
+                if( trabajoGrado.graduateWorkId == revisorData.graduateWorkId ){
+                  this.councilData[index].revisorData = revisorData.revisorData
+                }
+              })
+              
+            })
+          });
+          return of(this.councilData)
+        }
+      ),
+      switchMap(
+        (reviewerDataList) => {
+
+          this.councilData.forEach( ( trabajoGrado: any, index: number ) => {
+            this.reviewerList.forEach( ( revisor:any ) => {
+              revisor.forEach( (elementoRevisor:any) => {
+                if( trabajoGrado.graduateworkid == elementoRevisor.graduateWorkId ){
+                  this.councilData[index].revisorData = elementoRevisor.revisorData
+                }
+              });
+            
             })
           });
 
@@ -242,45 +309,13 @@ export class DesarrolloTGComponent {
           })
         });
         console.log(this.councilData)
+        console.log(this.coordinatorData)
+        this.councilData = this.councilData.filter( (trabajoDeGrado:any) => trabajoDeGrado.studentData[0].schoolName == this.coordinatorData.schoolName)
       },
       error: (error: any) => {
         console.log(error)
       }
     })
-
-    const userString = localStorage.getItem('user')
-    const rolesString = localStorage.getItem('roles')
-
-    if(userString && rolesString){
-      console.log("LOCAL STORAGE")
-
-      this.localUser = JSON.parse(userString);
-      
-      this.data = {...this.localUser.user}
-
-      const rolesRequest = JSON.parse(rolesString);
-      console.log(rolesRequest)
-
-      for (let i = 0; i < rolesRequest.length; i++) {
-        this.roles.push(rolesRequest[i]);
-      }
-      console.log(this.roles)
-
-      this.roleSelected = this.userService.getMode();
-      this.isRoleSelected = true;
-
-
-      console.log(this.localUser);
-      this.userService.getUserData(this.localUser.userDNI).subscribe({
-        next: (coordinatorData) => {
-          this.coordinatorData = coordinatorData
-        }
-      })
-
-
-    }else{
-      this.router.navigateByUrl("");
-    }
 
   }
 

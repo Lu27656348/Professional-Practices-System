@@ -37,6 +37,12 @@ export class GraduateworkService {
     return this.http.get(`${environment.apiUrl}/graduate-work/by/status/${statusCode}`,{headers});
   }
 
+  getGraduateWorkByStatusAndSchhol(statusCode: number, schoolName: string){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.get(`${environment.apiUrl}/graduate-work/by/status/${statusCode}/school/${schoolName}`,{headers});
+  }
+
   getGraduateWorkStudentData(graduateWorkId: string) : Observable <any> {
     const headers = new HttpHeaders();
     headers.append('Access-Control-Allow-Origin', '*');

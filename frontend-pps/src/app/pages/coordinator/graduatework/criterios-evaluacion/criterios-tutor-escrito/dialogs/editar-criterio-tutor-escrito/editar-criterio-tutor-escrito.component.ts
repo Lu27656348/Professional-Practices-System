@@ -16,7 +16,7 @@ export class EditarCriterioTutorEscritoComponent {
 
   criteriaList: any = null
   isCriteriaSelected: boolean = false;
-  displayedColumns: string[] = ['criteriaId','criteriaName', 'maxNote', 'check']
+  displayedColumns: string[] = ['criteriaId','criteriaName', 'maxNote', 'check','estado']
 
   constructor(
     private juryCriteria: CriteriosTutorEscritoService, 
@@ -85,5 +85,22 @@ export class EditarCriterioTutorEscritoComponent {
     })
     console.log("guardarCambios")
     
+  }
+
+  deshabilitarCriterio(element: any){
+    console.log(element)
+    console.log("deshabilitarCriterio")
+    this.juryCriteria.changeTutorEscritoCriteriaStatus(element.criteriaId)
+    .subscribe(
+      {
+        next: (result) => {
+          console.log(result)
+          this.ngOnInit()
+        },
+        complete: () => {
+          window.location.href = window.location.href 
+        }
+      }
+    )
   }
 }

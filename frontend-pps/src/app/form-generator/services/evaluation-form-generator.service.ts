@@ -68,6 +68,25 @@ const sin_bordes = {
       color: "ff0000",
   }
 }
+
+const linea_inferior = {
+    top: {
+        style: BorderStyle.NONE,
+        size: 1,
+        color: "ff0000",
+    },
+    left: {
+        style: BorderStyle.NONE,
+        size: 1,
+        color: "ff0000",
+    },
+    right: {
+        style: BorderStyle.NONE,
+        size: 1,
+        color: "ff0000",
+    }
+  }
+
 const linea_superior = {
   bottom: {
       style: BorderStyle.NONE,
@@ -85,6 +104,18 @@ const linea_superior = {
       color: "ff0000",
   }
 }
+const sin_costado = {
+    left: {
+        style: BorderStyle.NONE,
+        size: 1,
+        color: "ff0000",
+    },
+    right: {
+        style: BorderStyle.NONE,
+        size: 1,
+        color: "ff0000",
+    }
+  }
 const celdaCuadrito = new TableCell({
                               children: [
                                   new Paragraph({
@@ -559,131 +590,93 @@ const generarPonderacionAlumno = (alumno: any) => {
 const generarFirma = (rol: string, name: string) => {
   const table = new Table({
       rows: [
-          new TableRow({
-              children: [
-                  new TableCell({
-                      borders: sin_bordes,
-                      children: [
-                          new Table({
-                              rows: [
-                                  new TableRow({
-                                      children: [
-                                          new TableCell({
-                                              borders: sin_bordes,
-                                              children: [
-                                                  new Paragraph({
-                                                      children: [
-                                                          new TextRun({
-                                                              text: "Fecha " 
-                                                          }),
-                                                      ],
-                                                      alignment: AlignmentType.CENTER
-                                                  }),
-                                                  new Paragraph({
-                                                    children: [
-                                                        new TextRun({
-                                                            text: new Date().toLocaleDateString()
-                                                        }),
-                                                    ],
-                                                    alignment: AlignmentType.CENTER
-                                                }),
-                                              ],
-                                              verticalAlign: VerticalAlign.CENTER,
-                                              width: {
-                                                  size: 2000,
-                                                  type:  WidthType.DXA
-                                              },
-                                          })
-                                      ]
-                                  })
-                              ]
-                          })
-                      ]
-                  }),
-                  new TableCell({
-                      borders: sin_bordes,
-                      children: [
-                          new Table({
-                              indent: {
-                                  size: 250,
-                                  type: WidthType.DXA,
-                              },
-                              rows: [
-                                  new TableRow({
-                                      children: [
-                                          new TableCell({
-                                              borders: sin_bordes,
-                                              children: [
-                                                  new Paragraph({
-                                                      children: [
-                                                          new TextRun({
-                                                              text: `${rol}`
-                                                          })
-                                                      ],
-                                                      alignment: AlignmentType.CENTER
-                                                  }),
-                                                  new Paragraph({
-                                                    children: [
-                                                        new TextRun({
-                                                            text: `${name}`
-                                                        })
-                                                    ],
-                                                    alignment: AlignmentType.CENTER
-                                                })
-                                              ],
-                                              verticalAlign: VerticalAlign.CENTER,
-                                              width: {
-                                                  size: 6000,
-                                                  type:  WidthType.DXA
-                                              },
-                                          })
-                                      ]
-                                  })
-                              ]
-                          })
-                      ]
-                  }),
-                  new TableCell({
-                      borders: sin_bordes,
-                      children: [
-                          new Table({
-                              indent: {
-                                  size: 250,
-                                  type: WidthType.DXA,
-                              },
-                              rows: [
-                                  new TableRow({
-                                      children: [
-                                          new TableCell({
-                                              borders: linea_superior,
-                                              children: [
-                                                  new Paragraph({
-                                                      children: [
-                                                          new TextRun({
-                                                              text: "Firma"
-                                                          })
-                                                      ],
-                                                      alignment: AlignmentType.CENTER
-                                                  })
-                                              ],
-                                              verticalAlign: VerticalAlign.CENTER,
-                                              width: {
-                                                  size: 2000,
-                                                  type:  WidthType.DXA
-                                              },
-                                          })
-                                      ]
-                                  })
-                              ]
-                          })
-                      ]
-                  }),
-              ],
-              height: {
-                  value: 500,
-                  rule: HeightRule.EXACT
-              }
-          })
+        
+        new TableRow({
+            children: [
+                new TableCell({
+                    borders: sin_bordes,
+                    children: [
+                        new Paragraph({
+                            children: [
+                                new TextRun({
+                                    text: ``
+                                })
+                            ],
+                            alignment: AlignmentType.CENTER
+                        }),
+                        new Paragraph({
+                          children: [
+                              new TextRun({
+                                  text: ``
+                              })
+                          ],
+                          alignment: AlignmentType.CENTER
+                      })
+                    ],
+                    verticalAlign: VerticalAlign.CENTER,
+                    width: {
+                      size:`8cm`,
+                      type: WidthType.DXA
+                    },
+                    textDirection: "lrTb"
+                }),
+                new TableCell({
+                    borders: linea_superior,
+                    children: [
+                        new Paragraph({
+                            children: [
+                                new TextRun({
+                                    text: `${rol}`
+                                })
+                            ],
+                            alignment: AlignmentType.CENTER
+                        }),
+                        new Paragraph({
+                          children: [
+                              new TextRun({
+                                  text: `${name}`
+                              })
+                          ],
+                          alignment: AlignmentType.CENTER
+                      })
+                    ],
+                    verticalAlign: VerticalAlign.CENTER,
+                    width: {
+                      size:`4cm`,
+                      type: WidthType.DXA
+                    },
+                    textDirection: "lrTb"
+                }),
+                new TableCell({
+                    borders: sin_bordes,
+                    children: [
+                        new Paragraph({
+                            children: [
+                                new TextRun({
+                                    text: ``
+                                })
+                            ],
+                            alignment: AlignmentType.CENTER
+                        }),
+                        new Paragraph({
+                          children: [
+                              new TextRun({
+                                  text: ``
+                              })
+                          ],
+                          alignment: AlignmentType.CENTER
+                      })
+                    ],
+                    verticalAlign: VerticalAlign.CENTER,
+                    width: {
+                      size:`8cm`,
+                      type: WidthType.DXA
+                    },
+                    textDirection: "lrTb"
+                })
+            ],
+            
+        })
       ]
   })
   return table;
@@ -1770,9 +1763,22 @@ generateGraduateWorkReviewerEvaluationCriteriaTable(criteriaArray: Criteria[]) :
                                 ],
                                 alignment: AlignmentType.LEFT
                             })
-                        ]
+                        ],
+                        borders: {
+                            right: {
+                                style: 'nil'
+                            }
+                        }
                     }),
                     new TableCell({
+                        borders: {
+                            left: {
+                                style: 'nil'
+                            },
+                            right: {
+                                style: 'nil'
+                            }
+                        },
                         children: [
                             new Paragraph({
                                 children: [
@@ -1785,6 +1791,11 @@ generateGraduateWorkReviewerEvaluationCriteriaTable(criteriaArray: Criteria[]) :
                         ]
                     }),
                     new TableCell({
+                        borders: {
+                            left: {
+                                style: 'nil'
+                            }
+                        },
                         children: [
                             new Paragraph({
                                 children: [
@@ -1949,13 +1960,14 @@ generateStudentDatatable(studentData: {nombre: string, cedula: string, telefono:
     return studentDataTable
 }
 
-generateTutorDataTable(tutorData: {nombre: string, profesion: string, experiencia: number, cargo: string, correo: string, telefono: string}) : Table {
+generateTutorDataTable(tutorData: {nombre: string, profesion: string, experiencia: number, cargo: string, correo: string, telefono: string}, mode: string = 'TEG') : Table {
     const tableRows: TableRow[] = []
 
     tableRows.push( 
         new TableRow({
             children: [
                 new TableCell({
+                    borders: sin_bordes,
                     children: [
                         new Paragraph({
                             children:[
@@ -1971,6 +1983,7 @@ generateTutorDataTable(tutorData: {nombre: string, profesion: string, experienci
                     }
                 }),
                 new TableCell({
+                    borders: linea_inferior,
                     children: [
                         new Paragraph({
                             children:[
@@ -1993,6 +2006,7 @@ generateTutorDataTable(tutorData: {nombre: string, profesion: string, experienci
         new TableRow({
             children: [
                 new TableCell({
+                    borders: sin_bordes,
                     children: [
                         new Paragraph({
                             children:[
@@ -2008,6 +2022,7 @@ generateTutorDataTable(tutorData: {nombre: string, profesion: string, experienci
                     }
                 }),
                 new TableCell({
+                    borders: linea_inferior,
                     children: [
                         new Paragraph({
                             children:[
@@ -2030,6 +2045,7 @@ generateTutorDataTable(tutorData: {nombre: string, profesion: string, experienci
         new TableRow({
             children: [
                 new TableCell({
+                    borders: sin_bordes,
                     children: [
                         new Paragraph({
                             children:[
@@ -2045,6 +2061,7 @@ generateTutorDataTable(tutorData: {nombre: string, profesion: string, experienci
                     }
                 }),
                 new TableCell({
+                    borders: linea_inferior,
                     children: [
                         new Paragraph({
                             children:[
@@ -2067,6 +2084,7 @@ generateTutorDataTable(tutorData: {nombre: string, profesion: string, experienci
         new TableRow({
             children: [
                 new TableCell({
+                    borders: sin_bordes,
                     children: [
                         new Paragraph({
                             children:[
@@ -2082,6 +2100,7 @@ generateTutorDataTable(tutorData: {nombre: string, profesion: string, experienci
                     }
                 }),
                 new TableCell({
+                    borders: linea_inferior,
                     children: [
                         new Paragraph({
                             children:[
@@ -2104,6 +2123,7 @@ generateTutorDataTable(tutorData: {nombre: string, profesion: string, experienci
         new TableRow({
             children: [
                 new TableCell({
+                    borders: sin_bordes,
                     children: [
                         new Paragraph({
                             children:[
@@ -2119,6 +2139,7 @@ generateTutorDataTable(tutorData: {nombre: string, profesion: string, experienci
                     }
                 }),
                 new TableCell({
+                    borders: linea_inferior,
                     children: [
                         new Paragraph({
                             children:[
@@ -2141,6 +2162,7 @@ generateTutorDataTable(tutorData: {nombre: string, profesion: string, experienci
         new TableRow({
             children: [
                 new TableCell({
+                    borders: sin_bordes,
                     children: [
                         new Paragraph({
                             children:[
@@ -2156,6 +2178,7 @@ generateTutorDataTable(tutorData: {nombre: string, profesion: string, experienci
                     }
                 }),
                 new TableCell({
+                    borders: linea_inferior,
                     children: [
                         new Paragraph({
                             children:[
@@ -2236,6 +2259,10 @@ generateGraduateWorkReviewerEvaluationForm(
                             left: {
                                 style: "nil"
                             }
+                        },
+                        width: {
+                            type: WidthType.DXA,
+                            size: "20cm"
                         }
                     })
                 ],
@@ -2255,7 +2282,7 @@ generateGraduateWorkReviewerEvaluationForm(
                         ],
                         width: {
                             type: WidthType.DXA,
-                            size: "15cm"
+                            size: "20cm"
                         }
                     })
                 ],
@@ -2311,6 +2338,10 @@ generateGraduateWorkReviewerEvaluationForm(
                             left: {
                                 style: "nil"
                             }
+                        },
+                        width: {
+                            type: WidthType.DXA,
+                            size: "20cm"
                         }
                     })
                 ],
@@ -2330,7 +2361,7 @@ generateGraduateWorkReviewerEvaluationForm(
                         ],
                         width: {
                             type: WidthType.DXA,
-                            size: "15cm"
+                            size: "20cm"
                         }
                     })
                 ],
@@ -2395,7 +2426,7 @@ generateGraduateWorkReviewerEvaluationForm(
         new Paragraph({
             children: [
                 new TextRun({
-                    text: `Datos del Tutor Académico:`
+                    text: `Datos del Tutor ${ (acronimo == 'TEG' ? 'Académico' : 'Empresarial')}:`
                 })
             ],
             spacing: {
@@ -2415,7 +2446,8 @@ generateGraduateWorkReviewerEvaluationForm(
                 cargo: formData.tutorData.cargo, 
                 correo: formData.tutorData.correo, 
                 telefono: formData.tutorData.telefono
-            }
+            },
+            acronimo as string
         )
     );
 
@@ -2441,6 +2473,7 @@ generateGraduateWorkReviewerEvaluationForm(
                 new TableRow({
                     children: [
                         new TableCell({
+                            borders: linea_inferior,
                             children: [
                                 new Paragraph({
                                     children: [
@@ -2456,6 +2489,7 @@ generateGraduateWorkReviewerEvaluationForm(
                             }
                         }),
                         new TableCell({
+                            borders: linea_inferior,
                             children: [
                                 new Paragraph({
                                     children: [
@@ -2476,13 +2510,27 @@ generateGraduateWorkReviewerEvaluationForm(
         })
     );
 
-    TutorEvaluationFormSquema.push(giveSpace)
+    TutorEvaluationFormSquema.push(
+        new Paragraph({
+            children: [
+                new TextRun({
+                    text: ""
+                }),
+            ],
+            spacing: {
+                after: 25,
+                before: 25
+            },
+            alignment: AlignmentType.CENTER
+        })
+    )
     TutorEvaluationFormSquema.push(
         new Table({
             rows: [
                 new TableRow({
                     children: [
                         new TableCell({
+                            borders: linea_inferior,
                             children: [
                                 new Paragraph({
                                     children: [
@@ -2498,6 +2546,7 @@ generateGraduateWorkReviewerEvaluationForm(
                             }
                         }),
                         new TableCell({
+                            borders: linea_inferior,
                             children: [
                                 new Paragraph({
                                     children: [
@@ -2516,6 +2565,7 @@ generateGraduateWorkReviewerEvaluationForm(
                             }
                         }),
                         new TableCell({
+                            borders: linea_inferior,
                             children: [
                                 new Paragraph({
                                     children: [
@@ -2533,13 +2583,14 @@ generateGraduateWorkReviewerEvaluationForm(
                                 size: "4cm"
                             }
                         }),
-                        /*
+                        
                         new TableCell({
+                            borders: linea_inferior,
                             children: [
                                 new Paragraph({
                                     children: [
                                         new TextRun({
-                                            text: new Date().toLocaleDateString()
+                                            text: "Fecha: " + new Date().toLocaleDateString()
                                         })
                                     ]
                                 })
@@ -2549,7 +2600,7 @@ generateGraduateWorkReviewerEvaluationForm(
                                 size: "4cm"
                             }
                         }),
-                        */
+                        
                     ]
                 })
             ]
@@ -2576,7 +2627,17 @@ generateGraduateWorkReviewerEvaluationForm(
 
     /* Finalmente cargamos la linea de firma */
     TutorEvaluationFormSquema.push(
-        giveSpace,
+        new Paragraph({
+            children: [
+                new TextRun({
+                    text: ``
+                })
+            ],
+            spacing: {
+                after: 200,
+                before: 200
+            }
+        }),
         generarFirma("Revisor",formData.nombreRevisor)
     )
 
@@ -5236,62 +5297,15 @@ generateGraduateWorkCriteriaTable(criteriaArray: Criteria[], seccion: Seccion) :
                                     alignment: AlignmentType.LEFT
                                 })
                             ],
+                            borders: sin_costado,
                             verticalMerge: "continue"
                         })
         /* Para cada una de las secciones dentro de nuestra evaluacion insertamos el nombre */
         columnGenerated.push(
             seccionCell
         )
-        /* Insertamos la cabecera de criterios */
-        columnGenerated.push(
-            new TableCell({
-                width: {
-                    size: `5cm`,
-                    type:  WidthType.DXA
-                },
-                children: [
-                    new Paragraph({
-                        style: "letraP",
-                        children: [
-                            new TextRun({
-                                text: "Criterios de Evaluación"
-                            })
-                        ],
-                        alignment: AlignmentType.LEFT
-                    })
-                ]
-            }),
-        )
-        /* Insertamos la cabecera de notas */
-        for(let i = 0 ; i <= maxNoteInCriteriaList; i++){
-            columnGenerated.push(
-                new TableCell({
-                    children: [
-                        new Paragraph({
-                        style: "letraP",
-                        children: [
-                            new TextRun({
-                                text: i.toLocaleString()
-                            })
-                        ],
-                        alignment: "center"
-                        })
-                    ],
-                    width: {
-                    size:`0.815cm`,
-                    type: WidthType.DXA
-                    },
-                    verticalAlign: VerticalAlign.CENTER
-            }))
-        }
 
-        /* Insertamos todo en la primera fila de nuestra tabla */
 
-        rowsGenerated.push(
-            new TableRow({
-                children: columnGenerated
-            })
-        )
         /* Luego si el ID de la seccion del criterio coincide con la seccion actual lo agregamos */
         criteriaArray.forEach( (criteria) => {
             if(criteria.seccionId == seccion.seccionId){
@@ -5299,7 +5313,7 @@ generateGraduateWorkCriteriaTable(criteriaArray: Criteria[], seccion: Seccion) :
                 let criteriaCell: TableCell = 
                                             new TableCell({
                                                 width: {
-                                                    size: 400,
+                                                    size: "12cm",
                                                     type:  WidthType.DXA
                                                 },
                                                 children: [
@@ -5312,7 +5326,8 @@ generateGraduateWorkCriteriaTable(criteriaArray: Criteria[], seccion: Seccion) :
                                                         ],
                                                         alignment: AlignmentType.LEFT
                                                     })
-                                                ]
+                                                ],
+                                                borders: sin_bordes
                                             })
                 noteCellArray.push(seccionCell)
                 noteCellArray.push(criteriaCell)
@@ -5332,6 +5347,7 @@ generateGraduateWorkCriteriaTable(criteriaArray: Criteria[], seccion: Seccion) :
                                 alignment: "center"
                                 })
                             ],
+                            borders: sin_bordes,
                             width: {
                             size:`1cm`,
                             type: WidthType.DXA
@@ -5370,27 +5386,6 @@ generateGraduateWorkOralCriteriaTable(criteriaArray: Criteria[], seccion: Seccio
     console.log(criteriaArray)
     console.log(seccion)
 
-    const seccionCell = new TableCell({
-                            width: {
-                                size: `4cm`,
-                                  type:  WidthType.DXA
-                                },
-                            children: [
-                                new Paragraph({
-                                    children: [
-                                        new TextRun({
-                                            text: seccion.seccionName
-                                        })
-                                    ],
-                                    alignment: AlignmentType.LEFT
-                                })
-                            ],
-                            verticalMerge: "continue"
-                        })
-        /* Para cada una de las secciones dentro de nuestra evaluacion insertamos el nombre */
-        columnGenerated.push(
-            seccionCell
-        )
         /* Insertamos la cabecera de criterios */
         
         columnGenerated.push(
@@ -5408,7 +5403,8 @@ generateGraduateWorkOralCriteriaTable(criteriaArray: Criteria[], seccion: Seccio
                         ],
                         alignment: AlignmentType.LEFT
                     })
-                ]
+                ],
+                borders: sin_costado
             }),
         )
         
@@ -5430,7 +5426,8 @@ generateGraduateWorkOralCriteriaTable(criteriaArray: Criteria[], seccion: Seccio
                     size:`0.815cm`,
                     type: WidthType.DXA
                     },
-                    verticalAlign: VerticalAlign.CENTER
+                    verticalAlign: VerticalAlign.CENTER,
+                    borders: sin_costado
             }))
         }
 
@@ -5448,7 +5445,7 @@ generateGraduateWorkOralCriteriaTable(criteriaArray: Criteria[], seccion: Seccio
                 let criteriaCell: TableCell = 
                                             new TableCell({
                                                 width: {
-                                                    size: 400,
+                                                    size: "10cm",
                                                     type:  WidthType.DXA
                                                 },
                                                 children: [
@@ -5460,9 +5457,9 @@ generateGraduateWorkOralCriteriaTable(criteriaArray: Criteria[], seccion: Seccio
                                                         ],
                                                         alignment: AlignmentType.LEFT
                                                     })
-                                                ]
+                                                ],
+                                                borders: sin_costado
                                             })
-                noteCellArray.push(seccionCell)
                 noteCellArray.push(criteriaCell)
                 for(let i = 0; i <= criteria.maxNote; i++){
                     noteCellArray.push(
@@ -5483,7 +5480,8 @@ generateGraduateWorkOralCriteriaTable(criteriaArray: Criteria[], seccion: Seccio
                             size:`1cm`,
                             type: WidthType.DXA
                             },
-                            verticalAlign: VerticalAlign.CENTER
+                            verticalAlign: VerticalAlign.CENTER,
+                            borders: sin_bordes
                         })
                     )
                 }
@@ -5676,113 +5674,73 @@ generateGraduateWorkJuryReportEvaluationForm(
     TutorEvaluationFormSquema.push(dataTable)
     TutorEvaluationFormSquema.push(giveSpace)
 
+    
+    const maxNoteInCriteriaList = this.findMaxNote(criteriaArray)
+
+    const columnasCabecera : TableCell[] = []
+
+    columnasCabecera.push(
+        new TableCell({
+            children: [
+                new Paragraph({
+                    text: ""
+                })
+            ],
+            width: {
+                type: WidthType.DXA,
+                size: "5cm"
+            },
+            borders: sin_costado,
+        })
+    )
+
+    columnasCabecera.push(
+        new TableCell({
+            children: [
+                new Paragraph({
+                    text: "Criterios de Evaluación"
+                })
+            ],
+            borders: sin_costado,
+            width: {
+                type: WidthType.DXA,
+                size: "12cm"
+            }
+        }),
+    )
+
+    for(let i = 0 ; i <= maxNoteInCriteriaList; i++){
+        columnasCabecera.push(
+            new TableCell({
+                children: [
+                    new Paragraph({
+                    style: "letraP",
+                    children: [
+                        new TextRun({
+                            text: i.toLocaleString()
+                        })
+                    ],
+                    alignment: "center"
+                    })
+                ],
+                borders: sin_costado,
+                width: {
+                size:`0.815cm`,
+                type: WidthType.DXA
+                },
+                verticalAlign: VerticalAlign.CENTER
+        }))
+    }
+
     const tablaCabecera = new Table({
         rows: [
             new TableRow({
-                children: [
-                    new TableCell({
-                        children: [
-                            new Paragraph({
-                                text: "Secciones de evaluación"
-                            })
-                        ],
-                        width: {
-                            type: WidthType.DXA,
-                            size: "5cm"
-                        }
-                    }),
-                    new TableCell({
-                        children: [
-                            new Paragraph({
-                                text: "Criterios de Evaluación"
-                            })
-                        ],
-                        width: {
-                            type: WidthType.DXA,
-                            size: "5cm"
-                        }
-                    }),
-                    new TableCell({
-                        children: [
-                            new Paragraph({
-                                text: "0"
-                            })
-                        ],
-                        width: {
-                            type: WidthType.DXA,
-                            size: "1cm"
-                        }
-                    }),
-                    new TableCell({
-                        children: [
-                            new Paragraph({
-                                text: "1"
-                            })
-                        ],
-                        width: {
-                            type: WidthType.DXA,
-                            size: "1cm"
-                        }
-                    }),
-                    new TableCell({
-                        children: [
-                            new Paragraph({
-                                text: "2"
-                            })
-                        ],
-                        width: {
-                            type: WidthType.DXA,
-                            size: "1cm"
-                        }
-                    }),
-                    new TableCell({
-                        children: [
-                            new Paragraph({
-                                text: "3"
-                            })
-                        ],
-                        width: {
-                            type: WidthType.DXA,
-                            size: "1cm"
-                        }
-                    }),
-                    new TableCell({
-                        children: [
-                            new Paragraph({
-                                text: "4"
-                            })
-                        ],
-                        width: {
-                            type: WidthType.DXA,
-                            size: "1cm"
-                        }
-                    }),
-                    new TableCell({
-                        children: [
-                            new Paragraph({
-                                text: "5"
-                            })
-                        ],
-                        width: {
-                            type: WidthType.DXA,
-                            size: "1cm"
-                        }
-                    }),
-                    new TableCell({
-                        children: [
-                            new Paragraph({
-                                text: "6"
-                            })
-                        ],
-                        width: {
-                            type: WidthType.DXA,
-                            size: "1cm"
-                        }
-                    }),
-                ]
+                children: columnasCabecera
             })
         ]
     })
+
+    TutorEvaluationFormSquema.push(tablaCabecera)
     /* Ahora por cada seccion que deba contener nuestra planilla vamos a generar una tabla y la insertaremos */
     
     seccionArray.forEach( (seccion: any) => {
@@ -5800,7 +5758,7 @@ generateGraduateWorkJuryReportEvaluationForm(
                         children: [
                             new TableCell({
                                 width: {
-                                    size: `5cm`,
+                                    size: `8cm`,
                                     type:  WidthType.DXA
                                 },
                                 children: [
@@ -5808,16 +5766,17 @@ generateGraduateWorkJuryReportEvaluationForm(
                                         style: "letraP",
                                         children: [
                                             new TextRun({
-                                                text: `${seccion.seccionName} (Máximo ${seccion.maxNote} puntos)`
+                                                text: `(Máximo ${seccion.maxNote} puntos)`
                                             })
                                         ],
                                         alignment: AlignmentType.LEFT
                                     })
                                 ],
+                                borders: sin_costado,
                             }),
                             new TableCell({
                                 width: {
-                                    size: `10.5cm`,
+                                    size: `16cm`,
                                     type:  WidthType.DXA
                                 },
                                 children: [
@@ -5834,6 +5793,7 @@ generateGraduateWorkJuryReportEvaluationForm(
                                         }
                                     })
                                 ],
+                                borders: sin_costado,
                                 columnSpan: 3,
                                 verticalAlign: "bottom"
                             }),
@@ -5870,9 +5830,10 @@ generateGraduateWorkJuryReportEvaluationForm(
                                             text: "Total (máximo 60 puntos)"
                                         })
                                     ],
-                                    alignment: AlignmentType.RIGHT
+                                    alignment: AlignmentType.LEFT
                                 })
-                            ]
+                            ],
+                            borders: sin_costado,
                         }),
                         new TableCell({
                             width: {
@@ -5893,6 +5854,7 @@ generateGraduateWorkJuryReportEvaluationForm(
                                     }
                                 })
                             ],
+                            borders: sin_costado,
                             verticalAlign: "bottom",
                         }),
                     ]
@@ -6114,105 +6076,6 @@ generateGraduateWorkJuryOralEvaluationForm(
             alignment: AlignmentType.CENTER
         })
 
-    /*
-    const tablaCabeceraSeccion = new Table({
-            rows: [
-                new TableRow({
-                    children: [
-                        new TableCell({
-                            children: [
-                                new Paragraph({
-                                    text: "Criterios de Evaluación"
-                                })
-                            ],
-                            width: {
-                                type: WidthType.DXA,
-                                size: "7.5cm"
-                            }
-                        }),
-                        new TableCell({
-                            children: [
-                                new Paragraph({
-                                    text: "1"
-                                })
-                            ],
-                            width: {
-                                type: WidthType.DXA,
-                                size: "1cm"
-                            }
-                        }),
-                        new TableCell({
-                            children: [
-                                new Paragraph({
-                                    text: "2"
-                                })
-                            ],
-                            width: {
-                                type: WidthType.DXA,
-                                size: "1cm"
-                            }
-                        }),
-                        new TableCell({
-                            children: [
-                                new Paragraph({
-                                    text: "3"
-                                })
-                            ],
-                            width: {
-                                type: WidthType.DXA,
-                                size: "1cm"
-                            }
-                        }),
-                        new TableCell({
-                            children: [
-                                new Paragraph({
-                                    text: "4"
-                                })
-                            ],
-                            width: {
-                                type: WidthType.DXA,
-                                size: "1cm"
-                            }
-                        }),
-                        new TableCell({
-                            children: [
-                                new Paragraph({
-                                    text: "5"
-                                })
-                            ],
-                            width: {
-                                type: WidthType.DXA,
-                                size: "1cm"
-                            }
-                        }),
-                        new TableCell({
-                            children: [
-                                new Paragraph({
-                                    text: "6"
-                                })
-                            ],
-                            width: {
-                                type: WidthType.DXA,
-                                size: "1cm"
-                            }
-                        }),
-                        new TableCell({
-                            children: [
-                                new Paragraph({
-                                    text: "8"
-                                })
-                            ],
-                            width: {
-                                type: WidthType.DXA,
-                                size: "1cm"
-                            }
-                        })
-                    ]
-                })
-            ]
-    })
-    */
-    console.log(studentNames)
     const TutorEvaluationFormSquema: FileChild[] = []
 
     /* Primero cargamos el titulo de planilla */
@@ -6253,7 +6116,8 @@ generateGraduateWorkJuryOralEvaluationForm(
                     width: {
                         type: WidthType.DXA,
                         size: "3cm"
-                    }
+                    },
+                    borders: sin_costado
                 }),
                 new TableCell({
                     children: [
@@ -6268,7 +6132,8 @@ generateGraduateWorkJuryOralEvaluationForm(
                     width: {
                         type: WidthType.DXA,
                         size: "13cm"
-                    }
+                    },
+                    borders: sin_costado
                 }),
             ]
         }),
@@ -6287,7 +6152,8 @@ generateGraduateWorkJuryOralEvaluationForm(
                     width: {
                         type: WidthType.DXA,
                         size: "3cm"
-                    }
+                    },
+                    borders: sin_costado
                 }),
                 new TableCell({
                     children: [
@@ -6302,7 +6168,8 @@ generateGraduateWorkJuryOralEvaluationForm(
                     width: {
                         type: WidthType.DXA,
                         size: "13cm"
-                    }
+                    },
+                    borders: sin_costado
                 }),
             ]
         }),
@@ -6325,7 +6192,8 @@ generateGraduateWorkJuryOralEvaluationForm(
                         width: {
                             type: WidthType.DXA,
                             size: "3cm"
-                        }
+                        },
+                        borders: sin_costado
                     }),
                     new TableCell({
                         children: [
@@ -6340,7 +6208,8 @@ generateGraduateWorkJuryOralEvaluationForm(
                         width: {
                             type: WidthType.DXA,
                             size: "13cm"
-                        }
+                        },
+                        borders: sin_costado
                     }),
                 ]
             }),
@@ -6396,153 +6265,15 @@ generateGraduateWorkJuryOralEvaluationForm(
         })
     )
 
-    const tablaCabecera = new Table({
-        rows: [
-            new TableRow({
-                children: [
-                    new TableCell({
-                        children: [
-                            new Paragraph({
-                                text: "Criterios de Evaluación"
-                            })
-                        ],
-                        width: {
-                            type: WidthType.DXA,
-                            size: "6cm"
-                        }
-                    }),
-                    new TableCell({
-                        children: [
-                            new Paragraph({
-                                text: "1"
-                            })
-                        ],
-                        width: {
-                            type: WidthType.DXA,
-                            size: "1cm"
-                        }
-                    }),
-                    new TableCell({
-                        children: [
-                            new Paragraph({
-                                text: "2"
-                            })
-                        ],
-                        width: {
-                            type: WidthType.DXA,
-                            size: "1cm"
-                        }
-                    }),
-                    new TableCell({
-                        children: [
-                            new Paragraph({
-                                text: "3"
-                            })
-                        ],
-                        width: {
-                            type: WidthType.DXA,
-                            size: "1cm"
-                        }
-                    }),
-                    new TableCell({
-                        children: [
-                            new Paragraph({
-                                text: "4"
-                            })
-                        ],
-                        width: {
-                            type: WidthType.DXA,
-                            size: "1cm"
-                        }
-                    }),
-                    new TableCell({
-                        children: [
-                            new Paragraph({
-                                text: "5"
-                            })
-                        ],
-                        width: {
-                            type: WidthType.DXA,
-                            size: "1cm"
-                        }
-                    }),
-                    new TableCell({
-                        children: [
-                            new Paragraph({
-                                text: "6"
-                            })
-                        ],
-                        width: {
-                            type: WidthType.DXA,
-                            size: "1cm"
-                        }
-                    }),
-                    new TableCell({
-                        children: [
-                            new Paragraph({
-                                text: "8"
-                            })
-                        ],
-                        width: {
-                            type: WidthType.DXA,
-                            size: "1cm"
-                        }
-                    }),
-                    new TableCell({
-                        children: [
-                            new Paragraph({
-                                text: "9"
-                            })
-                        ],
-                        width: {
-                            type: WidthType.DXA,
-                            size: "1cm"
-                        }
-                    }),
-                    new TableCell({
-                        children: [
-                            new Paragraph({
-                                text: "10"
-                            })
-                        ],
-                        width: {
-                            type: WidthType.DXA,
-                            size: "1cm"
-                        }
-                    }),
-                    new TableCell({
-                        children: [
-                            new Paragraph({
-                                text: "11"
-                            })
-                        ],
-                        width: {
-                            type: WidthType.DXA,
-                            size: "1cm"
-                        }
-                    }),
-                    new TableCell({
-                        children: [
-                            new Paragraph({
-                                text: "12"
-                            })
-                        ],
-                        width: {
-                            type: WidthType.DXA,
-                            size: "1cm"
-                        }
-                    }),
-                ]
-            })
-        ]
-    })
-    TutorEvaluationFormSquema.push(tablaCabecera)
+   // TutorEvaluationFormSquema.push(tablaCabecera)
     TutorEvaluationFormSquema.push(giveSpace)
     /* Ahora por cada seccion que deba contener nuestra planilla vamos a generar una tabla y la insertaremos */
     console.log(criteriosComunes)
+    console.log(seccionArray)
     seccionArray.forEach( (seccion: any, index: number) => {
         /* Cargamos la tabla de la seccion con cada uno de sus criterios */
         if(seccion.seccionId == criteriosComunes[0].seccionId){
+            console.log("INSERTANDO")
             TutorEvaluationFormSquema.push(this.generateGraduateWorkOralCriteriaTable(criteriosComunes,seccion))
             TutorEvaluationFormSquema.push(giveSpace)
             /* Generamos la tabla resumen que pondera el total de puntos  */
@@ -6564,7 +6295,7 @@ generateGraduateWorkJuryOralEvaluationForm(
                                         new Paragraph({
                                             children: [
                                                 new TextRun({
-                                                    text: `Total ${seccion.seccionName} (Máximo ${seccion.maxNote} puntos)`
+                                                    text: `(Máximo ${seccion.maxNote} puntos)`
                                                 })
                                             ],
                                             alignment: AlignmentType.LEFT
@@ -6615,6 +6346,7 @@ generateGraduateWorkJuryOralEvaluationForm(
                                 ]
                             })
                         )
+                        TutorEvaluationFormSquema.push(giveSpace)
                         TutorEvaluationFormSquema.push(
                             new Table({
                                 rows: [
@@ -6633,7 +6365,8 @@ generateGraduateWorkJuryOralEvaluationForm(
                                                 width: {
                                                     type: WidthType.DXA,
                                                     size: "18cm"
-                                                }
+                                                },
+                                                borders: sin_costado
                                             })
                                         ]
                                     })
@@ -6665,9 +6398,10 @@ generateGraduateWorkJuryOralEvaluationForm(
                                                                 text: "Total (máximo 20 puntos)"
                                                             })
                                                         ],
-                                                        alignment: AlignmentType.RIGHT
+                                                        alignment: AlignmentType.LEFT
                                                     })
-                                                ]
+                                                ],
+                                                borders: sin_costado
                                             }),
                                             new TableCell({
                                                 width: {
@@ -6688,6 +6422,7 @@ generateGraduateWorkJuryOralEvaluationForm(
                                                     })
                                                 ],
                                                 verticalAlign: "bottom",
+                                                borders: sin_costado
                                             }),
                                         ]
                                     })
@@ -6696,13 +6431,10 @@ generateGraduateWorkJuryOralEvaluationForm(
                             })
                         )
 
-                
+                        TutorEvaluationFormSquema.push(giveSpace)
             })
             
         }
-        //TutorEvaluationFormSquema.push(this.generateGraduateWorkOralCriteriaTable(criteriaArray,seccion))
-        //TutorEvaluationFormSquema.push(giveSpace)
-        /* Generamos la tabla resumen que pondera el total de puntos  */
         
     })
 
@@ -10482,6 +10214,667 @@ return document
     
   }
 
+  generarPlanillaDatosPasantia(
+    datosAlumno : {
+        nombreCompleto: string,
+        cedula: string,
+        celular: string,
+        habitacion: string,
+        correo: string
+    },
+    datosEmpresa : {
+        nombre: string,
+        RIF: string,
+        direccion: string,
+        telefono: string,
+    },
+    datosTutorEmpresarial : {
+        nombreCompleto: string,
+        cedula: string,
+        celular: string,
+        correo: string,
+        profesorUCAB: boolean,
+        esTutor: boolean
+    },
+    fechaInicio: string,
+    fechaFinal: string
+    )
+    : Document
+    {
+
+        const giveSpace = 
+        new Paragraph({
+            children: [
+                new TextRun({
+                    text: ""
+                }),
+            ],
+            spacing: {
+                after: 50,
+                before: 50
+            },
+            alignment: AlignmentType.CENTER
+        })
+
+    const TutorEvaluationFormSquema: FileChild[] = []
+
+    /* Primero cargamos el titulo de planilla */
+    const formTitle = 
+        new Paragraph({
+            style: "titulo",
+            children: [
+                new TextRun({
+                    text: "Planilla Datos Pasantía",
+                    bold: true
+                }),
+            ],
+            spacing: {
+                after: 200
+            },
+            alignment: AlignmentType.CENTER
+        })
+
+    TutorEvaluationFormSquema.push(formTitle)
+    TutorEvaluationFormSquema.push(giveSpace)
+
+    const tablaTipoPasantia = new Table({
+        rows: [
+            new TableRow({
+                children: [
+                    new TableCell({
+                        children: [
+                            new Paragraph({
+                                children: [
+                                    new TextRun({
+                                        text: "Pasantía Presencial "
+                                    })
+                                ]
+                            })
+                        ],
+                        width: {
+                            size:`8cm`,
+                            type: WidthType.DXA
+                        },
+                        borders: sin_bordes
+                    }),
+                    new TableCell({
+                        children: [
+                            new Paragraph({
+                                children: [
+                                    new CheckBox()
+                                ],
+                                alignment: AlignmentType.CENTER
+                            })
+                        ],
+                        width: {
+                            size:`2cm`,
+                            type: WidthType.DXA
+                        },
+                        borders: sin_bordes
+                    }),
+                    new TableCell({
+                        children: [
+                            new Paragraph({
+                                children: [
+                                    new TextRun({
+                                        text: "Pasantía Virtual "
+                                    })
+                                ]
+                            })
+                        ],
+                        width: {
+                            size:`8cm`,
+                            type: WidthType.DXA
+                        },
+                        borders: sin_bordes
+                    }),
+                    new TableCell({
+                        children: [
+                            new Paragraph({
+                                children: [
+                                    new CheckBox()
+                                ],
+                                alignment: AlignmentType.CENTER
+                            })
+                        ],
+                        width: {
+                            size:`2cm`,
+                            type: WidthType.DXA
+                        },
+                        borders: sin_bordes
+                    }),
+                ]
+            })
+        ]
+    })
+
+    TutorEvaluationFormSquema.push(tablaTipoPasantia)
+    TutorEvaluationFormSquema.push(giveSpace)
+
+    const tablaDatosAlumno = new Table({
+        rows: [
+            new TableRow({
+                children: [
+                    new TableCell({
+                        children: [
+                            new Paragraph({
+                                children: [
+                                    new TextRun({
+                                        text: "Datos de Alumno: "
+                                    })
+                                ]
+                            })
+                        ],
+                        borders: sin_bordes
+                    }),
+                ]
+            }),
+            new TableRow({
+                children: [
+                    new TableCell({
+                        children: [
+                            new Paragraph({
+                                children: [
+                                    new TextRun({
+                                        text: "Apellidos, Nombres: " + datosAlumno.nombreCompleto
+                                    })
+                                ]
+                            })
+                        ],
+                        borders: sin_bordes
+                    }),
+                ]
+            }),
+            new TableRow({
+                children: [
+                    new TableCell({
+                        children: [
+                            new Paragraph({
+                                children: [
+                                    new TextRun({
+                                        text: "Cédula " + datosAlumno.cedula
+                                    })
+                                ]
+                            })
+                        ],
+                        borders: sin_bordes
+                    }),
+                ]
+            }),
+            new TableRow({
+                children: [
+                    new TableCell({
+                        children: [
+                            new Paragraph({
+                                children: [
+                                    new TextRun({
+                                        text: "Teléfono: " + datosAlumno.celular
+                                    })
+                                ]
+                            })
+                        ],
+                        borders: sin_bordes
+                    }),
+                ]
+            }),
+            new TableRow({
+                children: [
+                    new TableCell({
+                        children: [
+                            new Paragraph({
+                                children: [
+                                    new TextRun({
+                                        text: "Correo: " + datosAlumno.correo
+                                    })
+                                ]
+                            })
+                        ],
+                        borders: sin_bordes
+                    })
+                ]
+            })     
+        ]
+    })
+
+    TutorEvaluationFormSquema.push(tablaDatosAlumno)
+    TutorEvaluationFormSquema.push(giveSpace)
+
+    const tablaDatosEmpresa = new Table({
+        rows: [
+            new TableRow({
+                children: [
+                    new TableCell({
+                        children: [
+                            new Paragraph({
+                                children: [
+                                    new TextRun({
+                                        text: "Datos de la Empresa: "
+                                    })
+                                ]
+                            })
+                        ],
+                        borders: sin_bordes
+                    }),
+                ]
+            }),
+            new TableRow({
+                children: [
+                    new TableCell({
+                        children: [
+                            new Paragraph({
+                                children: [
+                                    new TextRun({
+                                        text: "Nombre Empresa: " + datosEmpresa.nombre
+                                    })
+                                ]
+                            })
+                        ],
+                        borders: sin_bordes
+                    }),
+                ]
+            }),
+            new TableRow({
+                children: [
+                    new TableCell({
+                        children: [
+                            new Paragraph({
+                                children: [
+                                    new TextRun({
+                                        text: "RIF: " + datosEmpresa.RIF
+                                    })
+                                ]
+                            })
+                        ],
+                        borders: sin_bordes
+                    }),
+                ]
+            }),
+            new TableRow({
+                children: [
+                    new TableCell({
+                        children: [
+                            new Paragraph({
+                                children: [
+                                    new TextRun({
+                                        text: "Teléfono: " + datosEmpresa.telefono
+                                    })
+                                ]
+                            })
+                        ],
+                        borders: sin_bordes
+                    }),
+                ]
+            }),
+            new TableRow({
+                children: [
+                    new TableCell({
+                        children: [
+                            new Paragraph({
+                                children: [
+                                    new TextRun({
+                                        text: "Dirección: " + datosEmpresa.direccion
+                                    })
+                                ]
+                            })
+                        ],
+                        borders: sin_bordes
+                    })
+                ]
+            })     
+        ]
+    })
+
+    TutorEvaluationFormSquema.push(tablaDatosEmpresa)
+    TutorEvaluationFormSquema.push(giveSpace)
+
+    const tablaDatosTutor = new Table({
+        rows: [
+            new TableRow({
+                children: [
+                    new TableCell({
+                        children: [
+                            new Paragraph({
+                                children: [
+                                    new TextRun({
+                                        text: "Datos de Tutor Empresarial: "
+                                    })
+                                ]
+                            })
+                        ],
+                        borders: sin_bordes
+                    }),
+                ]
+            }),
+            new TableRow({
+                children: [
+                    new TableCell({
+                        children: [
+                            new Paragraph({
+                                children: [
+                                    new TextRun({
+                                        text: "Apellidos, Nombres: " + datosTutorEmpresarial.nombreCompleto
+                                    })
+                                ]
+                            })
+                        ],
+                        borders: sin_bordes
+                    }),
+                ]
+            }),
+            new TableRow({
+                children: [
+                    new TableCell({
+                        children: [
+                            new Paragraph({
+                                children: [
+                                    new TextRun({
+                                        text: "Cédula " + datosTutorEmpresarial.cedula
+                                    })
+                                ]
+                            })
+                        ],
+                        borders: sin_bordes
+                    }),
+                ]
+            }),
+            new TableRow({
+                children: [
+                    new TableCell({
+                        children: [
+                            new Paragraph({
+                                children: [
+                                    new TextRun({
+                                        text: "Teléfono: " + datosTutorEmpresarial.celular
+                                    })
+                                ]
+                            })
+                        ],
+                        borders: sin_bordes
+                    }),
+                ]
+            }),
+            new TableRow({
+                children: [
+                    new TableCell({
+                        children: [
+                            new Paragraph({
+                                children: [
+                                    new TextRun({
+                                        text: "Correo: " + datosTutorEmpresarial.correo
+                                    })
+                                ]
+                            })
+                        ],
+                        borders: sin_bordes
+                    })
+                ]
+            }),
+            new TableRow({
+                children: [
+                    new TableCell({
+                        children: [
+                            new Paragraph({
+                                children: [
+                                    new TextRun({
+                                        text: "Tutor Empresarial es Profesor UCAB "
+                                    })
+                                ]
+                            })
+                        ],
+                        borders: sin_bordes
+                    }),
+                    new TableCell({
+                        children: [
+                            new Paragraph({
+                                children: [
+                                    new CheckBox()
+                                ]
+                            })
+                        ],
+                        borders: sin_bordes
+                    }),
+                    new TableCell({
+                        children: [
+                            new Paragraph({
+                                children: [
+                                    new TextRun({
+                                        text: "Tutor Empresarial es (fue) Tutor TG ó Pasantía "
+                                    })
+                                ]
+                            })
+                        ],
+                        borders: sin_bordes
+                    }),
+                    new TableCell({
+                        children: [
+                            new Paragraph({
+                                children: [
+                                    new CheckBox()
+                                ]
+                            })
+                        ],
+                        borders: sin_bordes
+                    }),
+                ]
+            }) 
+        ]
+    })
+
+    TutorEvaluationFormSquema.push(tablaDatosTutor)
+    TutorEvaluationFormSquema.push(giveSpace)
+
+    const tablaFechas = new Table({
+        rows: [
+            new TableRow({
+                children: [
+                    new TableCell({
+                        children: [
+                            new Paragraph({
+                                children: [
+                                    new TextRun({
+                                        text: "Fecha de Inicio y Fin de la Pasantía: "
+                                    })
+                                ]
+                            })
+                        ],
+                        borders: sin_bordes
+                    }),
+                    new TableCell({
+                        children: [
+                            new Paragraph({
+                                children: [
+                                    new TextRun({
+                                        text: fechaInicio + " al " + fechaFinal
+                                    })
+                                ]
+                            })
+                        ],
+                        borders: sin_bordes
+                    })
+                ]
+            })
+        ]
+    })
+
+    TutorEvaluationFormSquema.push(tablaFechas)
+    TutorEvaluationFormSquema.push(giveSpace)
+
+    const parrafoComentarios = new Paragraph(
+        {
+            children: [
+                new TextRun({
+                    text: "(verifique que su pasantía tenga una duración de 6 semanas. En caso de requerir extensión, podrá solicitar hasta un máximo de dos (2) semanas adicionales, con autorización del tutor académico) Elimine este texto de su planilla "
+                })
+            ]
+        }
+    )
+
+    TutorEvaluationFormSquema.push(parrafoComentarios)
+
+    TutorEvaluationFormSquema.push(giveSpace)
+
+    const document =  new Document(
+            {
+                creator: "Luis C. Somoza & Wladimir San Vicente",
+                title: "Evaluación Individual Pasantía – Tutor Empresarial",
+                description: "Evaluación Individual Pasantía – Tutor Empresarial",
+                styles: {
+                    default: {
+                        heading1: {
+                            run: {
+                                size: 30,
+                                bold: true,
+                                italics: true,
+                                color: "FF0000",
+                            },
+                            paragraph: {
+                                spacing: {
+                                    after: 200,
+                                },
+                            },
+                        },
+                    },
+                    paragraphStyles: [
+                        {
+                            id: "titulo",
+                            name: "Aside",
+                            basedOn: "Normal",
+                            next: "Normal",
+                            run: {
+                                size: 24,
+                            },
+                            paragraph: {
+                                spacing: {
+                                    line: 276,
+                                },
+                            },
+                        },
+                        {
+                            id: "aside",
+                            name: "Aside",
+                            basedOn: "Normal",
+                            next: "Normal",
+                            run: {
+                                size: 22,
+                            },
+                            paragraph: {
+                                spacing: {
+                                    line: 276,
+                                },
+                            },
+                        },
+                        {
+                            id: "reducido",
+                            name: "Reducido",
+                            basedOn: "Normal",
+                            next: "Normal",
+                            run: {
+                                size: 15,
+                            },
+                            paragraph: {
+                                spacing: {
+                                    line: 276,
+                                },
+                            },
+                        },
+                        {
+                            id: "despedida",
+                            name: "Despedida",
+                            basedOn: "Normal",
+                            next: "Normal",
+                            run: {
+                                size: 26,
+                            },
+                            paragraph: {
+                                spacing: {
+                                    line: 276,
+                                },
+                            },
+                        }
+                    ]
+                },
+                sections: [{
+                    properties: {
+                        type:  SectionType.CONTINUOUS
+                    },
+                    headers: {
+                        default: new  Header({
+                            children: [
+                                new  Paragraph({
+                                children: [
+                                    
+                                    new  ImageRun({
+                                        data: this.imageArraBuffer,
+                                        transformation: {
+                                            width: 400,
+                                            height: 100,
+                                        },
+                                    })
+                                    
+                                ],
+                                    alignment:  AlignmentType.LEFT
+                                })
+                            ],
+                        }),
+                    },
+                    footers: {
+                        default: new  Footer({
+                            children: [
+                                new  Paragraph({
+                                    children: [
+                                        
+                                        new  ImageRun({
+                                            data: this.bannerArrayBuffer,
+                                            transformation: {
+                                                width: 600,
+                                                height: 15,
+                                            }
+                                        }),
+                                        
+                                    ],
+                                    alignment:  AlignmentType.CENTER
+                                }),
+                                new  Paragraph({
+                                    children: [
+                                        new  TextRun({
+                                            text: "UNIVERSIDAD CATÓLICA ANDRÉS BELLO – Extensión Guayana",
+                                        })
+                                    ],
+                                    alignment:  AlignmentType.CENTER
+                                }),
+                                new  Paragraph({
+                                    children: [
+                                        new  TextRun({
+                                            text: "Avenida Atlántico, Ciudad Guayana 8050",
+                                        })
+                                    ],
+                                    alignment:  AlignmentType.CENTER
+                                }),
+                                new  Paragraph({
+                                    children: [
+                                        new  TextRun({
+                                            text: "Bolívar, Venezuela. Teléfono: +58-286-6000111"
+                                        })
+                                    ],
+                                    alignment:  AlignmentType.CENTER
+                                }),
+                                new  Paragraph({
+                                    children: [
+                                        new  TextRun({
+                                            text: "URL: http://www.guayanaweb.ucab.edu.ve/escuela-de-ingenieria-informatica.html"
+                                        })
+                                    ],
+                                    alignment:  AlignmentType.CENTER
+                                })
+                            ],
+                        }),
+                    },
+                    children: TutorEvaluationFormSquema
+                }]
+        }
+    )
+    return document
+    }
   printEvaluationForm(document: Document, name: string = "Prototipo de Planilla I"){
     Packer.toBlob(document).then( blob => {
       saveAs(blob, name+".docx");

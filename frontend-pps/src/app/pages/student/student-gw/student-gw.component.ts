@@ -224,24 +224,36 @@ export class StudentGWComponent {
              de lo contrario, si no tiene un trabajo de grado activo se finaliza la extraccion de datos */
       
           this.isProcessActive = hasGraduateWork
+          this.hasGraduateWork = hasGraduateWork
 
-          if(this.isCulminated == false){
-            return this.graduateworkService.getCurrentGraduateWork(this.user.userDNI)
-          }else{
-            return of(null)
-          }
+          return this.graduateworkService.getCurrentGraduateWork(this.user.userDNI)
 
         }),
       
         switchMap( ( graduateWorkData ) => {
 
-          if(graduateWorkData === null ){
+          console.log(graduateWorkData)
+          if(graduateWorkData == null){
             return of(null)
           }
-
-          console.log(graduateWorkData)
           this.currentGraduateWork = graduateWorkData;
+          this.graduateWorkList = graduateWorkData
           this.hasGraduateWork = true
+          console.log(this?.currentGraduateWork.graduateWorkStatusCode)
+          console.log(this?.currentGraduateWork.graduateWorkStatusCode >= 50)
+          if(this?.currentGraduateWork.graduateWorkStatusCode >= 50 ){
+            console.log("AQUI")
+            const fechaActual = new Date();
+            const diferenciaEnMilisegundos = fechaActual.getTime() - new Date(this.currentGraduateWork.schoolCouncilApprovalDate).getTime();
+            const diferenciaEnDias = Math.floor(diferenciaEnMilisegundos / (1000 * 60 * 60 * 24));
+            if(diferenciaEnDias >= 150 ){
+              this.daysRemaining = 150
+            }else{
+              this.daysRemaining = diferenciaEnDias
+            }
+            console.log( this.daysRemaining)
+
+          }
 
           if(this.currentGraduateWork.graduateWorkEstatusCode === 90){
             this.hasCulminated = true
@@ -251,185 +263,13 @@ export class StudentGWComponent {
             this.termination = true
             console.log("Trabajo de grado culminado")
           }
-          return this.graduateworkService.getCoordinatorEvaluationStatus(this.currentGraduateWork.graduateworkid)
+          return of( this.currentGraduateWork)
 
         }),
-        switchMap( ( coordinatorEvaluationStatus ) => {
-
-          if(coordinatorEvaluationStatus === null ){
-            return of(null)
-          }
-
-          console.log(`%c${coordinatorEvaluationStatus}`,'color: red')
-          if(coordinatorEvaluationStatus === false){
-            this.hasProposalRevisionPending = !coordinatorEvaluationStatus;
-            console.log(`%c${this.hasProposalRevisionPending}`,'color: red')
-            //const formattedName = "SomozaLuis PTG RevLS.pdf"
-            //downloadProposalEvaluationFile(formattedName)
-          }
-
-          return this.graduateworkService.getGraduateWorkFileNames()
-
-        }),
-        /**********************************************/
-        /* Validador Intermedio de Estado de Propuesta */
-        /**********************************************/
-     
-        switchMap( ( propolsalFileNames) => {
-
-          return this.graduateworkService.getGraduateWorkFileNames()
-
-        }),
-        switchMap( ( propolsalFileNames ) => {
-          if(propolsalFileNames === null ){
-            return of(null)
-          }
-
-          console.log( propolsalFileNames )
-
-          this.graduateWorkFileList = propolsalFileNames;
-          console.log(`graduatework/${this.user.userLastName.split(' ')[0]}${this.user.userFirstName.split(' ')[0]} TG.pdf`)
-          this.graduateWorkFileList.forEach( (element: any)=> {
-            console.log(element)
-            if( element === `graduatework/${this.user.userLastName.split(' ')[0]}${this.user.userFirstName.split(' ')[0]} TG.pdf` ){
-              this.hasGraduateWorkFile = true
-              console.log(this.hasGraduateWorkFile);
-            }
-          });
-          console.log(this.currentGraduateWork.graduateWorkAcademicTutor)
-          console.log(this.currentGraduateWork.graduateworkid)
-          return this.graduateworkService.verifyAcademicTutorRevisionPending(this.currentGraduateWork.graduateWorkAcademicTutor,this.currentGraduateWork.graduateworkid)
-        }),
-
-        switchMap( ( graduateWorkReviewsData ) => {
-
-          if(graduateWorkReviewsData === null ){
-            return of(null)
-          }
-          console.log(graduateWorkReviewsData)
-          this.hasGraduateWorkReviewFile = graduateWorkReviewsData;
-          /*
-          this.graduateWorkReviewsFileList = graduateWorkReviewsData
-
-          console.log(this.graduateWorkReviewsFileList);
-
-          this.graduateWorkReviewsFileList.forEach( ( element: any ) => {
-            if( element === `graduatework/reviews/${this.user.userLastName.split(' ')[0]}${this.user.userFirstName.split(' ')[0]} TG Rev.pdf` ){
-              this.hasGraduateWorkReviewFile = true
-              console.log(this.hasGraduateWorkReviewFile);
-            }
-          })
-          */
-
-          return this.graduateworkService.getCurrentGraduateWork(this.user.userDNI)
-        }),
-        
-        switchMap( ( graduateWorkListData ) => {
-          if(graduateWorkListData === null ){
-            return of(null)
-          }
-          console.log(graduateWorkListData)
-          if(graduateWorkListData.graduateWorkEstatusCode === 90){
-            this.hasCulminated = true
-          }
-          if(graduateWorkListData.graduateWorkEstatusCode === 100){
-            this.termination = true
-          }
-          this.graduateWorkList = graduateWorkListData
-          console.log(this.graduateWorkList)
-          return of(this.hasGraduateWorkReviewFile)
-        }),
-        switchMap( ( hasGraduateWorkReviewFile ) => {
-          if(hasGraduateWorkReviewFile === null ){
-            return of(null)
-          }
-          return this.studentService.getStudentCoordinator(this.user.userDNI)
-          
-        }),
-        switchMap( ( coordinatorData ) => {
-          if(coordinatorData === null ){
-            return of(null)
-          }
-          return this.userService.getUserData(coordinatorData.professordni)
-          
-          
-          
-        }),
-        switchMap( ( coordinatorData ) => {
-          if(coordinatorData === null ){
-            return of(null)
-          }
-          this.coordinatorData = coordinatorData;
-          return this.graduateworkService.getGraduateWorReviewsFileNames()
-          
-        }),
-        switchMap( ( graduateWorkReviewsData ) => {
-          if(graduateWorkReviewsData === null ){
-            return of(null)
-          }
-
-          return this.graduateworkService.getCurrentGraduateWork(this.user.userDNI)
-        }),
-        switchMap( ( graduateWorkData ) => {
-
-          if( graduateWorkData === null ){
-            return of(null)
-          }
-
-          return this.graduateworkService.listFinalFiles() 
-
-        }),
-        switchMap( ( finalFiles ) => {
-
-          if( finalFiles === null ){
-            return of(null)
-          }
-          this.graduateWorkFinalFileList = finalFiles;
-          console.log( this.graduateWorkFinalFileList );
-
-          this.graduateWorkFinalFileList.forEach( ( element: any ) => {
-            if( element === `graduatework/final/${this.user.userLastName.split(' ')[0]}${this.user.userFirstName.split(' ')[0]} TG.pdf` ){
-              this.hasFinalSubmitted = true
-              console.log(this.hasFinalSubmitted);
-            }
-          })
-
-
-          return of(finalFiles)
-
-        }),
-        switchMap( ( graduateWorkData ) => {
-
-          if( graduateWorkData === null ){
-            return of(null)
-          }
-
-          console.log( graduateWorkData )
-          return this.graduateworkService.getRemainingDays(this.currentGraduateWork.graduateworkid) 
-
-        }),
-
 
         
       ).subscribe({
         next: (data: any) => {
-          console.log(data)
-          this.daysRemaining = data;
-          this.defenseDate = new Date(this.currentGraduateWork.graduateWorkDefenseDate)
-          console.log(this.daysRemaining)
-          console.log(this.daysRemaining <= 0)
-          if(this.daysRemaining <= 0 && (this.currentGraduateWork.graduateWorkStatusCode == 50 || this.currentGraduateWork.graduateWorkStatusCode == 51)){
-            console.log("Se acabo el tiempo")
-            this.isFinalSubmittion = true
-            this.graduateworkService.changeStatus(this.currentGraduateWork.graduateworkid,52).subscribe({
-              next: (result) => {
-                console.log(result)
-              },
-              complete: () =>{
-                window.location.href =  window.location.href
-              }
-            })
-          }
         },
         complete: () => {
           console.log("El constructor ha finalizado")
@@ -449,24 +289,7 @@ export class StudentGWComponent {
   }
 
   ngOnInit(){
-    this.navbarService.changeIsDashBoard();
 
-    this.studentService.getStudentsDataExceptOne(this.localUser.userDNI).subscribe({
-      next: (studentList) => {
-        console.log(studentList)
-        this.studentList = studentList;
-      }
-    })
-
-    this.professorService.getProfessors().subscribe({
-      next: (data) => {
-        console.log(data)
-        this.professorList = [...data]
-      },
-      error: (error) => {
-        console.log(error)
-      }
-    })
 
   }
 

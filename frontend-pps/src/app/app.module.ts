@@ -144,6 +144,8 @@ import { EditarCriterioTutorEmpresarialComponent } from './pages/coordinator/gra
 import { PantallaEvaluacionComponent } from './pages/coordinator/intership/pantalla-evaluacion/pantalla-evaluacion.component';
 import { PantallaEvaluacionJuradoPresentacionComponent } from './pages/coordinator/graduatework/pantalla-evaluacion-jurado-presentacion/pantalla-evaluacion-jurado-presentacion.component';
 import { PantallaEvaluacionJuradoEscritoComponent } from './pages/coordinator/graduatework/pantalla-evaluacion-jurado-escrito/pantalla-evaluacion-jurado-escrito.component';
+import { GenerarPlanillaDatosTGComponent } from './pages/student/student-gw/generar-planilla-datos-tg/generar-planilla-datos-tg.component';
+import { GenerarPlanillaDatosPComponent } from './pages/student/student-pasantia/generar-planilla-datos-p/generar-planilla-datos-p.component';
 
 @NgModule({
   declarations: [
@@ -253,7 +255,9 @@ import { PantallaEvaluacionJuradoEscritoComponent } from './pages/coordinator/gr
     EditarCriterioTutorEmpresarialComponent,
     PantallaEvaluacionComponent,
     PantallaEvaluacionJuradoPresentacionComponent,
-    PantallaEvaluacionJuradoEscritoComponent
+    PantallaEvaluacionJuradoEscritoComponent,
+    GenerarPlanillaDatosTGComponent,
+    GenerarPlanillaDatosPComponent
   ],
   imports: [
     BrowserModule,

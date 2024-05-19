@@ -38,4 +38,10 @@ export class CriteriosTutorEmpresarialService {
     console.log(criteriaData)
     return this.http.put(`${environment.apiUrl}/criterios/tutor/empresarial`,criteriaData,{headers});
   }
+
+  cambiarEstadoCriterioTutorEmpresarial( criteriaId: number ){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.put(`${environment.apiUrl}/criterios/tutor/empresarial/${criteriaId}/status`,{headers});
+  }
 }

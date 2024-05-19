@@ -65,4 +65,16 @@ export class CriteriosJuradoOralService {
     return this.http.get(`${environment.apiUrl}/criterios/jurado/evaluacion/oral/${schoolName}`,{headers});
   }
 
+  changeJuradoOralSeccionStatus(seccionId: number){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.put(`${environment.apiUrl}/criterios/jurado/evaluacion/oral/seccion/${seccionId}/status`,{headers});
+  }
+
+  changeJuradoOralCriteriaStatus(seccionId: number){
+    const headers = new HttpHeaders();
+    headers.append('Access-Control-Allow-Origin', '*');
+    return this.http.put(`${environment.apiUrl}/criterios/jurado/evaluacion/oral/${seccionId}/status`,{headers});
+  }
+
 }
